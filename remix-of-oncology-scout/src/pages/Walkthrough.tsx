@@ -2,13 +2,14 @@ import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   Copy, Check, ArrowRight, Lightbulb, AlertCircle,
-  ExternalLink, Download, Eye, Layout, MessageSquare, Zap
+  ExternalLink, Download, Eye, Layout, MessageSquare, Zap, RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PatientData, Trial, LUNG_MOCK_TRIALS, BREAST_MOCK_TRIALS } from "@/types/oncology";
-import { matchingEngine, MatchResult } from "@/lib/matchingEngine";
+import { PatientData, Trial } from "@/types/oncology";
+import { useTrialMatching } from "@/hooks/useTrialMatching";
 import { SAMPLE_PATIENTS, SamplePatientKey, SAMPLE_PATIENT_DESCRIPTIONS } from "@/data/samplePatients";
+import type { MatchedTrial as APIMatchedTrial } from "@/types/api";
 
 export default function Walkthrough() {
   const [searchParams] = useSearchParams();
@@ -20,17 +21,51 @@ export default function Walkthrough() {
   const patientData = SAMPLE_PATIENTS[patientKey];
   const patientDescription = SAMPLE_PATIENT_DESCRIPTIONS[patientKey];
 
-  const getTrialsForCancerType = (data: PatientData) => {
-    if (data.cancerType === "lung") return LUNG_MOCK_TRIALS;
-    if (data.cancerType === "breast") return BREAST_MOCK_TRIALS;
-    return LUNG_MOCK_TRIALS;
-  };
+  // Use backend API for trial matching
+  const {
+    matchedTrials,
+    possiblyEligibleCount,
+    isLoading,
+    isError,
+  } = useTrialMatching(patientData, {
+    enabled: patientData?.cancerType !== null,
+  });
+
+  // Transform API trials to frontend Trial format
+  const transformAPITrial = (apiTrial: APIMatchedTrial): Trial & { matchScore: number; matchConfidence: string; whyMatched: string[]; whatToConfirm: string[] } => ({
+    id: apiTrial.trial.nct_number,
+    nctNumber: apiTrial.trial.nct_number,
+    title: apiTrial.trial.title,
+    phase: apiTrial.trial.phase || "Unknown",
+    eligibilityScore: "possibly_eligible",
+    sponsor: apiTrial.trial.sponsor || "Unknown",
+    location: apiTrial.trial.location || "Multiple locations",
+    summary: "",
+    eligibilityCriteria: [],
+    translatedInfo: {
+      design: "This trial is evaluating a new treatment approach for your cancer type.",
+      goal: "To evaluate the safety and efficacy of the investigational treatment",
+      whatHappens: "You will receive the study treatment and undergo regular monitoring",
+      duration: "Treatment continues until progression or unacceptable toxicity",
+    },
+    matchConfidence: apiTrial.confidence,
+    matchScore: apiTrial.score,
+    biomarkerMatch: "matches",
+    whyMatched: apiTrial.why_matched.map(r => r.description),
+    whyCantMatch: [],
+    whatToConfirm: apiTrial.what_to_confirm.map(c => c.description),
+    burden: {
+      visitsPerMonth: apiTrial.patient_burden.visits_per_month ? parseInt(apiTrial.patient_burden.visits_per_month) : 2,
+      biopsyRequired: apiTrial.patient_burden.biopsy_required || false,
+      hospitalDays: apiTrial.patient_burden.hospital_stays || false,
+      imagingFrequency: apiTrial.patient_burden.imaging_frequency || "Every 6-8 weeks",
+      burdenScore: "medium",
+    },
+  });
 
   const matchResults = useMemo(() => {
-    if (!patientData) return [];
-    const allTrials = getTrialsForCancerType(patientData);
-    return allTrials.map((trial) => matchingEngine.matchPatientToTrial(patientData, trial));
-  }, [patientData]);
+    return matchedTrials.map(transformAPITrial);
+  }, [matchedTrials]);
 
   if (!patientData) {
     return (
@@ -44,19 +79,11 @@ export default function Walkthrough() {
   }
 
   const eligibleTrials = matchResults
-    .filter(
-      (result) =>
-        result.biomarkerMatch !== "doesnt_match" &&
-        result.eligibilityScore === "possibly_eligible"
-    )
+    .filter((result) => result.eligibilityScore === "possibly_eligible")
     .sort((a, b) => b.matchScore - a.matchScore);
 
   const otherTrials = matchResults
-    .filter(
-      (result) =>
-        result.biomarkerMatch === "doesnt_match" ||
-        result.eligibilityScore === "likely_not_eligible"
-    )
+    .filter((result) => result.eligibilityScore === "likely_not_eligible")
     .sort((a, b) => b.matchScore - a.matchScore);
 
   const topThreeTrials = eligibleTrials.slice(0, 3);
@@ -154,6 +181,35 @@ Please be brutally honest. I want this to be production-ready.`;
     modals: `Evaluate trial detail modals: Is content organized well? Are tabs intuitive? Is there information overload? What would help decision-making?`,
     consistency: `Evaluate data consistency: Are match scores identical everywhere? Is reasoning word-for-word the same? Any discrepancies across views? Critical: Does this undermine trust?`,
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="text-center">
+          <RefreshCw className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Loading Walkthrough...</h2>
+          <p className="text-gray-600">Fetching trial matches from backend</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (isError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="text-center max-w-md">
+          <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Unable to Load Walkthrough</h2>
+          <p className="text-gray-600 mb-4">
+            Could not fetch trial data from the backend. Please ensure the backend server is running.
+          </p>
+          <Button onClick={() => navigate("/")}>Go Home</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -555,7 +611,7 @@ Please be brutally honest. I want this to be production-ready.`;
 
             <div className="space-y-4">
               {eligibleTrials.map((result, index) => (
-                <div key={result.trial.id} className="bg-white rounded-lg border-2 border-gray-300 p-6">
+                <div key={result.id} className="bg-white rounded-lg border-2 border-gray-300 p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="text-4xl font-bold text-gray-900">{result.matchScore}</div>
@@ -582,9 +638,9 @@ Please be brutally honest. I want this to be production-ready.`;
                     </Badge>
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{result.trial.title}</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{result.title}</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    {result.trial.nctNumber} • {result.trial.phase} • {result.trial.sponsor}
+                    {result.nctNumber} • {result.phase} • {result.sponsor}
                   </p>
 
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
@@ -592,9 +648,9 @@ Please be brutally honest. I want this to be production-ready.`;
                       <Lightbulb className="w-5 h-5 text-blue-600 mt-0.5" />
                       <h4 className="font-semibold text-blue-900">In Plain English</h4>
                     </div>
-                    <p className="text-sm text-gray-700 mb-2">{result.trial.translatedInfo.design}</p>
+                    <p className="text-sm text-gray-700 mb-2">{result.translatedInfo.design}</p>
                     <p className="text-sm text-gray-700">
-                      <strong>Goal:</strong> {result.trial.translatedInfo.goal}
+                      <strong>Goal:</strong> {result.translatedInfo.goal}
                     </p>
                   </div>
 
@@ -630,9 +686,9 @@ Please be brutally honest. I want this to be production-ready.`;
                   )}
 
                   <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                    <div className="text-sm text-gray-600">📍 {result.trial.location}</div>
-                    {result.trial.burden && (
-                      <div className="text-sm text-gray-600">{result.trial.burden.visitsPerMonth}x/month visits</div>
+                    <div className="text-sm text-gray-600">📍 {result.location}</div>
+                    {result.burden && (
+                      <div className="text-sm text-gray-600">{result.burden.visitsPerMonth}x/month visits</div>
                     )}
                   </div>
                 </div>
@@ -660,11 +716,11 @@ Please be brutally honest. I want this to be production-ready.`;
         {/* SCREENS 7-9: TRIAL DETAIL MODALS (Top 3) */}
         {topThreeTrials.map((result, modalIndex) => (
           <ScreenSection
-            key={result.trial.id}
+            key={result.id}
             id={`screen-${7 + modalIndex}`}
             number={7 + modalIndex}
             title={`Trial Detail Modal ${modalIndex + 1}`}
-            description={`Full details for: ${result.trial.title.substring(0, 50)}...`}
+            description={`Full details for: ${result.title.substring(0, 50)}...`}
             evaluationPrompt={sectionPrompts.modals}
             copiedSection={copiedSection}
             onCopy={copyToClipboard}
@@ -674,9 +730,9 @@ Please be brutally honest. I want this to be production-ready.`;
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="text-sm font-medium mb-2">Trial Details</div>
-                    <h3 className="text-2xl font-bold">{result.trial.title}</h3>
+                    <h3 className="text-2xl font-bold">{result.title}</h3>
                     <p className="text-blue-100 mt-2">
-                      {result.trial.nctNumber} • {result.trial.phase}
+                      {result.nctNumber} • {result.phase}
                     </p>
                   </div>
                   <div className="text-right">
@@ -689,11 +745,11 @@ Please be brutally honest. I want this to be production-ready.`;
               <div className="p-6 space-y-6">
                 <div>
                   <h4 className="font-semibold text-lg mb-3">What's Being Tested</h4>
-                  <p className="text-gray-700">{result.trial.translatedInfo.design}</p>
+                  <p className="text-gray-700">{result.translatedInfo.design}</p>
                 </div>
                 <div>
                   <h4 className="font-semibold text-lg mb-3">The Goal</h4>
-                  <p className="text-gray-700">{result.trial.translatedInfo.goal}</p>
+                  <p className="text-gray-700">{result.translatedInfo.goal}</p>
                 </div>
                 <div>
                   <h4 className="font-semibold text-lg mb-3">Why You May Match</h4>
@@ -721,20 +777,20 @@ Please be brutally honest. I want this to be production-ready.`;
                 )}
                 <div>
                   <h4 className="font-semibold text-lg mb-3">What You'll Do</h4>
-                  {result.trial.burden && (
+                  {result.burden && (
                     <ul className="space-y-2 text-gray-700">
-                      <li>• Visit clinic {result.trial.burden.visitsPerMonth}x/month initially</li>
-                      <li>• {result.trial.burden.imagingFrequency || "Regular"} imaging</li>
-                      <li>• {result.trial.burden.biopsyRequired ? "Biopsy required" : "No biopsy required"}</li>
+                      <li>• Visit clinic {result.burden.visitsPerMonth}x/month initially</li>
+                      <li>• {result.burden.imagingFrequency || "Regular"} imaging</li>
+                      <li>• {result.burden.biopsyRequired ? "Biopsy required" : "No biopsy required"}</li>
                       <li>
-                        • {result.trial.burden.hospitalDays ? "May require hospital stays" : "No overnight stays"}
+                        • {result.burden.hospitalDays ? "May require hospital stays" : "No overnight stays"}
                       </li>
                     </ul>
                   )}
                 </div>
                 <div>
                   <h4 className="font-semibold text-lg mb-3">Location & Contact</h4>
-                  <p className="text-gray-700 mb-2">📍 {result.trial.location}</p>
+                  <p className="text-gray-700 mb-2">📍 {result.location}</p>
                   <p className="text-sm text-gray-600">
                     Contact the trial coordinator for eligibility screening and enrollment information.
                   </p>
@@ -813,13 +869,13 @@ Please be brutally honest. I want this to be production-ready.`;
               <h3 className="text-xl font-semibold mb-4">Matched Trials ({eligibleTrials.length})</h3>
               <div className="space-y-4">
                 {eligibleTrials.map((result, index) => (
-                  <div key={result.trial.id} className="border-l-4 border-blue-500 pl-4">
+                  <div key={result.id} className="border-l-4 border-blue-500 pl-4">
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <h4 className="font-semibold">
-                          Trial {index + 1}: {result.trial.title}
+                          Trial {index + 1}: {result.title}
                         </h4>
-                        <p className="text-sm text-gray-600">{result.trial.nctNumber}</p>
+                        <p className="text-sm text-gray-600">{result.nctNumber}</p>
                       </div>
                       <div className="text-right">
                         <div className="text-2xl font-bold">{result.matchScore}</div>
@@ -955,9 +1011,9 @@ Please be brutally honest. I want this to be production-ready.`;
               </p>
             </div>
             {topThreeTrials.map((result, index) => (
-              <div key={result.trial.id} className="border-2 border-gray-200 rounded-lg p-5">
+              <div key={result.id} className="border-2 border-gray-200 rounded-lg p-5">
                 <h4 className="font-semibold text-lg mb-4">
-                  Trial {index + 1}: {result.trial.title.substring(0, 50)}...
+                  Trial {index + 1}: {result.title.substring(0, 50)}...
                 </h4>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">

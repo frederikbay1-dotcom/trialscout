@@ -1,16 +1,17 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, RotateCcw, ChevronDown, ChevronUp, Database, Download, Info, RefreshCw, Mail, Clipboard, Shield, Layout } from "lucide-react";
+import { Search, Filter, RotateCcw, ChevronDown, ChevronUp, Database, Download, Info, RefreshCw, Mail, Clipboard, Shield, Layout, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TrialCard } from "@/components/TrialCard";
 import { LearnMoreModal } from "@/components/LearnMoreModal";
 import { ClinicianBriefModal } from "@/components/ClinicianBriefModal";
 import { InlineProgressBar } from "@/components/InlineProgressBar";
-import { PatientData, Trial, LUNG_MOCK_TRIALS, BREAST_MOCK_TRIALS } from "@/types/oncology";
+import { PatientData, Trial } from "@/types/oncology";
 import { Checkbox as CheckboxUI } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { matchingEngine, MatchResult } from "@/lib/matchingEngine";
+import { useTrialMatching } from "@/hooks/useTrialMatching";
 import { useProfileChangeDetection } from "@/hooks/useProfileChangeDetection";
+import type { MatchedTrial as APIMatchedTrial } from "@/types/api";
 
 interface ResultsStepProps {
   patientData: PatientData;
@@ -25,58 +26,138 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
   
   const { hasProfileChanges, isRematching, confirmReMatch, resetDetection } = useProfileChangeDetection(patientData);
   
+  // Use backend API for trial matching
+  const {
+    matchedTrials,
+    possiblyEligibleCount,
+    totalTrialsEvaluated,
+    isLoading,
+    isError,
+    error,
+    rematch,
+  } = useTrialMatching(patientData, {
+    enabled: patientData.cancerType !== null,
+  });
+  
   useEffect(() => {
     resetDetection();
   }, [resetDetection]);
 
-  const getTrialsForCancerType = () => {
-    if (patientData.cancerType === "lung") return LUNG_MOCK_TRIALS;
-    if (patientData.cancerType === "breast") return BREAST_MOCK_TRIALS;
-    return LUNG_MOCK_TRIALS;
-  };
-
-  const matchResults = useMemo(() => {
-    const allTrials = getTrialsForCancerType();
-    return allTrials.map(trial => matchingEngine.matchPatientToTrial(patientData, trial));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [patientData, isRematching]);
-
-  const eligibleTrials = useMemo(() => {
-    return matchResults
-      .filter(result => 
-        result.biomarkerMatch !== "doesnt_match" && 
-        result.eligibilityScore === "possibly_eligible"
-      )
-      .sort((a, b) => {
-        const confidenceOrder = { high: 0, medium: 1, low: 2 };
-        const confDiff = confidenceOrder[a.matchConfidence] - confidenceOrder[b.matchConfidence];
-        if (confDiff !== 0) return confDiff;
-        return b.matchScore - a.matchScore;
-      });
-  }, [matchResults]);
-
-  const otherTrials = useMemo(() => {
-    return matchResults
-      .filter(result => 
-        result.biomarkerMatch === "doesnt_match" || 
-        result.eligibilityScore === "likely_not_eligible"
-      )
-      .sort((a, b) => b.matchScore - a.matchScore);
-  }, [matchResults]);
-
-  const eligibleCount = eligibleTrials.length;
-  const enrichTrial = (r: MatchResult): Trial => ({
-    ...r.trial,
-    whyMatched: r.whyMatched,
-    whatToConfirm: r.whatToConfirm,
-    whyCantMatch: r.whyCantMatch,
-    matchScore: r.matchScore,
-    matchConfidence: r.matchConfidence,
-    eligibilityScore: r.eligibilityScore,
-    biomarkerMatch: r.biomarkerMatch,
+  // Transform API trials to frontend Trial format
+  const transformAPITrial = (apiTrial: APIMatchedTrial): Trial => ({
+    id: apiTrial.trial.nct_number,
+    nctNumber: apiTrial.trial.nct_number,
+    title: apiTrial.trial.title,
+    phase: apiTrial.trial.phase || "Unknown",
+    eligibilityScore: "possibly_eligible",
+    sponsor: apiTrial.trial.sponsor || "Unknown",
+    location: apiTrial.trial.location || "Multiple locations",
+    summary: "",
+    eligibilityCriteria: [],
+    translatedInfo: {
+      design: apiTrial.trial.translated_info?.design || "This trial is evaluating a new treatment approach.",
+      goal: apiTrial.trial.translated_info?.goal || "To evaluate the safety and efficacy of the investigational treatment",
+      whatHappens: apiTrial.trial.translated_info?.what_happens || "You will receive the study treatment and undergo regular monitoring",
+      duration: apiTrial.trial.translated_info?.duration || "Treatment continues until progression or unacceptable toxicity",
+    },
+    matchConfidence: apiTrial.confidence,
+    matchScore: apiTrial.score,
+    biomarkerMatch: "matches",
+    whyMatched: apiTrial.why_matched || [],
+    whyCantMatch: [],
+    whatToConfirm: apiTrial.what_to_confirm || [],
+    burden: {
+      visitsPerMonth: apiTrial.trial.burden?.visits_per_month || 2,
+      biopsyRequired: apiTrial.trial.burden?.biopsy_required || false,
+      hospitalDays: apiTrial.trial.burden?.hospital_stays || false,
+      imagingFrequency: apiTrial.trial.burden?.imaging_frequency || "Every 6-8 weeks",
+      burdenScore: "medium",
+    },
   });
 
-  const matchedTrialsForBrief = eligibleTrials.map(enrichTrial);
+  const eligibleTrials = useMemo(() => {
+    return matchedTrials
+      .filter(trial => trial.confidence !== "low")
+      .sort((a, b) => {
+        const confidenceOrder = { high: 0, medium: 1, low: 2 };
+        const confDiff = confidenceOrder[a.confidence] - confidenceOrder[b.confidence];
+        if (confDiff !== 0) return confDiff;
+        return b.score - a.score;
+      })
+      .map(transformAPITrial);
+  }, [matchedTrials]);
+
+  const otherTrials = useMemo(() => {
+    return matchedTrials
+      .filter(trial => trial.confidence === "low")
+      .sort((a, b) => b.score - a.score)
+      .map(transformAPITrial);
+  }, [matchedTrials]);
+
+  const eligibleCount = possiblyEligibleCount;
+  const matchedTrialsForBrief = eligibleTrials;
+
+  // Handle profile changes
+  const handleRematch = async () => {
+    await rematch(patientData);
+    confirmReMatch();
+  };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center pb-32">
+        <InlineProgressBar currentStep={3} totalSteps={3} stepLabel="Your Matches" />
+        <div className="flex flex-col items-center gap-4 mt-12">
+          <RefreshCw className="w-12 h-12 text-blue-600 animate-spin" />
+          <p className="text-lg text-gray-700">Finding matching trials...</p>
+          <p className="text-sm text-gray-500">This may take a few moments</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (isError) {
+    return (
+      <div className="min-h-screen flex flex-col justify-start pb-32">
+        <InlineProgressBar currentStep={3} totalSteps={3} stepLabel="Your Matches" />
+        <div className="py-8 px-4">
+          <div className="container max-w-3xl mx-auto">
+            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="text-lg font-semibold text-red-900 mb-2">
+                    Unable to Load Trial Matches
+                  </h3>
+                  <p className="text-red-800 mb-4">
+                    {error?.message || "We encountered an error while searching for matching trials. Please try again."}
+                  </p>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => rematch(patientData)}
+                      className="bg-red-600 text-white hover:bg-red-700"
+                    >
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      Try Again
+                    </Button>
+                    <Button
+                      onClick={onReset}
+                      variant="outline"
+                      className="border-red-300"
+                    >
+                      Start Over
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col justify-start pb-32">
@@ -221,12 +302,12 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
                       </p>
                     </div>
                   </div>
-                  <Button 
-                    onClick={confirmReMatch}
-                    disabled={isRematching}
+                  <Button
+                    onClick={handleRematch}
+                    disabled={isRematching || isLoading}
                     className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 min-h-[44px] px-5 font-medium"
                   >
-                    {isRematching ? (
+                    {isRematching || isLoading ? (
                       <>
                         <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                         Updating...
@@ -251,9 +332,9 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
                   <span className="w-2 h-2 rounded-full bg-emerald-600" />
                   {eligibleCount} Possibly Eligible
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-100 text-blue-800 text-sm font-medium">
-                  <span className="w-2 h-2 rounded-full bg-blue-500" />
-                  {otherTrials.length} Other Trials
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-800 text-sm font-medium">
+                  <span className="w-2 h-2 rounded-full bg-gray-500" />
+                  {totalTrialsEvaluated} Total Evaluated
                 </div>
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
@@ -325,14 +406,23 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
 
           {/* Matched Trial Cards */}
           <div className="space-y-6">
-            {eligibleTrials.map((matchResult, index) => (
+            {eligibleTrials.map((trial, index) => (
               <TrialCard
-                key={matchResult.trial.id}
-                trial={matchResult.trial}
-                matchResult={matchResult}
+                key={trial.id}
+                trial={trial}
+                matchResult={{
+                  trial,
+                  matchScore: trial.matchScore || 0,
+                  matchConfidence: trial.matchConfidence || "medium",
+                  eligibilityScore: trial.eligibilityScore,
+                  biomarkerMatch: trial.biomarkerMatch || "unknown",
+                  whyMatched: trial.whyMatched || [],
+                  whyCantMatch: trial.whyCantMatch || [],
+                  whatToConfirm: trial.whatToConfirm || [],
+                }}
                 index={index}
                 patientBiomarkers={patientData.biomarkers}
-              onLearnMore={() => setSelectedTrial(enrichTrial(matchResult))}
+                onLearnMore={() => setSelectedTrial(trial)}
                 onDownloadBrief={() => setShowBriefModal(true)}
               />
             ))}
@@ -431,15 +521,24 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
 
                   {acknowledgedMismatch && (
                     <div className="space-y-6 opacity-75">
-                      {otherTrials.map((matchResult, index) => (
+                      {otherTrials.map((trial, index) => (
                         <TrialCard
-                          key={matchResult.trial.id}
-                          trial={matchResult.trial}
-                          matchResult={matchResult}
+                          key={trial.id}
+                          trial={trial}
+                          matchResult={{
+                            trial,
+                            matchScore: trial.matchScore || 0,
+                            matchConfidence: trial.matchConfidence || "low",
+                            eligibilityScore: trial.eligibilityScore,
+                            biomarkerMatch: trial.biomarkerMatch || "doesnt_match",
+                            whyMatched: trial.whyMatched || [],
+                            whyCantMatch: trial.whyCantMatch || [],
+                            whatToConfirm: trial.whatToConfirm || [],
+                          }}
                           index={index}
                           patientBiomarkers={patientData.biomarkers}
                           showMismatchWarning
-                          onLearnMore={() => setSelectedTrial(enrichTrial(matchResult))}
+                          onLearnMore={() => setSelectedTrial(trial)}
                           onDownloadBrief={() => setShowBriefModal(true)}
                         />
                       ))}

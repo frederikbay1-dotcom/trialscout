@@ -18,153 +18,89 @@ import { toast } from '@/hooks/use-toast';
  * Transform frontend PatientData to backend PatientProfile
  */
 function transformPatientDataToProfile(patientData: PatientData): PatientProfile {
-  // Transform biomarkers
-  const biomarkers: Record<string, BiomarkerStatus> = {};
+  const profile = patientData.biomarkerProfile;
+  
+  // Transform biomarkers based on cancer type
+  let biomarkers: any;
   
   if (patientData.cancerType === 'breast') {
-    const profile = patientData.biomarkerProfile;
-    
-    // HER2
-    if (profile.expression.HER2 !== 'unknown') {
-      biomarkers.HER2 = {
-        status: profile.expression.HER2 === '0' ? 'absent' : 'present',
-        subtype: profile.expression.HER2,
-      };
-    }
-    
-    // ER
-    if (profile.hormoneReceptors.ER !== 'unknown') {
-      biomarkers.ER = {
-        status: profile.hormoneReceptors.ER,
-      };
-    }
-    
-    // PR
-    if (profile.hormoneReceptors.PR !== 'unknown') {
-      biomarkers.PR = {
-        status: profile.hormoneReceptors.PR,
-      };
-    }
-    
-    // ESR1
-    if (profile.hormoneReceptors.ESR1 !== 'unknown') {
-      biomarkers.ESR1 = {
-        status: profile.hormoneReceptors.ESR1,
-      };
-    }
-    
-    // PIK3CA
-    if (profile.genetic.PIK3CA !== 'unknown') {
-      biomarkers.PIK3CA = {
-        status: profile.genetic.PIK3CA,
-      };
-    }
-    
-    // BRCA
-    if (profile.genetic.BRCA !== 'unknown') {
-      biomarkers.BRCA = {
-        status: profile.genetic.BRCA,
-      };
-    }
+    biomarkers = {
+      ER: profile.hormoneReceptors.ER || 'unknown',
+      PR: profile.hormoneReceptors.PR || 'unknown',
+      HER2: profile.expression.HER2 === '0' ? 'negative' :
+            profile.expression.HER2 === 'low' ? 'low' :
+            profile.expression.HER2 === 'positive' ? 'positive' : 'unknown',
+      Ki67: undefined,
+    };
   } else if (patientData.cancerType === 'lung') {
-    const profile = patientData.biomarkerProfile;
-    
-    // EGFR
-    if (profile.genetic.EGFR.state !== 'unknown') {
-      biomarkers.EGFR = {
-        status: profile.genetic.EGFR.state,
-        subtype: profile.genetic.EGFR.subtype !== 'unknown' ? profile.genetic.EGFR.subtype : undefined,
-      };
-    }
-    
-    // ALK
-    if (profile.genetic.ALK !== 'unknown') {
-      biomarkers.ALK = {
-        status: profile.genetic.ALK,
-      };
-    }
-    
-    // ROS1
-    if (profile.genetic.ROS1 !== 'unknown') {
-      biomarkers.ROS1 = {
-        status: profile.genetic.ROS1,
-      };
-    }
-    
-    // KRAS_G12C
-    if (profile.genetic.KRAS_G12C !== 'unknown') {
-      biomarkers.KRAS_G12C = {
-        status: profile.genetic.KRAS_G12C,
-      };
-    }
-    
-    // MET
-    if (profile.genetic.MET !== 'unknown') {
-      biomarkers.MET = {
-        status: profile.genetic.MET,
-      };
-    }
-    
-    // RET
-    if (profile.genetic.RET !== 'unknown') {
-      biomarkers.RET = {
-        status: profile.genetic.RET,
-      };
-    }
-    
-    // BRAF
-    if (profile.genetic.BRAF !== 'unknown') {
-      biomarkers.BRAF = {
-        status: profile.genetic.BRAF,
-      };
-    }
-    
-    // NTRK
-    if (profile.genetic.NTRK !== 'unknown') {
-      biomarkers.NTRK = {
-        status: profile.genetic.NTRK,
-      };
-    }
-    
-    // PDL1
-    if (profile.expression.PDL1 !== 'unknown') {
-      biomarkers.PDL1 = {
-        status: 'present',
-        subtype: profile.expression.PDL1,
-      };
-    }
+    biomarkers = {
+      EGFR: {
+        status: profile.genetic.EGFR.state || 'unknown',
+        mutation: profile.genetic.EGFR.subtype !== 'unknown' ? profile.genetic.EGFR.subtype : undefined,
+      },
+      ALK: profile.genetic.ALK || 'unknown',
+      ROS1: profile.genetic.ROS1 || 'unknown',
+      KRAS: {
+        status: profile.genetic.KRAS_G12C || 'unknown',
+        mutation: profile.genetic.KRAS_G12C === 'present' ? 'G12C' : undefined,
+      },
+      MET: {
+        status: profile.genetic.MET || 'unknown',
+        alteration: undefined,
+      },
+      BRAF: profile.genetic.BRAF || 'unknown',
+      PDL1: {
+        status: profile.expression.PDL1 !== 'unknown' ? 'present' : 'unknown',
+        percentage: profile.expression.PDL1 !== 'unknown' ? parseInt(profile.expression.PDL1) : undefined,
+      },
+    };
   }
   
   // Transform prior therapies
-  const prior_therapies: string[] = [];
+  const prior_treatments: any[] = [];
   if (patientData.cancerType === 'breast') {
     if (patientData.breastTreatments.cdk46Inhibitors === true) {
-      prior_therapies.push('CDK4/6 inhibitor');
+      prior_treatments.push({
+        category: 'targeted_therapy',
+        name: 'CDK4/6 inhibitor',
+      });
     }
     if (patientData.breastTreatments.endocrineTherapy === true) {
-      prior_therapies.push('Endocrine therapy');
+      prior_treatments.push({
+        category: 'hormone_therapy',
+        name: 'Endocrine therapy',
+      });
     }
   } else if (patientData.cancerType === 'lung') {
     if (patientData.lungTreatments.platinumChemo === true) {
-      prior_therapies.push('Platinum-based chemotherapy');
+      prior_treatments.push({
+        category: 'chemotherapy',
+        name: 'Platinum-based chemotherapy',
+      });
     }
     if (patientData.lungTreatments.immunotherapy === true) {
-      prior_therapies.push('Immunotherapy');
+      prior_treatments.push({
+        category: 'immunotherapy',
+        name: 'Immunotherapy',
+      });
     }
     if (patientData.lungTreatments.targetedTherapy === true) {
-      prior_therapies.push('Targeted therapy');
+      prior_treatments.push({
+        category: 'targeted_therapy',
+        name: 'Targeted therapy',
+      });
     }
   }
   
   return {
+    age: patientData.age || 50,
+    sex: (patientData.sex || 'female') as 'male' | 'female' | 'other',
     cancer_type: patientData.cancerType as 'breast' | 'lung',
     stage: patientData.cancerStage || 'IV',
-    age: patientData.age || undefined,
-    sex: patientData.sex || undefined,
-    ecog: patientData.ecogStatus || undefined,
+    ecog: (patientData.ecogStatus?.toString() || 'unknown') as '0' | '1' | '2' | '3' | '4' | 'unknown',
     biomarkers,
-    prior_therapies,
-    current_line: patientData.lineOfTherapy || undefined,
+    prior_treatments,
+    line_of_therapy: (patientData.lineOfTherapy || 'later_line') as 'first' | 'post_targeted' | 'later_line',
   };
 }
 
@@ -201,7 +137,7 @@ export function useTrialMatching(
     onSuccess: (data) => {
       toast({
         title: 'Matches Updated',
-        description: `Found ${data.possibly_eligible_count} possibly eligible trials`,
+        description: `Found ${data.stats.possibly_eligible} possibly eligible trials`,
       });
       options.onSuccess?.(data);
     },
@@ -230,9 +166,9 @@ export function useTrialMatching(
   return {
     // Data
     matchResponse: matchQuery.data,
-    matchedTrials: matchQuery.data?.matched_trials || [],
-    possiblyEligibleCount: matchQuery.data?.possibly_eligible_count || 0,
-    totalTrialsEvaluated: matchQuery.data?.total_trials_evaluated || 0,
+    matchedTrials: matchQuery.data?.matches || [],
+    possiblyEligibleCount: matchQuery.data?.stats.possibly_eligible || 0,
+    totalTrialsEvaluated: matchQuery.data?.stats.total_trials || 0,
     
     // Status
     isLoading: matchQuery.isLoading || isMatching,

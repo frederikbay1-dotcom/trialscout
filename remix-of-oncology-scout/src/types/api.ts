@@ -1,6 +1,6 @@
 /**
  * API Types for TrialScout Backend Integration
- * Based on backend schemas.py
+ * Based on backend models (patient.py, trial.py, matching.py)
  */
 
 // Patient Profile Types
@@ -9,94 +9,152 @@ export interface BiomarkerStatus {
   subtype?: string;
 }
 
+// Breast cancer biomarkers
+export interface BreastBiomarkers {
+  ER: 'present' | 'absent' | 'unknown';
+  PR: 'present' | 'absent' | 'unknown';
+  HER2: 'positive' | 'low' | 'negative' | 'unknown';
+  Ki67?: number;
+}
+
+// Lung cancer biomarkers
+export interface EGFRMutation {
+  status: 'present' | 'absent' | 'unknown';
+  mutation?: 'Exon 19 deletion' | 'L858R' | 'Exon 20 insertion' | 'T790M' | 'Other';
+}
+
+export interface KRASMutation {
+  status: 'present' | 'absent' | 'unknown';
+  mutation?: 'G12C' | 'G12D' | 'G12V' | 'Other';
+}
+
+export interface METAlteration {
+  status: 'present' | 'absent' | 'unknown';
+  alteration?: 'Exon 14 skipping' | 'Amplification';
+}
+
+export interface PDL1Expression {
+  status: 'present' | 'absent' | 'unknown';
+  percentage?: number;
+}
+
+export interface LungBiomarkers {
+  EGFR: EGFRMutation;
+  ALK: 'present' | 'absent' | 'unknown';
+  ROS1: 'present' | 'absent' | 'unknown';
+  KRAS: KRASMutation;
+  MET: METAlteration;
+  BRAF: 'present' | 'absent' | 'unknown';
+  PDL1: PDL1Expression;
+}
+
+export interface PriorTreatment {
+  category: 'surgery' | 'radiation' | 'chemotherapy' | 'targeted_therapy' | 'immunotherapy' | 'hormone_therapy';
+  name?: string;
+  start_date?: string;
+  end_date?: string;
+}
+
 export interface PatientProfile {
+  age: number;
+  sex: 'male' | 'female' | 'other';
   cancer_type: 'breast' | 'lung';
   stage: 'I' | 'II' | 'III' | 'IV';
-  age?: number;
-  sex?: string;
-  ecog?: number; // 0-4
-  biomarkers: Record<string, BiomarkerStatus>;
-  prior_therapies: string[];
-  current_line?: string; // 'first-line' | 'post-targeted' | 'later-line'
-  location_zip?: string;
+  ecog: '0' | '1' | '2' | '3' | '4' | 'unknown';
+  biomarkers: BreastBiomarkers | LungBiomarkers;
+  prior_treatments: PriorTreatment[];
+  line_of_therapy: 'first' | 'post_targeted' | 'later_line';
 }
 
 // Trial Types
-export interface TrialBase {
-  nct_number: string;
-  title: string;
-  phase?: string;
-  sponsor?: string;
-  status: string;
-  location?: string;
-  distance_miles?: number;
-  cancer_type: string;
-  last_updated: string;
-}
-
-export interface TrialDetail extends TrialBase {
-  id: number;
-  eligibility_score?: string;
-  match_confidence?: string;
-}
-
 export interface EligibilityCriterion {
   criterion: string;
-  category: string;
-  required: boolean;
-}
-
-export interface TrialMetadata {
-  field_name: string;
-  field_value: string;
-}
-
-export interface TrialFullDetail extends TrialDetail {
-  eligibility_criteria: EligibilityCriterion[];
-  metadata_fields: TrialMetadata[];
-}
-
-// Matching Result Types
-export interface MatchReason {
-  criterion: string;
-  met: boolean;
-  description: string;
-}
-
-export interface ConfirmationItem {
-  item: string;
-  description: string;
-  priority: 'high' | 'medium' | 'low';
+  met: boolean | 'unknown';
+  category: 'biomarker' | 'stage' | 'treatment_history' | 'performance' | 'organ_function' | 'metastases' | 'demographics' | 'disease_characteristics' | 'histology';
 }
 
 export interface PatientBurden {
-  visits_per_month?: string;
-  imaging_frequency?: string;
-  biopsy_required?: boolean;
-  hospital_stays?: boolean;
+  visits_per_month: number;
+  imaging_frequency: string;
+  biopsy_required: boolean;
+  hospital_stays: boolean;
 }
 
-export interface MatchedTrial {
-  trial: TrialDetail;
-  score: number; // 0-99
+export interface ExclusionRisks {
+  prior_drug_exposure: string;
+  washout_window: string;
+  lab_thresholds: string;
+  brain_mets: string;
+}
+
+export interface TranslatedInfo {
+  design: string;
+  goal: string;
+  what_happens: string;
+  duration: string;
+}
+
+export interface Trial {
+  id: string;
+  nct_number: string;
+  title: string;
+  phase: 'Phase I' | 'Phase I/II' | 'Phase II' | 'Phase II/III' | 'Phase III';
+  sponsor: string;
+  status: 'recruiting' | 'active_not_recruiting' | 'completed';
+  location: string;
+  distance: number;
+  cancer_type: 'breast' | 'lung';
+  eligibility_score: 'possibly_eligible' | 'likely_not_eligible';
+  match_confidence: 'high' | 'medium' | 'low';
+  why_matched: string[];
+  what_to_confirm: string[];
+  eligibility_criteria: EligibilityCriterion[];
+  burden: PatientBurden;
+  exclusion_risks: ExclusionRisks;
+  translated_info: TranslatedInfo;
+  last_updated: string;
+}
+
+export type TrialDetail = Trial;
+export type TrialFullDetail = Trial;
+
+// Matching Result Types
+export interface MatchResult {
+  trial: Trial;
+  score: number; // 85-99
   confidence: 'high' | 'medium' | 'low';
-  why_matched: MatchReason[];
-  what_to_confirm: ConfirmationItem[];
-  patient_burden: PatientBurden;
+  why_matched: string[];
+  what_to_confirm: string[];
+  excluded_by?: string;
+}
+
+export interface MatchingContext {
+  patient: PatientProfile;
+  dataset_version: string;
+  matched_at: string;
+  total_trials: number;
+}
+
+export interface MatchingStats {
+  total_trials: number;
+  possibly_eligible: number;
+  likely_not_eligible: number;
+  hard_excluded: number;
 }
 
 export interface MatchResponse {
-  matched_trials: MatchedTrial[];
-  total_trials_evaluated: number;
-  possibly_eligible_count: number;
-  dataset_version: string;
-  generated_at: string;
+  matches: MatchResult[];
+  context: MatchingContext;
+  stats: MatchingStats;
 }
 
-// Clinician Brief Types
+// Legacy type aliases for backward compatibility
+export type MatchedTrial = MatchResult;
+
+// Clinician Brief Types (not yet implemented in new backend)
 export interface ClinicianBriefRequest {
   patient_profile: PatientProfile;
-  matched_trials: MatchedTrial[];
+  matched_trials: MatchResult[];
   top_n?: number; // 1-10, default 5
 }
 

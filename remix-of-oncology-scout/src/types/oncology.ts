@@ -217,8 +217,18 @@ export const defaultPatientData: PatientData = {
   showMismatchedTrials: false,
 };
 
+// Mock trial data has been removed - trials are now fetched from the backend API
+// See useTrialMatching hook in src/hooks/useTrialMatching.ts for API integration
+
+// Legacy exports for backward compatibility (empty arrays)
+export const LUNG_MOCK_TRIALS: Trial[] = [];
+export const BREAST_MOCK_TRIALS: Trial[] = [];
+export const MOCK_TRIALS: Trial[] = [];
+
+/* DEPRECATED: Mock trial data removed
+// The following mock data has been moved to the backend database
 // Lung Cancer Trials (NSCLC - 7 trials)
-export const LUNG_MOCK_TRIALS: Trial[] = [
+export const LUNG_MOCK_TRIALS_DEPRECATED: Trial[] = [
   {
     id: "nsclc_trial_001",
     nctNumber: "NCT06246110",
@@ -622,7 +632,7 @@ export const LUNG_MOCK_TRIALS: Trial[] = [
 ];
 
 // Breast Cancer Trials (7 trials)
-export const BREAST_MOCK_TRIALS: Trial[] = [
+export const BREAST_MOCK_TRIALS_DEPRECATED: Trial[] = [
   {
     id: "bc_trial_001",
     nctNumber: "NCT06926868",
@@ -1025,6 +1035,4 @@ export const BREAST_MOCK_TRIALS: Trial[] = [
     },
   },
 ];
-
-// Legacy export for backward compatibility
-export const MOCK_TRIALS: Trial[] = [...LUNG_MOCK_TRIALS, ...BREAST_MOCK_TRIALS];
+*/

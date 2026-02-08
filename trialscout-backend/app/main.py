@@ -3,51 +3,60 @@ TrialScout Backend API
 FastAPI application for clinical trial matching
 """
 
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from datetime import datetime
+import logging
+import os
+from dotenv import load_dotenv
+from pydantic import BaseModel
 
-from app.config import settings
-from app.database import get_db, engine, Base
-from app.models import Trial, EligibilityCriterion, TrialMetadata
-from app.schemas import (
-    PatientProfile, MatchResponse, TrialFullDetail,
-    ClinicianBriefRequest, ClinicianBriefResponse,
-    HealthResponse, TrialDetail, EligibilityCriterionSchema,
-    TrialMetadataSchema
-)
-from app.matching_engine import MatchingEngine
-from app.pdf_generator import ClinicianBriefGenerator
+from app.models.patient import PatientProfile, CancerType
+from app.models.trial import Trial, TrialPartialUpdate
+from app.models.matching import MatchingResponse
+from app.data.mock_trials import TRIALS, get_trial_by_nct
+from app.data.constants import DATASET_VERSION
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Load environment variables
+load_dotenv()
 
-# Initialize FastAPI app
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Create FastAPI app
 app = FastAPI(
     title="TrialScout API",
-    description="AI-Powered Clinical Trial Matching for Cancer Patients",
+    description="Clinical trial matching engine for cancer patients",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
 )
 
-# Configure CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS middleware - Allow all localhost ports for development
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+if allowed_origins == ["*"]:
+    # In development, allow all origins
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,  # Must be False when allow_origins is ["*"]
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    # In production, use specific origins
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=allowed_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-# Initialize services
-matching_engine = MatchingEngine()
-pdf_generator = ClinicianBriefGenerator()
 
-
-@app.get("/", tags=["Root"])
+@app.get("/")
 async def root():
     """Root endpoint"""
     return {
@@ -57,265 +66,246 @@ async def root():
     }
 
 
-@app.get("/api/health", response_model=HealthResponse, tags=["Health"])
-async def health_check(db: Session = Depends(get_db)):
+@app.get("/health")
+async def health_check():
     """
     Health check endpoint
     
     Returns system status and dataset information
     """
-    # Count total trials
-    total_trials = db.query(Trial).count()
-    
-    # Get most recent trial update
-    latest_trial = db.query(Trial).order_by(Trial.last_updated.desc()).first()
-    last_updated = latest_trial.last_updated.isoformat() if latest_trial else "N/A"
-    
-    return HealthResponse(
-        status="ok",
-        dataset_version=settings.dataset_version,
-        last_updated=last_updated,
-        total_trials=total_trials
-    )
+    return {
+        "status": "ok",
+        "dataset_version": DATASET_VERSION,
+        "last_updated": datetime.now().isoformat(),
+        "total_trials": len(TRIALS)
+    }
 
 
-@app.post("/api/match", response_model=MatchResponse, tags=["Matching"])
-async def match_trials(
-    patient_profile: PatientProfile,
-    db: Session = Depends(get_db)
-):
-    """
-    Match patient profile against available trials
-    
-    This endpoint implements the rule-based matching algorithm
-    as specified in the PRD. It returns ranked trials with:
-    - Match scores (85-99 range)
-    - Confidence levels (high/medium/low)
-    - Reasons why each trial matched
-    - Items to confirm with oncologist
-    - Patient burden information
-    
-    Performance target: <3 seconds for 95th percentile
-    """
-    try:
-        # Get all trials for the patient's cancer type
-        trials = db.query(Trial).filter(
-            Trial.cancer_type == patient_profile.cancer_type
-        ).all()
-        
-        # Convert to full detail objects with relationships
-        trials_full = []
-        for trial in trials:
-            # Get eligibility criteria
-            criteria = db.query(EligibilityCriterion).filter(
-                EligibilityCriterion.trial_id == trial.id
-            ).all()
-            
-            # Get metadata
-            metadata = db.query(TrialMetadata).filter(
-                TrialMetadata.trial_id == trial.id
-            ).all()
-            
-            # Create full trial object
-            trial_full = TrialFullDetail(
-                id=trial.id,
-                nct_number=trial.nct_number,
-                title=trial.title,
-                phase=trial.phase,
-                sponsor=trial.sponsor,
-                status=trial.status,
-                location=trial.location,
-                distance_miles=trial.distance_miles,
-                cancer_type=trial.cancer_type,
-                last_updated=trial.last_updated,
-                eligibility_score=trial.eligibility_score,
-                match_confidence=trial.match_confidence,
-                eligibility_criteria=[
-                    EligibilityCriterionSchema(
-                        criterion=c.criterion,
-                        category=c.category,
-                        required=c.required
-                    ) for c in criteria
-                ],
-                metadata_fields=[
-                    TrialMetadataSchema(
-                        field_name=m.field_name,
-                        field_value=m.field_value
-                    ) for m in metadata
-                ]
-            )
-            trials_full.append(trial_full)
-        
-        # Run matching algorithm
-        matched_trials = matching_engine.match_trials(patient_profile, trials_full)
-        
-        # Count possibly eligible trials
-        possibly_eligible_count = sum(
-            1 for mt in matched_trials 
-            if mt.trial.eligibility_score == "possibly_eligible"
-        )
-        
-        return MatchResponse(
-            matched_trials=matched_trials,
-            total_trials_evaluated=len(trials),
-            possibly_eligible_count=possibly_eligible_count,
-            dataset_version=settings.dataset_version,
-            generated_at=datetime.now().isoformat()
-        )
-        
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error matching trials: {str(e)}"
-        )
-
-
-@app.get("/api/trials/{nct_id}", response_model=TrialFullDetail, tags=["Trials"])
-async def get_trial_details(nct_id: str, db: Session = Depends(get_db)):
-    """
-    Get full details for a specific trial by NCT number
-    
-    Returns complete trial information including:
-    - Basic trial details
-    - Eligibility criteria
-    - Metadata (translated info, patient burden, etc.)
-    """
-    # Find trial by NCT number
-    trial = db.query(Trial).filter(Trial.nct_number == nct_id).first()
-    
-    if not trial:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Trial {nct_id} not found"
-        )
-    
-    # Get eligibility criteria
-    criteria = db.query(EligibilityCriterion).filter(
-        EligibilityCriterion.trial_id == trial.id
-    ).all()
-    
-    # Get metadata
-    metadata = db.query(TrialMetadata).filter(
-        TrialMetadata.trial_id == trial.id
-    ).all()
-    
-    # Create full trial object
-    trial_full = TrialFullDetail(
-        id=trial.id,
-        nct_number=trial.nct_number,
-        title=trial.title,
-        phase=trial.phase,
-        sponsor=trial.sponsor,
-        status=trial.status,
-        location=trial.location,
-        distance_miles=trial.distance_miles,
-        cancer_type=trial.cancer_type,
-        last_updated=trial.last_updated,
-        eligibility_score=trial.eligibility_score,
-        match_confidence=trial.match_confidence,
-        eligibility_criteria=[
-            EligibilityCriterionSchema(
-                criterion=c.criterion,
-                category=c.category,
-                required=c.required
-            ) for c in criteria
-        ],
-        metadata_fields=[
-            TrialMetadataSchema(
-                field_name=m.field_name,
-                field_value=m.field_value
-            ) for m in metadata
-        ]
-    )
-    
-    return trial_full
-
-
-@app.post("/api/brief", response_model=ClinicianBriefResponse, tags=["Brief"])
-async def generate_clinician_brief(request: ClinicianBriefRequest):
-    """
-    Generate clinician brief PDF
-    
-    Creates a one-page (max 2 pages) professional PDF report
-    containing:
-    - Patient profile summary
-    - Top N matched trials (default 5)
-    - Why matched and what to confirm for each trial
-    - Disclaimers and version information
-    
-    Performance target: <5 seconds
-    """
-    try:
-        # Generate PDF as base64
-        pdf_base64 = pdf_generator.generate_brief_base64(
-            patient_profile=request.patient_profile,
-            matched_trials=request.matched_trials,
-            top_n=request.top_n,
-            dataset_version=settings.dataset_version
-        )
-        
-        # Generate filename
-        date_str = datetime.now().strftime("%Y%m%d")
-        filename = f"TrialScout_Brief_{date_str}.pdf"
-        
-        return ClinicianBriefResponse(
-            pdf_base64=pdf_base64,
-            filename=filename,
-            generated_at=datetime.now().isoformat()
-        )
-        
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error generating brief: {str(e)}"
-        )
-
-
-@app.get("/api/trials", response_model=List[TrialDetail], tags=["Trials"])
+@app.get("/api/v1/trials")
 async def list_trials(
-    cancer_type: str = None,
-    status: str = None,
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db)
+    cancer_type: Optional[CancerType] = None,
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0)
 ):
     """
     List all trials with optional filtering
     
     Query parameters:
     - cancer_type: Filter by cancer type (breast, lung)
-    - status: Filter by recruiting status
-    - skip: Number of records to skip (pagination)
     - limit: Maximum number of records to return
+    - offset: Number of records to skip (pagination)
     """
-    query = db.query(Trial)
-    
+    # Filter by cancer type if provided
+    filtered = TRIALS
     if cancer_type:
-        query = query.filter(Trial.cancer_type == cancer_type)
+        filtered = [t for t in TRIALS if t.cancer_type == cancer_type]
     
-    if status:
-        query = query.filter(Trial.status == status)
+    # Pagination
+    paginated = filtered[offset:offset+limit]
     
-    trials = query.offset(skip).limit(limit).all()
+    return {
+        "trials": paginated,
+        "total": len(filtered),
+        "limit": limit,
+        "offset": offset
+    }
+
+
+@app.get("/api/v1/trials/{nct_number}")
+async def get_trial(nct_number: str):
+    """
+    Get full details for a specific trial by NCT number
     
-    return [
-        TrialDetail(
-            id=t.id,
-            nct_number=t.nct_number,
-            title=t.title,
-            phase=t.phase,
-            sponsor=t.sponsor,
-            status=t.status,
-            location=t.location,
-            distance_miles=t.distance_miles,
-            cancer_type=t.cancer_type,
-            last_updated=t.last_updated,
-            eligibility_score=t.eligibility_score,
-            match_confidence=t.match_confidence
-        ) for t in trials
-    ]
+    Returns complete trial information
+    """
+    trial = get_trial_by_nct(nct_number)
+    if not trial:
+        raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
+    return {"trial": trial}
+
+
+@app.post("/api/v1/match", response_model=MatchingResponse)
+async def match_patient(patient: PatientProfile):
+    """
+    Match patient profile against available trials
+    
+    This endpoint implements the rule-based matching algorithm.
+    Returns ranked trials with scores, reasons, and confidence levels.
+    """
+    try:
+        # Import here to avoid circular dependency
+        from app.matching.matcher import match_trials
+        
+        # Call matching engine
+        result = match_trials(patient)
+        return result
+    except Exception as e:
+        logger.error(f"Matching error: {e}")
+        raise HTTPException(status_code=500, detail=f"Matching engine error: {str(e)}")
+
+
+@app.post("/api/v1/trials", status_code=201)
+async def create_trial(trial: Trial):
+    """
+    Create a new trial
+    
+    Returns the created trial object
+    """
+    # Check if trial already exists
+    existing = get_trial_by_nct(trial.nct_number)
+    if existing:
+        raise HTTPException(
+            status_code=409, 
+            detail=f"Trial {trial.nct_number} already exists"
+        )
+    
+    # Validate NCT number format
+    if not trial.nct_number.startswith("NCT"):
+        raise HTTPException(
+            status_code=400,
+            detail="NCT number must start with 'NCT' followed by 8 digits"
+        )
+    
+    # Add to trials list (in-memory for now)
+    TRIALS.append(trial)
+    
+    logger.info(f"Created trial: {trial.nct_number}")
+    
+    return {
+        "message": "Trial created successfully",
+        "trial": trial
+    }
+
+
+@app.put("/api/v1/trials/{nct_number}")
+async def update_trial(nct_number: str, updated_trial: Trial):
+    """
+    Update trial (full replacement)
+    
+    Replaces the entire trial object
+    """
+    # Find trial
+    for i, trial in enumerate(TRIALS):
+        if trial.nct_number == nct_number:
+            # Ensure NCT number matches
+            if updated_trial.nct_number != nct_number:
+                raise HTTPException(
+                    status_code=400,
+                    detail="NCT number in body must match URL parameter"
+                )
+            
+            # Replace trial
+            TRIALS[i] = updated_trial
+            logger.info(f"Updated trial: {nct_number}")
+            
+            return {
+                "message": "Trial updated successfully",
+                "trial": updated_trial
+            }
+    
+    raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
+
+
+@app.patch("/api/v1/trials/{nct_number}")
+async def partial_update_trial(nct_number: str, updates: TrialPartialUpdate):
+    """
+    Partial update trial
+    
+    Updates only the specified fields
+    """
+    # Find trial
+    for i, trial in enumerate(TRIALS):
+        if trial.nct_number == nct_number:
+            # Apply updates (only non-None fields)
+            update_data = updates.dict(exclude_unset=True)
+            updated_trial = trial.copy(update=update_data)
+            
+            TRIALS[i] = updated_trial
+            logger.info(f"Partially updated trial: {nct_number}")
+            
+            return {
+                "message": "Trial updated successfully",
+                "trial": updated_trial
+            }
+    
+    raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
+
+
+@app.delete("/api/v1/trials/{nct_number}")
+async def delete_trial(nct_number: str):
+    """
+    Delete trial
+    
+    Removes the trial from the system
+    """
+    global TRIALS
+    
+    # Find and remove trial
+    for i, trial in enumerate(TRIALS):
+        if trial.nct_number == nct_number:
+            TRIALS.pop(i)
+            logger.info(f"Deleted trial: {nct_number}")
+            
+            return {
+                "message": "Trial deleted successfully",
+                "nct_number": nct_number
+            }
+    
+    raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
+
+
+class BulkImportRequest(BaseModel):
+    trials: List[Trial]
+
+
+@app.post("/api/v1/trials/bulk")
+async def bulk_import_trials(request: BulkImportRequest):
+    """
+    Bulk import trials
+    
+    Imports multiple trials at once
+    """
+    created = 0
+    skipped = 0
+    errors = []
+    
+    for trial in request.trials:
+        try:
+            # Check if exists
+            existing = get_trial_by_nct(trial.nct_number)
+            if existing:
+                skipped += 1
+                errors.append({
+                    "nct_number": trial.nct_number,
+                    "error": "Trial already exists"
+                })
+                continue
+            
+            # Add trial
+            TRIALS.append(trial)
+            created += 1
+            
+        except Exception as e:
+            errors.append({
+                "nct_number": trial.nct_number,
+                "error": str(e)
+            })
+    
+    logger.info(f"Bulk import: {created} created, {skipped} skipped")
+    
+    return {
+        "message": "Bulk import completed",
+        "created": created,
+        "skipped": skipped,
+        "errors": errors
+    }
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        "app.main:app",
+        host=os.getenv("API_HOST", "0.0.0.0"),
+        port=int(os.getenv("API_PORT", 8000)),
+        reload=os.getenv("API_DEBUG", "True") == "True"
+    )

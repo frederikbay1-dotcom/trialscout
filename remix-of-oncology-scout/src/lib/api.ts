@@ -57,14 +57,29 @@ async function fetchAPI<T>(
 
     if (!response.ok) {
       let errorDetail = response.statusText;
+      let errorMessage = response.statusText;
+      
       try {
-        const errorData: APIError = await response.json();
-        errorDetail = errorData.detail || errorDetail;
+        const errorData: any = await response.json();
+        
+        // Handle validation errors (422)
+        if (response.status === 422 && Array.isArray(errorData.detail)) {
+          const validationErrors = errorData.detail.map((err: any) =>
+            `${err.loc.join('.')}: ${err.msg}`
+          ).join(', ');
+          errorMessage = `Validation Error: ${validationErrors}`;
+          errorDetail = validationErrors;
+        } else if (errorData.detail) {
+          errorMessage = typeof errorData.detail === 'string'
+            ? errorData.detail
+            : JSON.stringify(errorData.detail);
+          errorDetail = errorMessage;
+        }
       } catch {
         // If JSON parsing fails, use statusText
       }
 
-      throw new APIClientError(response.status, errorDetail, errorDetail);
+      throw new APIClientError(response.status, errorMessage, errorDetail);
     }
 
     return response.json();
@@ -92,7 +107,7 @@ async function fetchAPI<T>(
  * Check backend status and dataset information
  */
 export async function checkHealth(): Promise<HealthResponse> {
-  return fetchAPI<HealthResponse>('/api/health');
+  return fetchAPI<HealthResponse>('/health');
 }
 
 /**
@@ -103,7 +118,7 @@ export async function matchTrials(
   patientProfile: PatientProfile
 ): Promise<MatchResponse> {
   return fetchAPI<MatchResponse>(
-    '/api/match',
+    '/api/v1/match',
     {
       method: 'POST',
       body: JSON.stringify(patientProfile),
@@ -116,8 +131,8 @@ export async function matchTrials(
  * Get Trial Details
  * Get full details for a specific trial by NCT number
  */
-export async function getTrialDetails(nctId: string): Promise<TrialFullDetail> {
-  return fetchAPI<TrialFullDetail>(`/api/trials/${nctId}`);
+export async function getTrialDetails(nctId: string): Promise<{ trial: TrialFullDetail }> {
+  return fetchAPI<{ trial: TrialFullDetail }>(`/api/v1/trials/${nctId}`);
 }
 
 /**
@@ -127,20 +142,20 @@ export async function getTrialDetails(nctId: string): Promise<TrialFullDetail> {
 export async function listTrials(params?: {
   cancer_type?: 'breast' | 'lung';
   status?: string;
-  skip?: number;
+  offset?: number;
   limit?: number;
-}): Promise<TrialDetail[]> {
+}): Promise<{ trials: TrialDetail[]; total: number; limit: number; offset: number }> {
   const queryParams = new URLSearchParams();
 
   if (params?.cancer_type) queryParams.append('cancer_type', params.cancer_type);
   if (params?.status) queryParams.append('status', params.status);
-  if (params?.skip !== undefined) queryParams.append('skip', params.skip.toString());
+  if (params?.offset !== undefined) queryParams.append('offset', params.offset.toString());
   if (params?.limit !== undefined) queryParams.append('limit', params.limit.toString());
 
   const queryString = queryParams.toString();
-  const endpoint = queryString ? `/api/trials?${queryString}` : '/api/trials';
+  const endpoint = queryString ? `/api/v1/trials?${queryString}` : '/api/v1/trials';
 
-  return fetchAPI<TrialDetail[]>(endpoint);
+  return fetchAPI<{ trials: TrialDetail[]; total: number; limit: number; offset: number }>(endpoint);
 }
 
 /**

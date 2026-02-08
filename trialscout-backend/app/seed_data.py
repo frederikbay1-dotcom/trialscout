@@ -345,20 +345,20 @@ def seed_database():
                 )
                 db.add(metadata)
             
-            print(f"  ✓ Created trial: {trial_data['nct_number']}")
+            print(f"  - Created trial: {trial_data['nct_number']}")
         
         db.commit()
-        print(f"\n✅ Successfully seeded {len(all_trials)} trials!")
+        print(f"\nSuccessfully seeded {len(all_trials)} trials!")
         print(f"   - {len(breast_trials)} breast cancer trials")
         print(f"   - {len(lung_trials)} lung cancer trials")
         
     except Exception as e:
-        print(f"❌ Error seeding database: {e}")
+        print(f"Error seeding database: {e}")
         db.rollback()
     finally:
         db.close()
 
 
 if __name__ == "__main__":
-    print("🌱 Seeding TrialScout database...")
+    print("Seeding TrialScout database...")
     seed_database()
