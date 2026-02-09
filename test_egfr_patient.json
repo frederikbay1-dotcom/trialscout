@@ -1,0 +1,27 @@
+{
+  "age": 58,
+  "sex": "male",
+  "cancer_type": "lung",
+  "stage": "IV",
+  "ecog": "1",
+  "biomarkers": {
+    "EGFR": {
+      "status": "present",
+      "mutation": "Exon 19 deletion"
+    },
+    "ALK": "absent",
+    "ROS1": "absent",
+    "KRAS": {
+      "status": "absent"
+    },
+    "MET": {
+      "status": "absent"
+    },
+    "BRAF": "absent",
+    "PDL1": {
+      "status": "unknown"
+    }
+  },
+  "prior_therapies": [],
+  "current_line": "first-line"
+}

@@ -83,18 +83,29 @@ export function ClinicianBriefModal({
     day: "numeric",
   });
 
-  // Separate and sort trials by eligibility score and confidence
-  const possiblyEligible = matchedTrials
-    .filter(t => t.eligibilityScore === "possibly_eligible")
-    .sort((a, b) => {
-      const confOrder = { high: 0, medium: 1, low: 2 };
-      return (confOrder[a.matchConfidence || "low"]) - (confOrder[b.matchConfidence || "low"]);
-    });
+  // Separate trials using the EXACT same logic as TrialCard.tsx getBadgeInfo()
+  // Updated to show all trial categories in separate sections
+  const allPossiblyEligible = matchedTrials.filter(t => t.eligibilityScore === "possibly_eligible");
+  
+  // "POSSIBLE MATCH" = medium confidence (lines 71-78 in TrialCard.tsx)
+  const possibleMatches = allPossiblyEligible
+    .filter(t => t.matchConfidence === "medium")
+    .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+  
+  // "NEEDS CONFIRMATION" = low confidence or undefined (lines 80-85 in TrialCard.tsx)
+  const needsConfirmation = allPossiblyEligible
+    .filter(t => t.matchConfidence !== "high" && t.matchConfidence !== "medium")
+    .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+  
+  // "STRONG MATCH" / "BEST MATCH" = high confidence (lines 52-68 in TrialCard.tsx)
+  const strongMatches = allPossiblyEligible
+    .filter(t => t.matchConfidence === "high")
+    .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
   
   const likelyNotEligible = matchedTrials.filter(t => t.eligibilityScore === "likely_not_eligible");
 
-  // Get top 3 for executive summary
-  const topTrials = possiblyEligible.slice(0, 3);
+  // Get top 3 for executive summary (from strong matches first, then possible matches)
+  const topTrials = [...strongMatches, ...possibleMatches].slice(0, 3);
 
   return (
     <AnimatePresence>
@@ -165,7 +176,19 @@ export function ClinicianBriefModal({
                 </div>
                 <div className="space-y-3 text-sm">
                   <p className="text-slate-700">
-                    <strong>{possiblyEligible.length} Recommended Trial{possiblyEligible.length !== 1 ? "s" : ""}</strong> identified 
+                    {strongMatches.length > 0 && (
+                      <><strong>{strongMatches.length} Strong Match{strongMatches.length !== 1 ? "es" : ""}</strong></>
+                    )}
+                    {strongMatches.length > 0 && possibleMatches.length > 0 && <span> + </span>}
+                    {possibleMatches.length > 0 && (
+                      <><strong>{possibleMatches.length} Possible Match{possibleMatches.length !== 1 ? "es" : ""}</strong></>
+                    )}
+                    {(strongMatches.length > 0 || possibleMatches.length > 0) && needsConfirmation.length > 0 && (
+                      <span className="text-slate-600"> + {needsConfirmation.length} needing confirmation</span>
+                    )}
+                    {needsConfirmation.length > 0 && strongMatches.length === 0 && possibleMatches.length === 0 && (
+                      <><strong>{needsConfirmation.length} Trial{needsConfirmation.length !== 1 ? "s" : ""} Needing Confirmation</strong></>
+                    )}
                     {likelyNotEligible.length > 0 && (
                       <span className="text-slate-500"> ({likelyNotEligible.length} additional trials may not match)</span>
                     )}
@@ -306,28 +329,76 @@ export function ClinicianBriefModal({
                 </section>
               )}
 
-              {/* Matched Trials - Possibly Eligible */}
-              <section className="mb-8">
-                <h2 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">
-                  Recommended Clinical Trials ({possiblyEligible.length})
-                </h2>
-                {possiblyEligible.length > 0 ? (
+              {/* Strong Match Trials */}
+              {strongMatches.length > 0 && (
+                <section className="mb-8">
+                  <h2 className="text-lg font-bold text-slate-800 mb-4 border-b border-emerald-300 pb-2">
+                    Strong Match Trials ({strongMatches.length})
+                  </h2>
+                  <p className="text-sm text-slate-600 mb-4">
+                    These trials have high confidence matches based on your profile.
+                  </p>
                   <div className="space-y-4">
-                    {possiblyEligible.map((trial, index) => (
-                      <TrialEntrySection 
-                        key={trial.id} 
-                        trial={trial} 
-                        index={index} 
+                    {strongMatches.map((trial, index) => (
+                      <TrialEntrySection
+                        key={trial.id}
+                        trial={trial}
+                        index={index}
                         contact={SITE_CONTACTS[trial.id]}
                       />
                     ))}
                   </div>
-                ) : (
-                  <p className="text-slate-600 italic">No trials with "Possibly Eligible" status found.</p>
-                )}
-              </section>
+                </section>
+              )}
 
-              {/* Matched Trials - Likely Not Eligible */}
+              {/* Possible Match Trials */}
+              {possibleMatches.length > 0 && (
+                <section className="mb-8">
+                  <h2 className="text-lg font-bold text-slate-800 mb-4 border-b border-blue-300 pb-2">
+                    Possible Match Trials ({possibleMatches.length})
+                  </h2>
+                  <p className="text-sm text-slate-600 mb-4">
+                    These trials have medium confidence matches. Review carefully with your oncologist.
+                  </p>
+                  <div className="space-y-4">
+                    {possibleMatches.map((trial, index) => (
+                      <TrialEntrySection
+                        key={trial.id}
+                        trial={trial}
+                        index={strongMatches.length + index}
+                        contact={SITE_CONTACTS[trial.id]}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Trials Needing Confirmation */}
+              {needsConfirmation.length > 0 && (
+                <section className="mb-8">
+                  <h2 className="text-lg font-bold text-slate-800 mb-4 border-b border-amber-300 pb-2">
+                    Trials Needing Confirmation ({needsConfirmation.length})
+                  </h2>
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg mb-4">
+                    <p className="text-sm text-amber-900">
+                      <strong>⚠️ Important:</strong> These trials require additional verification with your oncologist.
+                      They have lower confidence matches or need more information to determine eligibility.
+                    </p>
+                  </div>
+                  <div className="space-y-4">
+                    {needsConfirmation.map((trial, index) => (
+                      <TrialEntrySection
+                        key={trial.id}
+                        trial={trial}
+                        index={strongMatches.length + possibleMatches.length + index}
+                        contact={SITE_CONTACTS[trial.id]}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Likely Not Eligible Trials */}
               {likelyNotEligible.length > 0 && (
                 <section className="mb-8">
                   <h2 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">
@@ -338,10 +409,10 @@ export function ClinicianBriefModal({
                   </p>
                   <div className="space-y-4 opacity-80">
                     {likelyNotEligible.map((trial, index) => (
-                      <TrialEntrySection 
-                        key={trial.id} 
-                        trial={trial} 
-                        index={possiblyEligible.length + index} 
+                      <TrialEntrySection
+                        key={trial.id}
+                        trial={trial}
+                        index={strongMatches.length + possibleMatches.length + needsConfirmation.length + index}
                         contact={SITE_CONTACTS[trial.id]}
                       />
                     ))}

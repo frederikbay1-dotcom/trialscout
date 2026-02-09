@@ -51,14 +51,14 @@ export default function Walkthrough() {
     matchConfidence: apiTrial.confidence,
     matchScore: apiTrial.score,
     biomarkerMatch: "matches",
-    whyMatched: apiTrial.why_matched.map(r => r.description),
+    whyMatched: Array.isArray(apiTrial.why_matched) ? apiTrial.why_matched : [],
     whyCantMatch: [],
-    whatToConfirm: apiTrial.what_to_confirm.map(c => c.description),
+    whatToConfirm: Array.isArray(apiTrial.what_to_confirm) ? apiTrial.what_to_confirm : [],
     burden: {
-      visitsPerMonth: apiTrial.patient_burden.visits_per_month ? parseInt(apiTrial.patient_burden.visits_per_month) : 2,
-      biopsyRequired: apiTrial.patient_burden.biopsy_required || false,
-      hospitalDays: apiTrial.patient_burden.hospital_stays || false,
-      imagingFrequency: apiTrial.patient_burden.imaging_frequency || "Every 6-8 weeks",
+      visitsPerMonth: 2,
+      biopsyRequired: false,
+      hospitalDays: false,
+      imagingFrequency: "Every 6-8 weeks",
       burdenScore: "medium",
     },
   });
@@ -182,8 +182,8 @@ Please be brutally honest. I want this to be production-ready.`;
     consistency: `Evaluate data consistency: Are match scores identical everywhere? Is reasoning word-for-word the same? Any discrepancies across views? Critical: Does this undermine trust?`,
   };
 
-  // Show loading state
-  if (isLoading) {
+  // Show loading state (with timeout fallback)
+  if (isLoading && matchResults.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="text-center">
@@ -195,8 +195,8 @@ Please be brutally honest. I want this to be production-ready.`;
     );
   }
 
-  // Show error state
-  if (isError) {
+  // Show error state (only if truly errored and no cached data)
+  if (isError && matchResults.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="text-center max-w-md">

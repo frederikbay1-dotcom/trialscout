@@ -235,8 +235,8 @@ export function TrialCard({
             {trial.phase}
           </span>
           <span>•</span>
-          <span className={trial.status?.recruiting ? "text-emerald-600 font-medium" : "text-amber-600"}>
-            {trial.status?.recruiting ? "Actively Recruiting" : "Not Recruiting"}
+          <span className={trial.status === "recruiting" ? "text-emerald-600 font-medium" : "text-amber-600"}>
+            {trial.status === "recruiting" ? "Actively Recruiting" : "Not Recruiting"}
           </span>
           <span>•</span>
           <span className="flex items-center gap-1">
@@ -264,11 +264,7 @@ export function TrialCard({
       <div className="flex items-center gap-2 text-base text-gray-700">
         <MapPin className="w-4 h-4 text-gray-500" />
         <span>{trial.location}</span>
-        {trial.status?.activeSitesNearUser && trial.status.activeSitesNearUser > 0 && (
-          <span className="text-blue-600 font-medium">
-            • {trial.status.activeSitesNearUser} site{trial.status.activeSitesNearUser > 1 ? 's' : ''} near you
-          </span>
-        )}
+        {/* Site count removed - not available in new backend API */}
       </div>
 
       {/* Why You Match - with medical term tooltips */}
@@ -349,8 +345,8 @@ export function TrialCard({
           {trial.nctNumber}
         </span>
         <span>•</span>
-        <span>Updated: {trial.status?.lastUpdated || "Recently"}</span>
-        {trial.status?.siteVerified && (
+        <span>Updated: {trial.last_updated || "Recently"}</span>
+        {false && (
           <>
             <span>•</span>
             <span className="text-emerald-600 flex items-center gap-1">

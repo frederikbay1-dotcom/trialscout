@@ -546,7 +546,7 @@ TRIALS: List[Trial] = [
     # lung_trial_002
     Trial(
         id="lung_trial_002",
-        nct_number="NCT05123456",
+        nct_number="NCT05123457",
         title="FLAURA2: Osimertinib + Chemotherapy vs Osimertinib Alone in First-Line EGFR-Mutant NSCLC",
         phase="Phase III",
         sponsor="AstraZeneca",
@@ -823,7 +823,7 @@ TRIALS: List[Trial] = [
     # lung_trial_008
     Trial(
         id="lung_trial_008",
-        nct_number="NCT05789234",
+        nct_number="NCT05789235",
         title="TRIDENT-1: Repotrectinib in ROS1-Positive NSCLC",
         phase="Phase II",
         sponsor="Turning Point Therapeutics",

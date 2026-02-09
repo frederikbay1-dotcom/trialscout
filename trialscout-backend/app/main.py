@@ -3,8 +3,9 @@ TrialScout Backend API
 FastAPI application for clinical trial matching
 """
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime
 import logging
@@ -15,8 +16,12 @@ from pydantic import BaseModel
 from app.models.patient import PatientProfile, CancerType
 from app.models.trial import Trial, TrialPartialUpdate
 from app.models.matching import MatchingResponse
-from app.data.mock_trials import TRIALS, get_trial_by_nct
+from app.models.trial_db import TrialDB
+from app.database import get_db, engine, Base
 from app.data.constants import DATASET_VERSION
+
+# Create database tables on startup
+Base.metadata.create_all(bind=engine)
 
 # Load environment variables
 load_dotenv()
@@ -67,17 +72,18 @@ async def root():
 
 
 @app.get("/health")
-async def health_check():
+async def health_check(db: Session = Depends(get_db)):
     """
     Health check endpoint
     
     Returns system status and dataset information
     """
+    total_trials = db.query(TrialDB).count()
     return {
         "status": "ok",
         "dataset_version": DATASET_VERSION,
         "last_updated": datetime.now().isoformat(),
-        "total_trials": len(TRIALS)
+        "total_trials": total_trials
     }
 
 
@@ -85,7 +91,8 @@ async def health_check():
 async def list_trials(
     cancer_type: Optional[CancerType] = None,
     limit: int = Query(20, ge=1, le=100),
-    offset: int = Query(0, ge=0)
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db)
 ):
     """
     List all trials with optional filtering
@@ -95,37 +102,47 @@ async def list_trials(
     - limit: Maximum number of records to return
     - offset: Number of records to skip (pagination)
     """
-    # Filter by cancer type if provided
-    filtered = TRIALS
-    if cancer_type:
-        filtered = [t for t in TRIALS if t.cancer_type == cancer_type]
+    # Build query
+    query = db.query(TrialDB)
     
-    # Pagination
-    paginated = filtered[offset:offset+limit]
+    # Filter by cancer type if provided
+    if cancer_type:
+        query = query.filter(TrialDB.cancer_type == cancer_type)
+    
+    # Get total count
+    total = query.count()
+    
+    # Apply pagination
+    db_trials = query.offset(offset).limit(limit).all()
+    
+    # Convert to Trial Pydantic models
+    trials = [Trial(**trial.to_dict()) for trial in db_trials]
     
     return {
-        "trials": paginated,
-        "total": len(filtered),
+        "trials": trials,
+        "total": total,
         "limit": limit,
         "offset": offset
     }
 
 
 @app.get("/api/v1/trials/{nct_number}")
-async def get_trial(nct_number: str):
+async def get_trial(nct_number: str, db: Session = Depends(get_db)):
     """
     Get full details for a specific trial by NCT number
     
     Returns complete trial information
     """
-    trial = get_trial_by_nct(nct_number)
-    if not trial:
+    db_trial = db.query(TrialDB).filter(TrialDB.nct_number == nct_number).first()
+    if not db_trial:
         raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
+    
+    trial = Trial(**db_trial.to_dict())
     return {"trial": trial}
 
 
 @app.post("/api/v1/match", response_model=MatchingResponse)
-async def match_patient(patient: PatientProfile):
+async def match_patient(patient: PatientProfile, db: Session = Depends(get_db)):
     """
     Match patient profile against available trials
     
@@ -136,8 +153,15 @@ async def match_patient(patient: PatientProfile):
         # Import here to avoid circular dependency
         from app.matching.matcher import match_trials
         
-        # Call matching engine
-        result = match_trials(patient)
+        # Get all trials from database (matching engine will filter by cancer type)
+        db_trials = db.query(TrialDB).all()
+        
+        # Convert to Trial Pydantic models for matching engine
+        trial_objects = [Trial(**trial.to_dict()) for trial in db_trials]
+        
+        # Call matching engine with database trials
+        result = match_trials(patient, trials=trial_objects)
+        
         return result
     except Exception as e:
         logger.error(f"Matching error: {e}")
@@ -145,17 +169,17 @@ async def match_patient(patient: PatientProfile):
 
 
 @app.post("/api/v1/trials", status_code=201)
-async def create_trial(trial: Trial):
+async def create_trial(trial: Trial, db: Session = Depends(get_db)):
     """
     Create a new trial
     
     Returns the created trial object
     """
     # Check if trial already exists
-    existing = get_trial_by_nct(trial.nct_number)
+    existing = db.query(TrialDB).filter(TrialDB.nct_number == trial.nct_number).first()
     if existing:
         raise HTTPException(
-            status_code=409, 
+            status_code=409,
             detail=f"Trial {trial.nct_number} already exists"
         )
     
@@ -166,92 +190,110 @@ async def create_trial(trial: Trial):
             detail="NCT number must start with 'NCT' followed by 8 digits"
         )
     
-    # Add to trials list (in-memory for now)
-    TRIALS.append(trial)
+    # Convert to dict and create DB model
+    trial_dict = trial.model_dump()
+    db_trial = TrialDB(**trial_dict)
+    
+    # Add to database
+    db.add(db_trial)
+    db.commit()
+    db.refresh(db_trial)
     
     logger.info(f"Created trial: {trial.nct_number}")
     
     return {
         "message": "Trial created successfully",
-        "trial": trial
+        "trial": Trial(**db_trial.to_dict())
     }
 
 
 @app.put("/api/v1/trials/{nct_number}")
-async def update_trial(nct_number: str, updated_trial: Trial):
+async def update_trial(nct_number: str, updated_trial: Trial, db: Session = Depends(get_db)):
     """
     Update trial (full replacement)
     
     Replaces the entire trial object
     """
     # Find trial
-    for i, trial in enumerate(TRIALS):
-        if trial.nct_number == nct_number:
-            # Ensure NCT number matches
-            if updated_trial.nct_number != nct_number:
-                raise HTTPException(
-                    status_code=400,
-                    detail="NCT number in body must match URL parameter"
-                )
-            
-            # Replace trial
-            TRIALS[i] = updated_trial
-            logger.info(f"Updated trial: {nct_number}")
-            
-            return {
-                "message": "Trial updated successfully",
-                "trial": updated_trial
-            }
+    db_trial = db.query(TrialDB).filter(TrialDB.nct_number == nct_number).first()
     
-    raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
+    if not db_trial:
+        raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
+    
+    # Ensure NCT number matches
+    if updated_trial.nct_number != nct_number:
+        raise HTTPException(
+            status_code=400,
+            detail="NCT number in body must match URL parameter"
+        )
+    
+    # Update fields
+    trial_dict = updated_trial.model_dump()
+    for key, value in trial_dict.items():
+        setattr(db_trial, key, value)
+    
+    db.commit()
+    db.refresh(db_trial)
+    
+    logger.info(f"Updated trial: {nct_number}")
+    
+    return {
+        "message": "Trial updated successfully",
+        "trial": Trial(**db_trial.to_dict())
+    }
 
 
 @app.patch("/api/v1/trials/{nct_number}")
-async def partial_update_trial(nct_number: str, updates: TrialPartialUpdate):
+async def partial_update_trial(nct_number: str, updates: TrialPartialUpdate, db: Session = Depends(get_db)):
     """
     Partial update trial
     
     Updates only the specified fields
     """
     # Find trial
-    for i, trial in enumerate(TRIALS):
-        if trial.nct_number == nct_number:
-            # Apply updates (only non-None fields)
-            update_data = updates.dict(exclude_unset=True)
-            updated_trial = trial.copy(update=update_data)
-            
-            TRIALS[i] = updated_trial
-            logger.info(f"Partially updated trial: {nct_number}")
-            
-            return {
-                "message": "Trial updated successfully",
-                "trial": updated_trial
-            }
+    db_trial = db.query(TrialDB).filter(TrialDB.nct_number == nct_number).first()
     
-    raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
+    if not db_trial:
+        raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
+    
+    # Apply updates (only non-None fields)
+    update_data = updates.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_trial, key, value)
+    
+    db.commit()
+    db.refresh(db_trial)
+    
+    logger.info(f"Partially updated trial: {nct_number}")
+    
+    return {
+        "message": "Trial updated successfully",
+        "trial": Trial(**db_trial.to_dict())
+    }
 
 
 @app.delete("/api/v1/trials/{nct_number}")
-async def delete_trial(nct_number: str):
+async def delete_trial(nct_number: str, db: Session = Depends(get_db)):
     """
     Delete trial
     
     Removes the trial from the system
     """
-    global TRIALS
+    # Find trial
+    db_trial = db.query(TrialDB).filter(TrialDB.nct_number == nct_number).first()
     
-    # Find and remove trial
-    for i, trial in enumerate(TRIALS):
-        if trial.nct_number == nct_number:
-            TRIALS.pop(i)
-            logger.info(f"Deleted trial: {nct_number}")
-            
-            return {
-                "message": "Trial deleted successfully",
-                "nct_number": nct_number
-            }
+    if not db_trial:
+        raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
     
-    raise HTTPException(status_code=404, detail=f"Trial {nct_number} not found")
+    db.delete(db_trial)
+    db.commit()
+    
+    logger.info(f"Deleted trial: {nct_number}")
+    
+    return {
+        "message": "Trial deleted successfully",
+        "nct_number": nct_number
+    }
 
 
 class BulkImportRequest(BaseModel):
@@ -259,7 +301,7 @@ class BulkImportRequest(BaseModel):
 
 
 @app.post("/api/v1/trials/bulk")
-async def bulk_import_trials(request: BulkImportRequest):
+async def bulk_import_trials(request: BulkImportRequest, db: Session = Depends(get_db)):
     """
     Bulk import trials
     
@@ -272,7 +314,7 @@ async def bulk_import_trials(request: BulkImportRequest):
     for trial in request.trials:
         try:
             # Check if exists
-            existing = get_trial_by_nct(trial.nct_number)
+            existing = db.query(TrialDB).filter(TrialDB.nct_number == trial.nct_number).first()
             if existing:
                 skipped += 1
                 errors.append({
@@ -281,8 +323,12 @@ async def bulk_import_trials(request: BulkImportRequest):
                 })
                 continue
             
-            # Add trial
-            TRIALS.append(trial)
+            # Convert to dict and create DB model
+            trial_dict = trial.model_dump()
+            db_trial = TrialDB(**trial_dict)
+            
+            # Add to database
+            db.add(db_trial)
             created += 1
             
         except Exception as e:
@@ -290,6 +336,14 @@ async def bulk_import_trials(request: BulkImportRequest):
                 "nct_number": trial.nct_number,
                 "error": str(e)
             })
+    
+    # Commit all changes
+    try:
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Bulk import commit failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Bulk import failed: {str(e)}")
     
     logger.info(f"Bulk import: {created} created, {skipped} skipped")
     

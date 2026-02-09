@@ -25,9 +25,11 @@ def is_hard_excluded(patient: PatientProfile, trial: Trial) -> Optional[str]:
         return ecog_exclusion
     
     # Check prior therapy exclusions
-    prior_therapy_exclusion = check_prior_therapy_exclusion(patient, trial)
-    if prior_therapy_exclusion:
-        return prior_therapy_exclusion
+    # DISABLED: Make therapy checks "soft" to prevent false negatives
+    # Doctors should verify therapy history, not algorithm
+    # prior_therapy_exclusion = check_prior_therapy_exclusion(patient, trial)
+    # if prior_therapy_exclusion:
+    #     return prior_therapy_exclusion
     
     return None
 
@@ -59,51 +61,114 @@ def check_breast_biomarker_exclusion(patient: PatientProfile, trial: Trial) -> O
     if not isinstance(biomarkers, BreastBiomarkers):
         return None
     
-    # HER2+ trials exclude HER2-negative or HER2-low
+    # HER2-POSITIVE trials exclude HER2-negative or HER2-low
     if "HER2-positive" in trial.title or "HER2+" in trial.title:
         if biomarkers.HER2 in ["negative", "low"]:
             return f"HER2+ trial requires HER2-positive status (patient is {biomarkers.HER2})"
     
-    # HER2-low trials exclude HER2-negative or HER2-positive
+    # HER2-LOW trials exclude HER2-negative or HER2-positive
     if "HER2-low" in trial.title.lower() or "HER2 low" in trial.title.lower():
         if biomarkers.HER2 in ["negative", "positive"]:
             return f"HER2-low trial requires HER2-low status (patient is {biomarkers.HER2})"
     
-    # ER+ trials exclude ER-negative
-    if "ER+" in trial.title or "hormone receptor" in trial.title.lower():
+    # HER2-NEGATIVE trials (HR+/HER2-) - treat HER2-low as HER2-negative for HR+ trials
+    if ("HER2-" in trial.title or "HER2 -" in trial.title or "HER2-negative" in trial.title.lower()) and \
+       ("HR+" in trial.title or "ER+" in trial.title or "hormone receptor" in trial.title.lower()):
+        # For HR+/HER2- trials, HER2-low is acceptable (counts as HER2-)
+        if biomarkers.HER2 == "positive":
+            return "HR+/HER2- trial excludes HER2-positive patients"
+    
+    # ER-POSITIVE trials exclude ER-negative
+    if "ER+" in trial.title or "ER-positive" in trial.title:
         if biomarkers.ER == "absent":
             return "ER+ trial requires ER-positive status (patient is ER-negative)"
     
-    # Triple-negative trials exclude ER+ or HER2+
-    if "triple-negative" in trial.title.lower() or "TNBC" in trial.title:
+    # ER-NEGATIVE trials exclude ER-positive
+    if "ER-" in trial.title or "ER-negative" in trial.title:
+        if biomarkers.ER == "present":
+            return "ER- trial requires ER-negative status (patient is ER-positive)"
+    
+    # HR+ (Hormone Receptor Positive) trials require ER+ and/or PR+
+    if "HR+" in trial.title or "HR-positive" in trial.title or "hormone receptor positive" in trial.title.lower():
+        if biomarkers.ER == "absent" and biomarkers.PR == "absent":
+            return "HR+ trial requires ER+ and/or PR+ (patient is ER-/PR-)"
+    
+    # TRIPLE-NEGATIVE trials exclude ER+, PR+, or HER2+
+    # BUT: Skip if trial also accepts HR+ patients (indicated by "HR+" or "or" in title)
+    if ("triple-negative" in trial.title.lower() or "TNBC" in trial.title) and \
+       not ("HR+" in trial.title or " or " in trial.title):
         if biomarkers.ER == "present" or biomarkers.PR == "present" or biomarkers.HER2 == "positive":
-            return "Triple-negative trial requires ER-, PR-, HER2- (patient has positive receptors)"
+            return "Triple-negative trial requires ER-/PR-/HER2- (patient has positive receptors)"
     
     return None
 
 
 def check_lung_biomarker_exclusion(patient: PatientProfile, trial: Trial) -> Optional[str]:
-    """Lung cancer biomarker exclusions"""
+    """Lung cancer biomarker exclusions with mutual exclusivity"""
     biomarkers = patient.biomarkers
     if not isinstance(biomarkers, LungBiomarkers):
         return None
     
-    # EGFR+ trials exclude EGFR-negative
+    # EGFR+ trials
     if "EGFR" in trial.title and "mutation" in trial.title.lower():
+        # Exclude EGFR-negative patients
         if biomarkers.EGFR.status == "absent":
             return "EGFR-mutant trial requires EGFR mutation (patient is EGFR-negative)"
+        
+        # Mutual exclusivity: Exclude if patient has ALK or ROS1
+        if biomarkers.ALK == "present":
+            return "EGFR trial excludes ALK-positive patients (mutually exclusive drivers)"
+        if biomarkers.ROS1 == "present":
+            return "EGFR trial excludes ROS1-positive patients (mutually exclusive drivers)"
     
-    # ALK+ trials exclude ALK-negative
+    # ALK+ trials
     if "ALK" in trial.title and ("positive" in trial.title.lower() or "rearrangement" in trial.title.lower()):
+        # Exclude ALK-negative patients
         if biomarkers.ALK == "absent":
             return "ALK+ trial requires ALK rearrangement (patient is ALK-negative)"
+        
+        # Mutual exclusivity: Exclude if patient has EGFR or ROS1
+        if biomarkers.EGFR.status == "present":
+            return "ALK trial excludes EGFR-positive patients (mutually exclusive drivers)"
+        if biomarkers.ROS1 == "present":
+            return "ALK trial excludes ROS1-positive patients (mutually exclusive drivers)"
     
-    # KRAS G12C trials exclude other KRAS mutations
-    if "KRAS G12C" in trial.title:
+    # ROS1+ trials
+    if "ROS1" in trial.title and ("positive" in trial.title.lower() or "rearrangement" in trial.title.lower()):
+        # Exclude ROS1-negative patients
+        if biomarkers.ROS1 == "absent":
+            return "ROS1+ trial requires ROS1 rearrangement (patient is ROS1-negative)"
+        
+        # Mutual exclusivity: Exclude if patient has EGFR or ALK
+        if biomarkers.EGFR.status == "present":
+            return "ROS1 trial excludes EGFR-positive patients (mutually exclusive drivers)"
+        if biomarkers.ALK == "present":
+            return "ROS1 trial excludes ALK-positive patients (mutually exclusive drivers)"
+    
+    # KRAS G12C trials
+    if "KRAS G12C" in trial.title or "KRAS-G12C" in trial.title:
+        # Exclude non-G12C KRAS mutations
         if biomarkers.KRAS.status == "present" and biomarkers.KRAS.mutation != "G12C":
             return f"KRAS G12C trial requires G12C mutation (patient has {biomarkers.KRAS.mutation})"
         if biomarkers.KRAS.status == "absent":
             return "KRAS G12C trial requires KRAS mutation (patient is KRAS-negative)"
+        
+        # Mutual exclusivity: Exclude if patient has EGFR or ALK
+        if biomarkers.EGFR.status == "present":
+            return "KRAS G12C trial excludes EGFR-positive patients (mutually exclusive drivers)"
+        if biomarkers.ALK == "present":
+            return "KRAS G12C trial excludes ALK-positive patients (mutually exclusive drivers)"
+    
+    # "No driver mutation" trials (exclude patients WITH actionable alterations)
+    if "no driver" in trial.title.lower() or "driver negative" in trial.title.lower():
+        if biomarkers.EGFR.status == "present":
+            return "No-driver trial excludes EGFR-positive patients"
+        if biomarkers.ALK == "present":
+            return "No-driver trial excludes ALK-positive patients"
+        if biomarkers.ROS1 == "present":
+            return "No-driver trial excludes ROS1-positive patients"
+        if biomarkers.KRAS.status == "present" and biomarkers.KRAS.mutation == "G12C":
+            return "No-driver trial excludes KRAS G12C-positive patients"
     
     return None
 

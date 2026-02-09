@@ -66,6 +66,8 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
     whyMatched: apiTrial.why_matched || [],
     whyCantMatch: [],
     whatToConfirm: apiTrial.what_to_confirm || [],
+    status: apiTrial.trial.status,
+    last_updated: apiTrial.trial.last_updated,
     burden: {
       visitsPerMonth: apiTrial.trial.burden?.visits_per_month || 2,
       biopsyRequired: apiTrial.trial.burden?.biopsy_required || false,
@@ -95,7 +97,8 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
   }, [matchedTrials]);
 
   const eligibleCount = possiblyEligibleCount;
-  const matchedTrialsForBrief = eligibleTrials;
+  // Pass ALL trials to the brief modal (both eligible and other trials)
+  const matchedTrialsForBrief = [...eligibleTrials, ...otherTrials];
 
   // Handle profile changes
   const handleRematch = async () => {

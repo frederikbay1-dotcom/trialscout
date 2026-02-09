@@ -1,0 +1,23 @@
+{
+  "age": 61,
+  "sex": "female",
+  "cancer_type": "breast",
+  "stage": "IV",
+  "ecog": "0",
+  "biomarkers": {
+    "ER": "present",
+    "PR": "present",
+    "HER2": "low"
+  },
+  "prior_treatments": [
+    {
+      "category": "targeted_therapy",
+      "name": "CDK4/6 inhibitor"
+    },
+    {
+      "category": "hormone_therapy",
+      "name": "Aromatase inhibitor"
+    }
+  ],
+  "line_of_therapy": "post_targeted"
+}

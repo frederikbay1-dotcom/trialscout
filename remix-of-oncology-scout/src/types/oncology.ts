@@ -152,7 +152,7 @@ export interface Trial {
   eligibilityScore: "possibly_eligible" | "likely_not_eligible";
   sponsor: string;
   location: string;
-  summary: string;
+  summary?: string;
   eligibilityCriteria: EligibilityCriterion[];
   translatedInfo: {
     design: string;
@@ -164,7 +164,9 @@ export interface Trial {
   requiredBiomarkers?: string[];
   matchReasons?: MatchReason[];
   burden?: TrialBurden;
-  status?: TrialStatus;
+  // Backend API sends status as string, not TrialStatus object
+  status?: "recruiting" | "active_not_recruiting" | "completed" | TrialStatus;
+  last_updated?: string; // Backend field name
   
   // NEW: Match confidence and confirmations
   matchConfidence?: MatchConfidence;

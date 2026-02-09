@@ -52,5 +52,17 @@ def generate_what_to_confirm(patient: PatientProfile, trial: Trial) -> List[str]
     if trial.exclusion_risks.lab_thresholds:
         confirmations.append(f"Check lab requirements: {trial.exclusion_risks.lab_thresholds}")
     
+    # NEW: Add treatment history confirmation
+    # Check eligibility criteria for treatment history requirements
+    for criterion in trial.eligibility_criteria:
+        if criterion.category == "treatment_history":
+            if "prior lines" in criterion.criterion.lower() or "prior therapies" in criterion.criterion.lower():
+                confirmations.append(f"Verify {criterion.criterion.lower()}")
+                break  # Only add once
+    
+    # NEW: Add prior drug exposure confirmation if relevant
+    if trial.exclusion_risks.prior_drug_exposure and "no prior" in trial.exclusion_risks.prior_drug_exposure.lower():
+        confirmations.append(f"Confirm no prior exposure to excluded drugs")
+    
     # Return top 3
     return confirmations[:3]
