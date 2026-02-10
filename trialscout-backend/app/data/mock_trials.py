@@ -70,7 +70,9 @@ TRIALS: List[Trial] = [
             design="A targeted antibody-drug conjugate that delivers chemotherapy directly to HER2-low cancer cells. Participants receive either T-DXd or physician's choice chemotherapy.",
             goal="To see if trastuzumab deruxtecan works better than standard chemotherapy for HER2-low metastatic breast cancer.",
             what_happens="You'll receive an IV infusion every 3 weeks. Scans every 6 weeks to check tumor response. Blood tests at each visit.",
-            duration="Treatment continues as long as it's working and side effects are manageable, typically 12-18 months on average."
+            duration="Treatment continues as long as it's working and side effects are manageable, typically 12-18 months on average.",
+            patient_friendly_title_main="Targeted Medicine for Low HER2 Breast Cancer",
+            patient_friendly_title_subtitle="For breast cancer with low amounts of a protein called HER2"
         )
     ),
     
@@ -117,7 +119,9 @@ TRIALS: List[Trial] = [
             design="An antibody-drug conjugate that targets TROP-2 protein on cancer cells. Compares sacituzumab govitecan to standard chemotherapy chosen by your doctor.",
             goal="To determine if sacituzumab govitecan extends life longer than standard chemotherapy in hormone receptor-positive, HER2-negative metastatic breast cancer.",
             what_happens="IV infusion on days 1 and 8 of each 21-day cycle. Scans every 2 months. Blood work at each visit to monitor side effects.",
-            duration="Treatment continues until disease progression or unacceptable side effects, typically 9-15 months."
+            duration="Treatment continues until disease progression or unacceptable side effects, typically 9-15 months.",
+            patient_friendly_title_main="New Targeted Therapy vs. Standard Chemotherapy",
+            patient_friendly_title_subtitle="For hormone-positive, HER2-negative breast cancer that has spread"
         )
     ),
     
@@ -164,7 +168,9 @@ TRIALS: List[Trial] = [
             design="A novel bi-specific antibody-drug conjugate targeting both EGFR and HER3 proteins. Compares iza-bren to standard chemotherapy (physician's choice of paclitaxel, nab-paclitaxel, carboplatin/gemcitabine, or capecitabine).",
             goal="To test whether iza-bren works better than standard chemotherapy as first-line treatment for metastatic triple-negative breast cancer in patients not eligible for immunotherapy.",
             what_happens="IV infusion every 3 weeks. Regular blood tests and scans every 9 weeks to monitor response. Side effect management with support medications.",
-            duration="Treatment continues as long as cancer doesn't progress and side effects are tolerable, average 8-12 months."
+            duration="Treatment continues as long as cancer doesn't progress and side effects are tolerable, average 8-12 months.",
+            patient_friendly_title_main="New Targeted Medicine vs. Standard Chemotherapy",
+            patient_friendly_title_subtitle="For triple-negative breast cancer (first treatment for spread)"
         )
     ),
     
@@ -210,7 +216,9 @@ TRIALS: List[Trial] = [
             design="An oral selective estrogen receptor degrader (SERD) that works even when cancer has ESR1 mutations. Compares elacestrant to standard hormonal therapy (aromatase inhibitor or fulvestrant).",
             goal="To see if elacestrant works better than standard hormone therapy in patients whose cancer has ESR1 mutations and has grown on a CDK4/6 inhibitor.",
             what_happens="Take one pill daily by mouth. Monthly clinic visits for blood work. Scans every 8 weeks to check response.",
-            duration="Continue daily pills as long as cancer is controlled and side effects are manageable, typically 12-24 months."
+            duration="Continue daily pills as long as cancer is controlled and side effects are manageable, typically 12-24 months.",
+            patient_friendly_title_main="Daily Pill vs. Hormone Therapy Injection",
+            patient_friendly_title_subtitle="For hormone-positive breast cancer with a specific gene change (ESR1)"
         )
     ),
     
@@ -257,7 +265,9 @@ TRIALS: List[Trial] = [
             design="An antibody-drug conjugate targeting TROP-2 protein with a topoisomerase inhibitor payload. Compares dato-DXd to chemotherapy chosen by your physician.",
             goal="To determine if datopotamab deruxtecan is more effective than standard chemotherapy in heavily pre-treated HR+/HER2- metastatic breast cancer.",
             what_happens="IV infusion every 3 weeks. Scans every 6 weeks. Blood tests at each visit. Monitoring for lung symptoms.",
-            duration="Treatment continues until disease progression or side effects become too severe, average 10-15 months."
+            duration="Treatment continues until disease progression or side effects become too severe, average 10-15 months.",
+            patient_friendly_title_main="New Targeted Medicine vs. Standard Chemotherapy",
+            patient_friendly_title_subtitle="For hormone-positive, HER2-negative breast cancer after several treatments"
         )
     ),
     
@@ -304,7 +314,9 @@ TRIALS: List[Trial] = [
             design="Combines pembrolizumab immunotherapy with standard chemotherapy (paclitaxel, nab-paclitaxel, or carboplatin/gemcitabine). Participants randomly receive either combination or chemotherapy alone.",
             goal="To see if adding immunotherapy to chemotherapy helps patients with PD-L1 positive triple-negative breast cancer live longer.",
             what_happens="IV infusion every 3 weeks (pembrolizumab) plus weekly or bi-weekly chemotherapy. Scans every 9 weeks. Blood work regularly.",
-            duration="Chemotherapy for 4-6 cycles, then pembrolizumab alone continues up to 2 years or until progression."
+            duration="Chemotherapy for 4-6 cycles, then pembrolizumab alone continues up to 2 years or until progression.",
+            patient_friendly_title_main="Immunotherapy Plus Chemotherapy vs. Chemotherapy Alone",
+            patient_friendly_title_subtitle="For triple-negative breast cancer with PD-L1 marker"
         )
     ),
     
@@ -350,7 +362,9 @@ TRIALS: List[Trial] = [
             design="Combines capivasertib (AKT inhibitor) with fulvestrant hormone therapy. Participants with PIK3CA/AKT1/PTEN pathway alterations receive combination or fulvestrant alone.",
             goal="To test if adding an AKT inhibitor to hormone therapy works better than hormone therapy alone in patients with specific genetic alterations.",
             what_happens="Take capivasertib pills 4 days on, 3 days off each week. Fulvestrant injections on days 1, 15, 29, then monthly. Scans every 8 weeks.",
-            duration="Treatment continues as long as cancer is controlled. Average 15-20 months for responders."
+            duration="Treatment continues as long as cancer is controlled. Average 15-20 months for responders.",
+            patient_friendly_title_main="Targeted Pill Plus Hormone Therapy",
+            patient_friendly_title_subtitle="For breast cancer with specific gene changes (PIK3CA, AKT1, or PTEN)"
         )
     ),
     
@@ -397,7 +411,9 @@ TRIALS: List[Trial] = [
             design="Combines tucatinib (oral HER2 inhibitor that crosses blood-brain barrier) with trastuzumab and capecitabine. Specifically designed for patients with brain metastases.",
             goal="To see how well this triple combination controls brain metastases and extends progression-free survival in HER2+ breast cancer.",
             what_happens="Take tucatinib and capecitabine pills twice daily. Trastuzumab IV infusion every 3 weeks. Brain MRIs every 6 weeks.",
-            duration="Treatment continues as long as brain and body disease is controlled, typically 12-18 months."
+            duration="Treatment continues as long as brain and body disease is controlled, typically 12-18 months.",
+            patient_friendly_title_main="Triple Combination for Brain Metastases",
+            patient_friendly_title_subtitle="For HER2-positive breast cancer that has spread to the brain"
         )
     ),
     
@@ -444,7 +460,9 @@ TRIALS: List[Trial] = [
             design="An oral selective estrogen receptor degrader (SERD) that maintains activity even after resistance to other hormone therapies. Compares rintodestrant to physician's choice of endocrine therapy.",
             goal="To determine if this oral SERD works better than other hormonal treatments in patients whose cancer has progressed on a CDK4/6 inhibitor.",
             what_happens="Take one pill daily by mouth. Monthly clinic visits. Scans every 8 weeks. EKGs to monitor heart rhythm.",
-            duration="Continue daily until disease progression or intolerable side effects, typically 10-18 months."
+            duration="Continue daily until disease progression or intolerable side effects, typically 10-18 months.",
+            patient_friendly_title_main="Daily Pill vs. Standard Hormone Therapy",
+            patient_friendly_title_subtitle="For hormone-positive breast cancer after CDK4/6 inhibitor treatment"
         )
     ),
     
@@ -489,7 +507,9 @@ TRIALS: List[Trial] = [
             design="Neoadjuvant (before surgery) treatment combining pembrolizumab immunotherapy with standard chemotherapy (carboplatin/paclitaxel followed by AC/EC). Surgery after chemotherapy, then adjuvant pembrolizumab.",
             goal="To see if adding immunotherapy to chemotherapy before surgery increases cure rates in early-stage triple-negative breast cancer.",
             what_happens="12 weeks of weekly chemotherapy + pembrolizumab every 3 weeks, then 4 cycles of AC/EC, then surgery, then 9 cycles of pembrolizumab alone.",
-            duration="Total treatment time approximately 12 months (6 months before surgery, 6 months after)."
+            duration="Total treatment time approximately 12 months (6 months before surgery, 6 months after).",
+            patient_friendly_title_main="Immunotherapy Before Surgery",
+            patient_friendly_title_subtitle="For early-stage triple-negative breast cancer (treatment BEFORE surgery)"
         )
     ),
     
@@ -539,7 +559,9 @@ TRIALS: List[Trial] = [
             design="Combines amivantamab (bispecific antibody targeting EGFR and MET) with lazertinib (third-generation EGFR inhibitor). Compares combination vs chemotherapy after osimertinib failure.",
             goal="To determine if amivantamab + lazertinib extends progression-free survival compared to chemotherapy in EGFR-mutant NSCLC patients who progressed on osimertinib.",
             what_happens="IV infusion of amivantamab weekly for 4 weeks, then every 2 weeks. Daily lazertinib pill. Scans every 6 weeks. Blood tests at each visit.",
-            duration="Treatment continues until disease progression or intolerable side effects, typically 10-16 months."
+            duration="Treatment continues until disease progression or intolerable side effects, typically 10-16 months.",
+            patient_friendly_title_main="Combination Treatment After Osimertinib",
+            patient_friendly_title_subtitle="For lung cancer with EGFR gene change, after osimertinib stopped working"
         )
     ),
     
@@ -585,7 +607,9 @@ TRIALS: List[Trial] = [
             design="Compares osimertinib combined with platinum-based chemotherapy versus osimertinib alone as first-line treatment for EGFR-mutant advanced NSCLC.",
             goal="To determine if adding chemotherapy to osimertinib improves outcomes compared to osimertinib alone in treatment-naive EGFR-mutant NSCLC.",
             what_happens="Daily osimertinib pill. If randomized to combination arm, also receive IV chemotherapy every 3 weeks for 4 cycles. Scans every 6 weeks.",
-            duration="Osimertinib continues until progression. Chemotherapy for 4 cycles (12 weeks). Typical total duration 18-24 months."
+            duration="Osimertinib continues until progression. Chemotherapy for 4 cycles (12 weeks). Typical total duration 18-24 months.",
+            patient_friendly_title_main="Targeted Pill With or Without Chemotherapy",
+            patient_friendly_title_subtitle="For lung cancer with EGFR gene change (first treatment)"
         )
     ),
     
@@ -631,7 +655,9 @@ TRIALS: List[Trial] = [
             design="Compares sotorasib (KRAS G12C inhibitor) to docetaxel chemotherapy in patients with KRAS G12C-mutant NSCLC who have received prior therapy.",
             goal="To determine if sotorasib, a targeted therapy for KRAS G12C mutation, is more effective than standard chemotherapy.",
             what_happens="Take sotorasib pills daily by mouth OR receive IV docetaxel every 3 weeks (depending on randomization). Scans every 6 weeks. Blood tests at each visit.",
-            duration="Treatment continues until disease progression or intolerable side effects, typically 6-12 months."
+            duration="Treatment continues until disease progression or intolerable side effects, typically 6-12 months.",
+            patient_friendly_title_main="Targeted Pill vs. Chemotherapy",
+            patient_friendly_title_subtitle="For lung cancer with KRAS G12C gene change"
         )
     ),
     
@@ -677,7 +703,9 @@ TRIALS: List[Trial] = [
             design="Compares lorlatinib (third-generation ALK inhibitor) to crizotinib (first-generation) in treatment-naive or minimally pre-treated ALK-positive NSCLC.",
             goal="To determine if lorlatinib, which has better brain penetration, is superior to crizotinib in ALK-positive NSCLC, especially for preventing or treating brain metastases.",
             what_happens="Take lorlatinib or crizotinib pills daily. Brain MRI every 8 weeks for first year, then every 12 weeks. Body scans every 8 weeks. Monthly visits initially.",
-            duration="Treatment continues until progression, typically 24-36 months for responders."
+            duration="Treatment continues until progression, typically 24-36 months for responders.",
+            patient_friendly_title_main="Newer vs. Older ALK-Targeted Pill",
+            patient_friendly_title_subtitle="For lung cancer with ALK gene rearrangement"
         )
     ),
     
@@ -724,7 +752,9 @@ TRIALS: List[Trial] = [
             design="Compares pembrolizumab immunotherapy alone versus platinum-based chemotherapy in patients with high PD-L1 expression and no EGFR/ALK alterations.",
             goal="To determine if pembrolizumab monotherapy is superior to chemotherapy in first-line treatment of NSCLC with PD-L1 TPS ≥50%.",
             what_happens="IV infusion of pembrolizumab every 3 weeks (30 minutes) OR standard chemotherapy every 3 weeks. Scans every 9 weeks. Blood tests at each visit.",
-            duration="Pembrolizumab for up to 2 years or until progression. Chemotherapy typically 4-6 cycles. Average duration 12-18 months."
+            duration="Pembrolizumab for up to 2 years or until progression. Chemotherapy typically 4-6 cycles. Average duration 12-18 months.",
+            patient_friendly_title_main="Immunotherapy vs. Chemotherapy",
+            patient_friendly_title_subtitle="For lung cancer with high PD-L1 marker (50% or more)"
         )
     ),
     
@@ -771,7 +801,9 @@ TRIALS: List[Trial] = [
             design="Combines pembrolizumab immunotherapy with carboplatin and pemetrexed chemotherapy. Compares combination to chemotherapy alone in non-squamous NSCLC without driver mutations.",
             goal="To determine if adding pembrolizumab to standard chemotherapy improves survival in non-squamous NSCLC patients without EGFR, ALK, or ROS1 alterations.",
             what_happens="IV pembrolizumab + carboplatin + pemetrexed every 3 weeks for 4 cycles, then pembrolizumab + pemetrexed maintenance until progression. Scans every 9 weeks.",
-            duration="Induction chemotherapy 4 cycles (12 weeks), then maintenance with pembrolizumab + pemetrexed for up to 2 years or until progression. Typical total 12-18 months."
+            duration="Induction chemotherapy 4 cycles (12 weeks), then maintenance with pembrolizumab + pemetrexed for up to 2 years or until progression. Typical total 12-18 months.",
+            patient_friendly_title_main="Immunotherapy Plus Chemotherapy",
+            patient_friendly_title_subtitle="For lung cancer without EGFR, ALK, or ROS1 gene changes"
         )
     ),
     
@@ -816,7 +848,9 @@ TRIALS: List[Trial] = [
             design="Single-arm study of tepotinib, a highly selective MET inhibitor, in patients with MET exon 14 skipping mutations. No comparison arm.",
             goal="To evaluate the efficacy and safety of tepotinib in NSCLC patients with MET exon 14 skipping mutations, a rare but targetable alteration.",
             what_happens="Take tepotinib pills daily by mouth. Scans every 6 weeks. Monthly clinic visits for first 3 months, then every 6 weeks. Blood tests at each visit.",
-            duration="Treatment continues until disease progression or intolerable side effects, typically 12-18 months for responders."
+            duration="Treatment continues until disease progression or intolerable side effects, typically 12-18 months for responders.",
+            patient_friendly_title_main="Targeted Pill for MET Gene Change",
+            patient_friendly_title_subtitle="For lung cancer with MET exon 14 skipping mutation"
         )
     ),
     
@@ -861,7 +895,9 @@ TRIALS: List[Trial] = [
             design="Single-arm study of repotrectinib, a next-generation ROS1/TRK inhibitor with CNS penetration. Enrolls both TKI-naive and TKI-pretreated patients in separate cohorts.",
             goal="To evaluate repotrectinib's effectiveness in ROS1-positive NSCLC, including patients who progressed on prior ROS1 inhibitors and those with brain metastases.",
             what_happens="Take repotrectinib pills twice daily. Brain MRI and body scans every 8 weeks. Clinic visits monthly initially, then every 8 weeks.",
-            duration="Treatment continues until progression or intolerable side effects. Typical duration 18-30 months for responders, including those with CNS disease."
+            duration="Treatment continues until progression or intolerable side effects. Typical duration 18-30 months for responders, including those with CNS disease.",
+            patient_friendly_title_main="Targeted Pill for ROS1 Gene Change",
+            patient_friendly_title_subtitle="For lung cancer with ROS1 gene rearrangement"
         )
     ),
     
@@ -906,7 +942,9 @@ TRIALS: List[Trial] = [
             design="Combines dabrafenib (BRAF inhibitor) with trametinib (MEK inhibitor) to target the MAPK pathway in BRAF V600E-mutant NSCLC. Single-arm study.",
             goal="To evaluate the combination of BRAF and MEK inhibition in NSCLC patients with BRAF V600E mutations, a rare but highly targetable alteration.",
             what_happens="Take dabrafenib pills twice daily and trametinib once daily. Frequent monitoring initially (every 2 weeks for first month), then monthly visits. Scans every 8 weeks.",
-            duration="Treatment continues until progression or intolerable side effects. Typical duration 10-18 months for responders."
+            duration="Treatment continues until progression or intolerable side effects. Typical duration 10-18 months for responders.",
+            patient_friendly_title_main="Two Pills Working Together",
+            patient_friendly_title_subtitle="For lung cancer with BRAF V600E gene change"
         )
     ),
     
@@ -951,7 +989,9 @@ TRIALS: List[Trial] = [
             design="Single-arm study of trastuzumab deruxtecan (T-DXd), an antibody-drug conjugate targeting HER2. Enrolls patients with HER2 mutations (distinct from HER2 amplification).",
             goal="To evaluate T-DXd's effectiveness in NSCLC patients with HER2 mutations, a rare actionable alteration occurring in 2-4% of NSCLC.",
             what_happens="IV infusion of T-DXd every 3 weeks. Scans every 6 weeks. Close monitoring for lung toxicity (interstitial lung disease). Monthly visits.",
-            duration="Treatment continues until progression or intolerable side effects. Typical duration 12-20 months for responders. Requires immediate reporting of respiratory symptoms."
+            duration="Treatment continues until progression or intolerable side effects. Typical duration 12-20 months for responders. Requires immediate reporting of respiratory symptoms.",
+            patient_friendly_title_main="Targeted Medicine for HER2 Gene Change",
+            patient_friendly_title_subtitle="For lung cancer with HER2 mutation"
         )
     ),
 ]

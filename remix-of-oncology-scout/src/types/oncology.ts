@@ -167,6 +167,8 @@ export interface Trial {
     goal: string;
     whatHappens: string;
     duration: string;
+    patientFriendlyTitleMain?: string;
+    patientFriendlyTitleSubtitle?: string;
   };
   // Clinical precision fields
   requiredBiomarkers?: string[];

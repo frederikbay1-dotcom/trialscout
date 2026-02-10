@@ -262,22 +262,15 @@ export function TrialCard({
 
       {/* Title and metadata - PATIENT-FRIENDLY */}
       <div>
-        {(() => {
-          const patientTitle = getPatientFriendlyTitle(trial);
-          return (
-            <>
-              <h3 className="text-xl font-bold text-gray-900 mb-1 leading-snug">
-                {patientTitle.main}
-              </h3>
-              <p className="text-base text-gray-700 mb-2">
-                {patientTitle.subtitle}
-              </p>
-              <p className="text-xs text-gray-500 mb-3">
-                {trial.title} • {trial.nctNumber}
-              </p>
-            </>
-          );
-        })()}
+        <h3 className="text-xl font-bold text-gray-900 mb-1 leading-snug">
+          {trial.translatedInfo?.patientFriendlyTitleMain || trial.title}
+        </h3>
+        <p className="text-base text-gray-700 mb-2">
+          {trial.translatedInfo?.patientFriendlyTitleSubtitle || "Clinical trial"}
+        </p>
+        <p className="text-xs text-gray-500 mb-3">
+          {trial.title} • {trial.nctNumber}
+        </p>
         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
           <span className="flex items-center gap-1">
             <FlaskConical className="w-4 h-4" />

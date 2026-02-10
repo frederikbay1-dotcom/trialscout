@@ -33,6 +33,10 @@ class TranslatedInfo(BaseModel):
     goal: str = Field(..., description="The trial's objective")
     what_happens: str = Field(..., description="What patients will do")
     duration: str = Field(..., description="How long treatment lasts")
+    
+    # Patient-friendly title (5th-6th grade reading level)
+    patient_friendly_title_main: str = Field(..., description="Main patient-friendly title")
+    patient_friendly_title_subtitle: str = Field(..., description="Subtitle explaining who it's for")
 
 
 class Trial(BaseModel):
