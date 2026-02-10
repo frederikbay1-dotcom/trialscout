@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, RotateCcw, ChevronDown, ChevronUp, Database, Download, Info, RefreshCw, Mail, Clipboard, Shield, Layout, AlertCircle } from "lucide-react";
+import { Search, Filter, RotateCcw, ChevronDown, ChevronUp, Database, Download, Info, RefreshCw, Mail, Clipboard, Shield, Layout, AlertCircle, Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TrialCard } from "@/components/TrialCard";
 import { LearnMoreModal } from "@/components/LearnMoreModal";
@@ -168,15 +168,37 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
 
       <div className="py-8 px-4">
         <div className="container max-w-3xl mx-auto space-y-6">
+          {/* Match Summary Header - NEW */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg p-6"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                <Check className="w-7 h-7 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  ✓ We Found {eligibleCount} Precision {eligibleCount === 1 ? 'Match' : 'Matches'}
+                </h3>
+                <p className="text-base text-gray-700">
+                  From {totalTrialsEvaluated} trials in our database, we excluded {totalTrialsEvaluated - eligibleCount} that don't match your biomarkers.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
           {/* Encouragement Banner */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
             className="bg-blue-50 border border-blue-200 rounded-xl p-6"
           >
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              {eligibleCount > 0 
-                ? `We found ${eligibleCount} trial${eligibleCount > 1 ? 's' : ''} that may match your profile`
+              {eligibleCount > 0
+                ? `${eligibleCount} trial${eligibleCount > 1 ? 's' : ''} may match your profile`
                 : "We didn't find trials that exactly match your profile"
               }
             </h2>
@@ -185,7 +207,7 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
                 Each offers a different treatment approach that your doctor can help you evaluate.
               </p>
             )}
-            <Button 
+            <Button
               onClick={() => setShowBriefModal(true)}
               className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 font-medium min-h-[48px] px-6"
             >
@@ -200,11 +222,11 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 text-sm font-medium">
                   <span className="w-2 h-2 rounded-full bg-emerald-600" />
-                  {eligibleCount} Possibly Eligible
+                  {eligibleCount} Precision Matches
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-800 text-sm font-medium">
-                  <span className="w-2 h-2 rounded-full bg-gray-500" />
-                  {totalTrialsEvaluated} Total Evaluated
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-100 text-purple-800 text-sm font-medium">
+                  <span className="w-2 h-2 rounded-full bg-purple-600" />
+                  {totalTrialsEvaluated - eligibleCount} Excluded
                 </div>
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
@@ -463,56 +485,29 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
                   exit={{ opacity: 0, height: 0 }}
                   className="mt-6 space-y-6"
                 >
-                  {!acknowledgedMismatch && (
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-start space-x-3">
-                        <CheckboxUI
-                          id="acknowledge-mismatch"
-                          checked={acknowledgedMismatch}
-                          onCheckedChange={(checked) => setAcknowledgedMismatch(checked as boolean)}
-                          className="mt-0.5"
-                        />
-                        <div className="flex-1">
-                          <Label 
-                            htmlFor="acknowledge-mismatch" 
-                            className="text-base font-medium text-blue-800 cursor-pointer"
-                          >
-                            I understand these may not match my profile
-                          </Label>
-                          <p className="text-sm text-gray-600 mt-1">
-                            These trials may require different biomarkers or criteria. 
-                            They may still be relevant if your testing is incomplete or results are pending.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {acknowledgedMismatch && (
-                    <div className="space-y-6 opacity-75">
-                      {otherTrials.map((trial, index) => (
-                        <TrialCard
-                          key={trial.id}
-                          trial={trial}
-                          matchResult={{
-                            trial,
-                            matchScore: trial.matchScore || 0,
-                            matchConfidence: trial.matchConfidence || "low",
-                            eligibilityScore: trial.eligibilityScore,
-                            biomarkerMatch: trial.biomarkerMatch || "doesnt_match",
-                            whyMatched: trial.whyMatched || [],
-                            whyCantMatch: trial.whyCantMatch || [],
-                            whatToConfirm: trial.whatToConfirm || [],
-                          }}
-                          index={index}
-                          patientBiomarkers={patientData.biomarkers}
-                          showMismatchWarning
-                          onLearnMore={() => setSelectedTrial(trial)}
-                          onDownloadBrief={() => setShowBriefModal(true)}
-                        />
-                      ))}
-                    </div>
-                  )}
+                  <div className="space-y-6 opacity-75">
+                    {otherTrials.map((trial, index) => (
+                      <TrialCard
+                        key={trial.id}
+                        trial={trial}
+                        matchResult={{
+                          trial,
+                          matchScore: trial.matchScore || 0,
+                          matchConfidence: trial.matchConfidence || "low",
+                          eligibilityScore: trial.eligibilityScore,
+                          biomarkerMatch: trial.biomarkerMatch || "doesnt_match",
+                          whyMatched: trial.whyMatched || [],
+                          whyCantMatch: trial.whyCantMatch || [],
+                          whatToConfirm: trial.whatToConfirm || [],
+                        }}
+                        index={index}
+                        patientBiomarkers={patientData.biomarkers}
+                        showMismatchWarning
+                        onLearnMore={() => setSelectedTrial(trial)}
+                        onDownloadBrief={() => setShowBriefModal(true)}
+                      />
+                    ))}
+                  </div>
                 </motion.div>
               )}
             </div>

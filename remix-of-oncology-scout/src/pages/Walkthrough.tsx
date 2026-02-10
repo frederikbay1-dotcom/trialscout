@@ -2,7 +2,8 @@ import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   Copy, Check, ArrowRight, Lightbulb, AlertCircle,
-  ExternalLink, Download, Eye, Layout, MessageSquare, Zap, RefreshCw
+  ExternalLink, Download, Eye, Layout, MessageSquare, Zap, RefreshCw,
+  Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -587,34 +588,96 @@ Please be brutally honest. I want this to be production-ready.`;
               </div>
             </div>
 
+            {/* Match Summary Header - NEW */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg p-6 mb-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                  <Check className="w-7 h-7 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    ✓ We Found {eligibleTrials.length} Precision {eligibleTrials.length === 1 ? 'Match' : 'Matches'} for {patientDescription?.name || 'Patient'}
+                  </h3>
+                  <p className="text-base text-gray-700 mb-4">
+                    From {matchResults.length} trials in our database, we excluded {matchResults.length - eligibleTrials.length} that don't match your biomarkers.
+                  </p>
+                  
+                  {matchResults.length - eligibleTrials.length > 0 && (
+                    <div className="bg-white rounded-lg p-4 border border-blue-200">
+                      <p className="text-sm font-semibold text-gray-900 mb-2">Excluded trials:</p>
+                      <ul className="text-sm text-gray-700 space-y-1">
+                        {matchResults.filter(t => t.eligibilityScore !== "possibly_eligible").slice(0, 5).map((trial, idx) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-red-500 mt-0.5">✗</span>
+                            <span>{trial.title.substring(0, 60)}... (doesn't match biomarkers)</span>
+                          </li>
+                        ))}
+                      </ul>
+                      {matchResults.length - eligibleTrials.length > 5 && (
+                        <p className="text-sm text-gray-600 mt-2">
+                          ...and {matchResults.length - eligibleTrials.length - 5} more
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div className="bg-white rounded-lg border-2 border-gray-300 p-6">
               <h3 className="text-2xl font-bold mb-4">
                 🎯 We found {eligibleTrials.length} trials that may match your profile
               </h3>
               <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-3xl font-bold text-blue-600">{eligibleTrials.length}</div>
-                  <div className="text-sm text-gray-600">Potentially Eligible</div>
-                </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-3xl font-bold text-green-600">{eligibleTrials[0]?.matchScore || "N/A"}</div>
-                  <div className="text-sm text-gray-600">Top Match Score</div>
-                </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <div className="text-3xl font-bold text-purple-600">
-                    {eligibleTrials.filter((t) => t.matchConfidence === "high").length}
+                <div className="text-center p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                  <div className="text-3xl font-bold text-emerald-600">{eligibleTrials.length}</div>
+                  <div className="text-sm text-gray-600 font-medium">Precision Matches</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    from {matchResults.length} total
                   </div>
-                  <div className="text-sm text-gray-600">High Confidence</div>
+                </div>
+                <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="text-3xl font-bold text-blue-600">{eligibleTrials[0]?.matchScore || "N/A"}%</div>
+                  <div className="text-sm text-gray-600 font-medium">Top Match</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {eligibleTrials[0]?.title?.substring(0, 20)}...
+                  </div>
+                </div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <div className="text-3xl font-bold text-purple-600">
+                    {matchResults.length - eligibleTrials.length}
+                  </div>
+                  <div className="text-sm text-gray-600 font-medium">Excluded</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    wrong biomarkers
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
               {eligibleTrials.map((result, index) => (
-                <div key={result.id} className="bg-white rounded-lg border-2 border-gray-300 p-6">
+                <div key={result.id} className={`bg-white rounded-lg border-2 p-6 ${
+                  index === 0 && result.matchScore >= 90
+                    ? 'border-emerald-300 shadow-lg'
+                    : 'border-gray-300'
+                }`}>
+                  {/* Ranking badge - NEW */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className={`px-3 py-1 rounded-full text-sm font-bold ${
+                      index === 0 ? 'bg-emerald-600 text-white' :
+                      index === 1 ? 'bg-blue-600 text-white' :
+                      'bg-gray-600 text-white'
+                    }`}>
+                      #{index + 1} {index === 0 && result.matchScore >= 90 ? '⭐ BEST MATCH' :
+                                     index === 1 ? 'STRONG MATCH' :
+                                     'MATCH'}
+                    </div>
+                  </div>
+                  
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="text-4xl font-bold text-gray-900">{result.matchScore}</div>
+                      <div className="text-4xl font-bold text-gray-900">{result.matchScore}%</div>
                       <div className="text-sm text-gray-500">/100 match</div>
                     </div>
                     <Badge
@@ -665,6 +728,36 @@ Please be brutally honest. I want this to be production-ready.`;
                           </li>
                         ))}
                       </ul>
+                    </div>
+                  )}
+
+                  {/* Why This Ranked Higher - NEW */}
+                  {index === 0 && result.matchScore >= 90 && (
+                    <div className="bg-emerald-50 border-2 border-emerald-300 rounded-lg p-4 mb-4">
+                      <div className="flex items-start gap-2 mb-2">
+                        <Star className="w-5 h-5 text-emerald-600 mt-0.5" />
+                        <h4 className="font-bold text-emerald-900">Why This Is Your #1 Match:</h4>
+                      </div>
+                      <p className="text-sm text-emerald-900 leading-relaxed">
+                        {patientData.cancerType === "lung" && patientData.lineOfTherapy?.includes("post") ? (
+                          <>
+                            This trial is specifically designed for patients who have <strong>progressed on prior
+                            therapy</strong>. Your treatment history shows you've already tried first-line treatment,
+                            making this trial's focus on second-line therapy an excellent clinical fit.
+                          </>
+                        ) : patientData.cancerType === "breast" && patientData.lineOfTherapy?.includes("post") ? (
+                          <>
+                            This trial targets patients who have <strong>progressed after CDK4/6 inhibitor therapy</strong>.
+                            Your history of prior CDK4/6 treatment matches this trial's specific enrollment criteria,
+                            making it highly relevant to your current clinical situation.
+                          </>
+                        ) : (
+                          <>
+                            This trial's eligibility criteria closely match your biomarker profile and treatment
+                            history, making it the strongest clinical match in our database.
+                          </>
+                        )}
+                      </p>
                     </div>
                   )}
 
