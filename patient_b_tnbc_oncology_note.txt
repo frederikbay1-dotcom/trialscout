@@ -1,0 +1,306 @@
+MEDICAL ONCOLOGY CONSULTATION NOTE
+NYU LANGONE HEALTH - PERLMUTTER CANCER CENTER
+
+PATIENT INFORMATION:
+Name: [REDACTED FOR DEMO]
+MRN: 9284731
+Date of Birth: 08/12/1969 (Age: 56 years)
+Date of Visit: January 28, 2025
+
+ATTENDING PHYSICIAN: Rachel Thompson, MD
+Medical Oncology, Breast Cancer Program
+
+================================================================================
+CHIEF COMPLAINT:
+================================================================================
+
+56-year-old female with newly diagnosed metastatic triple-negative breast cancer 
+presents for treatment planning and discussion of systemic therapy options.
+
+================================================================================
+HISTORY OF PRESENT ILLNESS:
+================================================================================
+
+Ms. [Patient] is a 56-year-old woman who presented with a self-detected left breast 
+mass in December 2024. Initial workup with diagnostic mammogram and ultrasound revealed 
+a 3.2 cm irregular mass in the left breast upper outer quadrant with suspicious axillary 
+lymphadenopathy.
+
+Core needle biopsy performed January 10, 2025 confirmed invasive ductal carcinoma, 
+Grade 3, with triple-negative phenotype:
+- ER: Negative (0%)
+- PR: Negative (0%)
+- HER2: 0 (HER2-negative, IHC 0)
+- Ki-67: 78% (very high proliferative index)
+- PD-L1 (22C3): CPS 15 (POSITIVE)
+
+Complete staging workup performed:
+- CT chest/abdomen/pelvis (January 15, 2025): Multiple bilateral pulmonary nodules 
+  consistent with metastatic disease. Largest nodule 2.8 cm in right upper lobe. 
+  Multiple smaller nodules throughout both lungs. Subcarinal lymphadenopathy. 
+  No liver, bone, or adrenal metastases identified.
+
+- Brain MRI with contrast (January 17, 2025): No evidence of brain metastases
+
+- PET-CT (January 20, 2025): Hypermetabolic left breast mass (SUV 12.4), 
+  hypermetabolic bilateral pulmonary nodules (SUV 4.2-8.7), hypermetabolic mediastinal 
+  and left axillary lymph nodes. No other sites of distant disease.
+
+FINAL DIAGNOSIS: Stage IV triple-negative breast cancer (cT2N1M1, lung metastases)
+
+Patient presents today for discussion of first-line systemic therapy options for 
+metastatic TNBC.
+
+================================================================================
+PAST ONCOLOGIC HISTORY:
+================================================================================
+
+None. This is patient's first cancer diagnosis.
+
+No prior chemotherapy, radiation therapy, or hormonal therapy.
+No prior breast biopsies or breast surgeries.
+
+================================================================================
+CURRENT MEDICATIONS:
+================================================================================
+
+1. Ibuprofen 600 mg PO Q8H PRN pain
+2. Ondansetron 8 mg PO Q8H PRN nausea (prescribed in anticipation of chemotherapy)
+3. Multivitamin daily
+4. Vitamin D3 2000 IU daily
+
+================================================================================
+FAMILY HISTORY:
+================================================================================
+
+- Mother: Breast cancer at age 62 (ER+/HER2- per patient, treated with surgery and 
+  tamoxifen, alive at 84)
+- Maternal aunt: Ovarian cancer at age 58 (deceased at 61)
+- Father: Prostate cancer at age 70 (alive at 81)
+- Sister (age 58): No cancer history
+
+GENETIC TESTING: Germline BRCA1/2 testing sent January 22, 2025 (results pending)
+
+Strong family history of breast and ovarian cancer raises concern for hereditary 
+breast-ovarian cancer syndrome. Awaiting BRCA results.
+
+================================================================================
+SOCIAL HISTORY:
+================================================================================
+
+- Marital status: Married, two adult children
+- Occupation: High school teacher (currently on medical leave)
+- Tobacco: Never smoker
+- Alcohol: Social, 1-2 glasses wine per week
+- Exercise: Walks 30 minutes daily (currently fatigued, walking less)
+- Support system: Strong - husband very involved, children live locally
+
+================================================================================
+REVIEW OF SYSTEMS:
+================================================================================
+
+CONSTITUTIONAL: Fatigue, 10 lb weight loss over past 2 months (unintentional)
+RESPIRATORY: Mild dyspnea on exertion (walking up stairs), no cough, no hemoptysis
+BREAST: Palpable left breast mass, no nipple discharge
+MUSCULOSKELETAL: No bone pain
+NEUROLOGIC: No headaches, vision changes, or focal deficits
+All other systems reviewed and negative
+
+================================================================================
+PHYSICAL EXAMINATION:
+================================================================================
+
+VITAL SIGNS:
+- BP: 128/82 mmHg
+- HR: 76 bpm
+- RR: 16/min
+- Temp: 98.4°F
+- O2 Sat: 98% on room air
+- Weight: 142 lbs (down from 152 lbs in November 2024)
+- BSA: 1.68 m²
+
+GENERAL: Alert, oriented, appears well but fatigued. In no acute distress.
+
+PERFORMANCE STATUS: ECOG 1 (symptomatic but fully ambulatory)
+
+BREAST EXAM:
+- Left breast: 3 cm firm, irregular, mobile mass at 10 o'clock position, 5 cm from 
+  nipple. No skin changes, no nipple retraction. No bloody discharge.
+- Right breast: No masses, no skin changes
+- Bilateral axillae: Palpable 2 cm left axillary lymph node, mobile, firm
+
+LUNGS: Clear to auscultation bilaterally, no wheezes or crackles
+
+CARDIOVASCULAR: Regular rate and rhythm, no murmurs
+
+ABDOMEN: Soft, non-tender, no hepatomegaly
+
+EXTREMITIES: No edema, no calf tenderness
+
+NEUROLOGIC: Alert and oriented x3, cranial nerves II-XII intact, strength 5/5 throughout
+
+================================================================================
+LABORATORY DATA (January 27, 2025):
+================================================================================
+
+COMPLETE BLOOD COUNT:
+- WBC: 7.2 K/µL (normal)
+- Hemoglobin: 12.1 g/dL (mildly low, likely anemia of chronic disease)
+- Platelets: 285 K/µL (normal)
+- ANC: 4.8 K/µL (normal)
+
+COMPREHENSIVE METABOLIC PANEL:
+- Sodium: 139 mEq/L
+- Potassium: 4.2 mEq/L
+- Creatinine: 0.9 mg/dL (eGFR >90)
+- AST: 28 U/L
+- ALT: 32 U/L
+- Alkaline phosphatase: 78 U/L
+- Total bilirubin: 0.6 mg/dL
+- Albumin: 3.8 g/dL
+
+All values within normal limits. Adequate organ function for chemotherapy.
+
+TUMOR MARKERS:
+- CA 15-3: 48 U/mL (elevated, consistent with metastatic disease)
+- CEA: 12 ng/mL (elevated)
+
+================================================================================
+ASSESSMENT AND PLAN:
+================================================================================
+
+DIAGNOSIS: Stage IV triple-negative breast cancer (cT2N1M1), PD-L1 positive (CPS 15), 
+presenting for first-line systemic therapy.
+
+DISCUSSION:
+
+This is a 56-year-old woman with newly diagnosed metastatic triple-negative breast 
+cancer with lung metastases. Key features:
+
+1. TRIPLE-NEGATIVE PHENOTYPE: ER-, PR-, HER2- → Not eligible for endocrine therapy 
+   or HER2-targeted therapy. Chemotherapy is primary treatment modality.
+
+2. PD-L1 POSITIVE (CPS 15): Meets criteria for pembrolizumab + chemotherapy per 
+   KEYNOTE-355 trial. CPS ≥10 predicts benefit from immune checkpoint inhibitor.
+
+3. TREATMENT-NAÏVE: No prior systemic therapy. Eligible for first-line regimens.
+
+4. GOOD PERFORMANCE STATUS: ECOG 1, adequate organ function, good candidate for 
+   combination therapy.
+
+5. PENDING BRCA RESULTS: If BRCA1/2 mutation identified, PARP inhibitor maintenance 
+   may be option after response to chemotherapy.
+
+TREATMENT RECOMMENDATION:
+
+Based on KEYNOTE-355 data showing improved PFS and OS in PD-L1+ TNBC (CPS ≥10), 
+I recommend:
+
+**FIRST-LINE THERAPY: PEMBROLIZUMAB + CHEMOTHERAPY**
+
+Regimen: Pembrolizumab 200 mg IV + Paclitaxel 90 mg/m² IV weekly (3 weeks on, 1 week off)
+OR: Pembrolizumab 200 mg IV + Nab-paclitaxel 100 mg/m² IV weekly (3 weeks on, 1 week off)
+
+- Pembrolizumab Q3 weeks until disease progression or unacceptable toxicity (up to 2 years)
+- Paclitaxel or nab-paclitaxel for 4-6 cycles, then pembrolizumab maintenance
+- Add carboplatin/gemcitabine option discussed as alternative if taxane contraindication
+
+ALTERNATIVE REGIMENS (if pembrolizumab contraindicated):
+- Carboplatin AUC 6 + Paclitaxel 175 mg/m² Q3 weeks
+- Dose-dense AC → Paclitaxel (if considering neoadjuvant approach)
+
+Patient prefers to start with pembrolizumab + nab-paclitaxel (nab-paclitaxel chosen 
+over paclitaxel to avoid premedication and reduce neuropathy risk).
+
+PLAN:
+
+1. **START THERAPY: Cycle 1, Day 1 scheduled for February 3, 2025**
+   - Pembrolizumab 200 mg IV over 30 minutes
+   - Nab-paclitaxel 100 mg/m² (168 mg based on BSA 1.68 m²) IV over 30 minutes
+   - Weekly nab-paclitaxel on days 1, 8, 15 of 28-day cycle
+   - Pembrolizumab Q3 weeks (cycles 1, 2, 3, etc.)
+
+2. **PREMEDICATIONS:**
+   - Dexamethasone 10 mg IV prior to nab-paclitaxel (reduce hypersensitivity)
+   - Ondansetron 16 mg IV for nausea prophylaxis
+   - Famotidine 20 mg IV for gastric protection
+
+3. **SUPPORTIVE CARE:**
+   - Lorazepam 0.5-1 mg PO PRN anxiety with chemotherapy
+   - Compazine 10 mg PO Q6H PRN breakthrough nausea
+   - Gabapentin 300 mg daily for neuropathy prophylaxis (start after cycle 2)
+   - Consider growth factor support (pegfilgrastim) if ANC <1000
+
+4. **MONITORING:**
+   - CBC with differential before each treatment (weekly initially)
+   - CMP every 3 weeks
+   - Thyroid function tests every 12 weeks (pembrolizumab can cause thyroiditis)
+   - Restaging CT chest/abdomen/pelvis after cycle 3 (week 12)
+   - Monitor for immune-related adverse events (rash, diarrhea, hepatitis, pneumonitis)
+
+5. **GENETIC TESTING:**
+   - Await germline BRCA1/2 results
+   - If BRCA+ and achieve response, consider PARP inhibitor maintenance (olaparib or talazoparib)
+
+6. **EDUCATION:**
+   - Discussed expected side effects: fatigue, nausea, diarrhea, neuropathy, 
+     immune-related toxicities (rash, colitis, hepatitis, pneumonitis, thyroiditis)
+   - Instructed to report fever >100.4°F, severe diarrhea, new rash, shortness of breath
+   - Wig/head covering options discussed (alopecia expected with taxane)
+   - Fertility not a concern (patient age 56, postmenopausal)
+
+7. **PSYCHOSOCIAL SUPPORT:**
+   - Referral to social work for financial counseling (pembrolizumab expensive)
+   - Support group information provided
+   - Palliative care referral offered (patient declined for now, may reconsider later)
+
+8. **FOLLOW-UP:**
+   - Return for Cycle 1 Day 1 on February 3, 2025
+   - Labs day before treatment
+   - Will see every 3 weeks during active treatment
+   - Urgent visit if fever, SOB, severe symptoms
+
+PROGNOSIS:
+
+Metastatic TNBC historically has median OS 12-18 months with chemotherapy alone. 
+However, KEYNOTE-355 showed significantly improved outcomes with pembrolizumab + 
+chemotherapy in PD-L1+ patients (CPS ≥10):
+- Median PFS: 9.7 months vs 5.6 months (chemo alone)
+- Median OS: 23.0 months vs 16.1 months (chemo alone)
+
+With modern treatment including immunotherapy, patient has reasonable chance of 
+prolonged disease control. If BRCA mutation identified and responds to first-line 
+therapy, PARP inhibitor maintenance could further extend PFS.
+
+Patient understands diagnosis, prognosis, and treatment plan. All questions answered. 
+She is motivated to proceed with pembrolizumab + nab-paclitaxel starting next week.
+
+================================================================================
+IMPRESSION:
+================================================================================
+
+56-year-old woman with newly diagnosed Stage IV triple-negative breast cancer with 
+lung metastases, PD-L1 positive (CPS 15), ECOG 1, treatment-naïve.
+
+PLAN: Pembrolizumab 200 mg IV Q3 weeks + Nab-paclitaxel 100 mg/m² IV weekly 
+(3 weeks on, 1 week off) starting February 3, 2025.
+
+Awaiting BRCA testing. If positive, will consider PARP inhibitor maintenance after 
+response to chemotherapy.
+
+Patient educated on treatment plan, expected side effects, and monitoring schedule. 
+All questions addressed. She is in agreement with plan and ready to start therapy.
+
+================================================================================
+ELECTRONICALLY SIGNED:
+================================================================================
+
+Rachel Thompson, MD
+Attending Medical Oncologist
+Board Certified: Medical Oncology and Hematology
+Subspecialty: Breast Medical Oncology
+
+Date/Time: January 28, 2025 at 17:45 PM EST
+
+cc: Dr. Jennifer Martinez (Pathology)
+cc: Patient's primary care physician

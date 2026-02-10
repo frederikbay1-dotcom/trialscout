@@ -102,6 +102,14 @@ export interface PatientData {
 
   // Prior treatment types (high-level)
   priorTreatmentTypes: PriorTreatmentTypes;
+  
+  // Detailed treatment history for PDF (NEW)
+  treatmentHistory?: any[];
+  
+  // Treatment status fields (NEW)
+  currentTreatmentStatus?: string;
+  priorRegimenName?: string;
+  progressionDetected?: boolean;
 
   // Treatment history (medication-specific)
   breastTreatments: {

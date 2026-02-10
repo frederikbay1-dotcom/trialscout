@@ -1,0 +1,401 @@
+MEDICAL ONCOLOGY PROGRESS NOTE
+MEMORIAL SLOAN KETTERING CANCER CENTER
+
+PATIENT INFORMATION:
+Name: [REDACTED FOR DEMO]
+MRN: 7392846
+Date of Birth: 05/18/1963 (Age: 62 years)
+Date of Visit: January 25, 2025
+
+ATTENDING PHYSICIAN: Sarah Chen, MD
+Medical Oncology, Breast Cancer Medicine Service
+
+================================================================================
+CHIEF COMPLAINT:
+================================================================================
+
+62-year-old female with metastatic HER2-positive breast cancer, progression on 
+first-line trastuzumab/pertuzumab/paclitaxel, presents for discussion of second-line 
+treatment options.
+
+================================================================================
+HISTORY OF PRESENT ILLNESS:
+================================================================================
+
+Ms. [Patient] is well known to me. She was originally diagnosed with Stage IIA 
+HER2-positive breast cancer in March 2019. Initial presentation and treatment course:
+
+**ORIGINAL DIAGNOSIS (March 2019):**
+- Right breast invasive ductal carcinoma, 2.8 cm, Grade 2
+- Biomarkers: ER 90%, PR 70%, HER2 IHC 3+ (HER2-positive)
+- Clinical stage: cT2N0M0 (Stage IIA)
+
+**INITIAL TREATMENT (2019):**
+- Lumpectomy + sentinel lymph node biopsy (April 2019)
+  * Final pathology: pT2N0 (0/3 lymph nodes involved)
+  * Margins negative
+  * Grade 2/3
+  * ER 90%, PR 70%, HER2 3+, Ki-67 35%
+
+- Adjuvant chemotherapy (May-August 2019):
+  * Dose-dense AC x4 cycles (doxorubicin 60 mg/m² + cyclophosphamide 600 mg/m²)
+  * Followed by paclitaxel 80 mg/m² weekly x12 weeks
+  * Concurrent trastuzumab started with paclitaxel
+  * Tolerated well, completed all planned cycles
+
+- Adjuvant radiation therapy (September-October 2019):
+  * Whole breast radiation 50 Gy in 25 fractions
+  * Boost to tumor bed 10 Gy in 5 fractions
+  * Completed without complications
+
+- Adjuvant targeted therapy (2019-2024):
+  * Trastuzumab 6 mg/kg IV Q3 weeks continued for 1 year (through September 2020)
+  * Switched to letrozole 2.5 mg daily for endocrine therapy (ER+/HER2+ disease)
+  * Continued letrozole through January 2024
+
+**DISEASE RECURRENCE (January 2024):**
+
+Patient presented with right upper quadrant pain and elevated liver enzymes in 
+January 2024. Workup revealed:
+
+- CT chest/abdomen/pelvis (January 15, 2024): Multiple hepatic lesions, largest 
+  4.2 cm in segment VI. Multiple smaller lesions throughout liver. Bilateral 
+  pulmonary nodules. No brain metastases on brain MRI.
+
+- Liver biopsy (January 18, 2024): Metastatic adenocarcinoma consistent with breast 
+  primary. Biomarkers maintained: ER 85%, PR 65%, HER2 3+, Ki-67 42%
+
+- Restaging: Stage IV breast cancer with liver and lung metastases
+
+**FIRST-LINE METASTATIC TREATMENT (February 2024 - December 2024):**
+
+Started on standard first-line HER2-positive metastatic regimen:
+- Trastuzumab 8 mg/kg IV loading dose, then 6 mg/kg Q3 weeks
+- Pertuzumab 840 mg IV loading dose, then 420 mg Q3 weeks  
+- Paclitaxel 80 mg/m² IV weekly
+
+Treatment course:
+- Initial excellent response: Liver lesions decreased by 60% on CT after 3 months
+- Continued partial response through month 9 (October 2024)
+- Grade 2 peripheral neuropathy developed (managed with dose reduction and gabapentin)
+- Baseline LVEF 60%, remained stable on serial echocardiograms
+
+**DISEASE PROGRESSION (December 2024):**
+
+Restaging CT scan December 18, 2024 showed:
+- Progression of liver metastases: New lesions, increase in size of existing lesions
+- New pleural effusion (right-sided, moderate)
+- Stable pulmonary nodules
+- RECIST criteria: Progressive disease after 11 months of therapy
+
+Thoracentesis performed December 23, 2024: Cytology positive for malignant cells 
+consistent with breast primary. Removed 800 mL pleural fluid, patient symptomatically 
+improved.
+
+Patient discontinued trastuzumab/pertuzumab/paclitaxel after cycle 16 (December 20, 2024) 
+due to confirmed progression.
+
+**CURRENT PRESENTATION:**
+
+Patient returns today for discussion of second-line treatment options for HER2-positive 
+metastatic breast cancer with documented progression on trastuzumab/pertuzumab/paclitaxel.
+
+================================================================================
+PAST MEDICAL HISTORY:
+================================================================================
+
+1. Hypertension (well-controlled on lisinopril)
+2. Hypothyroidism (on levothyroxine)
+3. Osteopenia (on calcium/vitamin D)
+4. Chemotherapy-induced peripheral neuropathy (Grade 2, improving since stopping paclitaxel)
+
+================================================================================
+CURRENT MEDICATIONS:
+================================================================================
+
+1. Lisinopril 10 mg PO daily (hypertension)
+2. Levothyroxine 75 mcg PO daily (hypothyroidism)
+3. Calcium carbonate 500 mg + Vitamin D3 400 IU PO BID
+4. Gabapentin 300 mg PO TID (neuropathy)
+5. Ondansetron 8 mg PO Q8H PRN nausea
+6. Oxycodone 5 mg PO Q6H PRN pain (for chest wall discomfort from pleural effusion)
+7. Omeprazole 20 mg PO daily (GERD)
+
+================================================================================
+ALLERGIES:
+================================================================================
+
+No known drug allergies (NKDA)
+
+================================================================================
+FAMILY HISTORY:
+================================================================================
+
+- Mother: Died of lung cancer at age 78 (smoker)
+- Father: Colon cancer at age 72, died of MI at age 80
+- Sister (age 65): Healthy, no cancer
+- No family history of breast or ovarian cancer
+
+================================================================================
+SOCIAL HISTORY:
+================================================================================
+
+- Marital status: Widowed (husband died 2021), two adult children
+- Occupation: Retired accountant (retired 2023 due to cancer)
+- Tobacco: Former smoker, quit 1995 (10 pack-year history)
+- Alcohol: None
+- Living situation: Lives alone, daughter visits daily
+- Support: Strong family support, daughter very involved in care
+
+================================================================================
+REVIEW OF SYSTEMS:
+================================================================================
+
+CONSTITUTIONAL: Fatigue (moderate), 8 lb weight loss since December (intentional, 
+decreased appetite due to nausea)
+RESPIRATORY: Improved dyspnea after thoracentesis, no current shortness of breath at rest, 
+mild dyspnea with stairs
+CARDIOVASCULAR: No chest pain, no palpitations
+GI: Intermittent nausea (improved with ondansetron), no vomiting, no diarrhea, 
+mild right upper quadrant discomfort
+MUSCULOSKELETAL: Persistent peripheral neuropathy (tingling/numbness in fingers and toes, 
+Grade 2, slowly improving)
+NEUROLOGIC: No headaches, no vision changes, no focal deficits
+
+================================================================================
+PHYSICAL EXAMINATION:
+================================================================================
+
+VITAL SIGNS:
+- BP: 118/76 mmHg
+- HR: 72 bpm
+- RR: 16/min
+- Temp: 98.2°F
+- O2 Sat: 96% on room air
+- Weight: 138 lbs (baseline 146 lbs in November 2024)
+- BSA: 1.62 m²
+
+GENERAL: Well-appearing woman, no acute distress, comfortable at rest
+
+PERFORMANCE STATUS: ECOG 1 (symptomatic but fully ambulatory, restricted in strenuous activity)
+
+HEENT: Normocephalic, atraumatic, PERRL, EOMI, oropharynx clear
+
+NECK: No lymphadenopathy, no thyromegaly
+
+LUNGS: Decreased breath sounds right base (pleural effusion), no wheezes, clear left lung
+
+CARDIOVASCULAR: Regular rate and rhythm, no murmurs, rubs, or gallops
+
+BREAST: Right breast status post lumpectomy, well-healed scar, no masses. Left breast normal.
+
+ABDOMEN: Soft, mild tenderness right upper quadrant, liver edge palpable 2 cm below costal 
+margin (hepatomegaly from metastases), no ascites
+
+EXTREMITIES: No edema, no calf tenderness
+
+NEUROLOGIC: Alert and oriented x3, mild decreased sensation to light touch in fingertips 
+and toes bilaterally (neuropathy Grade 2)
+
+================================================================================
+LABORATORY DATA (January 24, 2025):
+================================================================================
+
+COMPLETE BLOOD COUNT:
+- WBC: 5.8 K/µL (normal)
+- Hemoglobin: 11.4 g/dL (mild anemia)
+- Platelets: 242 K/µL (normal)
+- ANC: 3.6 K/µL (normal)
+
+COMPREHENSIVE METABOLIC PANEL:
+- Creatinine: 0.8 mg/dL (eGFR >90 - excellent)
+- AST: 82 U/L (elevated - hepatic metastases)
+- ALT: 95 U/L (elevated - hepatic metastases)
+- Alkaline phosphatase: 245 U/L (elevated - hepatic metastases)
+- Total bilirubin: 1.1 mg/dL (upper limit normal)
+- Albumin: 3.4 g/dL (mildly low)
+
+CARDIAC:
+- Echocardiogram (January 22, 2025): LVEF 58% (normal, no change from baseline)
+- No wall motion abnormalities
+- CLEARED FOR HER2-TARGETED THERAPY
+
+PULMONARY FUNCTION:
+- No clinical evidence of interstitial lung disease
+- O2 saturation 96% on room air
+
+TUMOR MARKERS:
+- CA 15-3: 285 U/mL (markedly elevated, increased from 148 in November)
+- CA 27.29: 156 U/mL (elevated)
+- CEA: 45 ng/mL (elevated)
+
+All tumor markers trending up, consistent with disease progression.
+
+================================================================================
+IMAGING:
+================================================================================
+
+**CT CHEST/ABDOMEN/PELVIS (December 18, 2024):**
+- Liver: Multiple metastatic lesions, largest 6.8 cm segment VI (previously 4.2 cm). 
+  Interval increase in size and number of hepatic metastases.
+- Lungs: Stable bilateral pulmonary nodules (unchanged)
+- Right pleural effusion, moderate (new)
+- No new bone lesions
+- RECIST: Progressive disease
+
+**BRAIN MRI (January 10, 2025):**
+- No evidence of brain metastases (screening study given HER2+ disease propensity for CNS)
+
+================================================================================
+ASSESSMENT:
+================================================================================
+
+62-year-old woman with metastatic HER2-positive, hormone receptor-positive breast cancer, 
+now with disease progression after 11 months of first-line trastuzumab/pertuzumab/paclitaxel.
+
+Key features:
+1. HER2-POSITIVE maintained on biopsy of metastatic site → Continue HER2-directed therapy
+2. PROGRESSION ON TRASTUZUMAB/PERTUZUMAB → Need alternative HER2-targeted agent
+3. EXCELLENT CARDIAC FUNCTION (LVEF 58%) → Eligible for T-DXd or other HER2 ADCs
+4. NO BRAIN METASTASES → Fortunate (HER2+ has high CNS risk)
+5. SYMPTOMATIC DISEASE → Liver metastases, pleural effusion, needs effective therapy
+
+================================================================================
+TREATMENT PLAN:
+================================================================================
+
+**SECOND-LINE RECOMMENDATION: TRASTUZUMAB DERUXTECAN (T-DXd / ENHERTU)**
+
+Based on DESTINY-Breast03 trial data showing superior PFS and OS compared to T-DM1 in 
+second-line HER2+ metastatic breast cancer:
+- Median PFS: 28.8 months (T-DXd) vs 6.8 months (T-DM1)
+- Median OS: Not reached vs 34.1 months
+- ORR: 79.7% vs 34.2%
+
+Regimen: Trastuzumab deruxtecan 5.4 mg/kg IV every 3 weeks
+
+**ALTERNATIVE OPTIONS DISCUSSED:**
+1. T-DM1 (ado-trastuzumab emtansine) - FDA approved but inferior to T-DXd per DESTINY-Breast03
+2. Tucatinib + trastuzumab + capecitabine - Excellent option especially if brain mets develop
+3. Neratinib + capecitabine - Considered but T-DXd preferred
+4. Clinical trial enrollment - Discussed, patient prefers standard therapy for now
+
+Patient chose T-DXd after thorough discussion of benefits, risks, and alternatives.
+
+**KEY SAFETY CONSIDERATIONS FOR T-DXd:**
+
+1. INTERSTITIAL LUNG DISEASE (ILD):
+   - Occurs in ~15% patients (most Grade 1-2)
+   - Requires baseline pulmonary assessment (done, clear)
+   - Monthly monitoring for respiratory symptoms
+   - Patient educated: Report any new cough, dyspnea, fever
+   - Hold T-DXd if Grade 2+ ILD, permanently discontinue if Grade 3-4
+
+2. CARDIAC MONITORING:
+   - LVEF assessment before each cycle initially (baseline 58%, excellent)
+   - Risk of decreased LVEF ~4% (lower than traditional trastuzumab)
+
+3. NAUSEA:
+   - Common (80% any grade, usually Grade 1-2)
+   - Aggressive antiemetic prophylaxis planned
+
+**PLAN:**
+
+1. **START T-DXd: Cycle 1, Day 1 scheduled for February 1, 2025**
+   - Trastuzumab deruxtecan 5.4 mg/kg (8.7 mg/kg x 62 kg = 335 mg actual dose, 
+     rounds to 337.5 mg based on vial size 100 mg)
+   - Administer IV over 90 minutes (first dose), subsequent doses 30 minutes if tolerated
+   - Every 3 weeks (21-day cycle)
+
+2. **PREMEDICATIONS:**
+   - Ondansetron 24 mg IV prior to T-DXd
+   - Dexamethasone 10 mg IV prior to T-DXd
+   - Diphenhydramine 50 mg IV (infusion reaction prophylaxis for first dose)
+   - Famotidine 20 mg IV
+
+3. **ANTIEMETIC REGIMEN (for home):**
+   - Ondansetron 8 mg PO TID days 1-4 after each infusion
+   - Olanzapine 5 mg PO QHS days 1-4 (highly effective for delayed nausea)
+   - Compazine 10 mg PO Q6H PRN breakthrough nausea
+   - Encourage adequate hydration
+
+4. **MONITORING:**
+   - CBC with differential before each cycle
+   - CMP before each cycle (monitor liver function given hepatic metastases)
+   - LVEF assessment by echocardiogram every 3 cycles initially (baseline 58%)
+   - Monthly assessment for respiratory symptoms (ILD monitoring)
+   - Restaging CT chest/abdomen/pelvis after cycle 3 (week 9)
+   - Baseline pulmonary function tests if any respiratory symptoms develop
+   - Continue brain MRI every 6 months (HER2+ CNS risk)
+
+5. **SUPPORTIVE CARE:**
+   - Continue gabapentin 300 mg TID for neuropathy (slowly taper as improves)
+   - Pleural effusion: Monitor with imaging, thoracentesis PRN if re-accumulates
+   - Pain management: Continue oxycodone PRN, escalate if needed
+   - Social work involved for copay assistance (T-DXd expensive, ~$14,000/dose)
+
+6. **PATIENT EDUCATION:**
+   - Discussed expected side effects: nausea (very common), fatigue, alopecia (mild), 
+     decreased blood counts, ILD risk (~15%, mostly low grade)
+   - CRITICAL: Report any new cough, shortness of breath, fever → May indicate ILD
+   - Report chest pain, palpitations, leg swelling → Cardiac monitoring
+   - Avoid NSAIDs initially (can worsen GI side effects)
+   - Hair loss typically mild/partial with T-DXd (unlike traditional chemo)
+
+7. **FOLLOW-UP:**
+   - Return for Cycle 1, Day 1 on February 1, 2025
+   - Labs 1-2 days before each treatment
+   - Office visit every 3 weeks during treatment
+   - Urgent visit if fever, severe dyspnea, chest pain
+
+**PROGNOSIS:**
+
+With modern HER2-targeted therapies, median OS for HER2+ metastatic breast cancer exceeds 
+5 years. DESTINY-Breast03 data suggests T-DXd may provide >2 years PFS in this setting. 
+Patient has several additional lines of therapy available if needed (tucatinib-based, 
+T-DM1, neratinib, other investigational agents).
+
+Liver metastases and pleural effusion indicate more aggressive disease biology, but HER2 
+positivity remains highly favorable prognostic factor given multiple effective targeted options.
+
+Patient understands diagnosis, treatment plan, and expected outcomes. All questions addressed. 
+She is motivated to proceed with T-DXd and understands importance of ILD monitoring.
+
+================================================================================
+IMPRESSION AND PLAN SUMMARY:
+================================================================================
+
+62F with HER2+/ER+ metastatic breast cancer, progression on first-line 
+trastuzumab/pertuzumab/paclitaxel after 11 months.
+
+**PLAN:** Start trastuzumab deruxtecan (T-DXd) 5.4 mg/kg IV Q3 weeks
+
+**Prior treatments documented:**
+- Surgery: Lumpectomy (2019)
+- Radiation: Whole breast radiation (2019)
+- Chemotherapy: AC → paclitaxel adjuvant (2019), paclitaxel metastatic (2024)
+- Targeted therapy: Trastuzumab adjuvant (2019-2020), trastuzumab + pertuzumab metastatic (2024)
+- Endocrine therapy: Letrozole (2020-2024)
+
+**Current status:** ECOG 1, adequate organ function, LVEF 58%, no brain metastases, 
+ready to start second-line therapy with T-DXd.
+
+Close monitoring for ILD, cardiac function, and treatment response. Restaging after 
+cycle 3.
+
+Patient educated and in agreement with plan.
+
+================================================================================
+ELECTRONICALLY SIGNED:
+================================================================================
+
+Sarah Chen, MD
+Attending Medical Oncologist
+Memorial Sloan Kettering Cancer Center
+Breast Cancer Medicine Service
+
+Date/Time: January 25, 2025 at 16:20 PM EST
+
+cc: Dr. Jennifer Martinez (Pathology)
+cc: Dr. Robert Williams (Radiation Oncology)
+cc: Patient's primary care physician

@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     rate_limit_per_hour: int = 100
     dataset_version: str = "1.0"
     
+    # Anthropic API for document extraction
+    anthropic_api_key: str = ""  # Required for document upload feature
+    
     class Config:
         env_file = ".env"
         case_sensitive = False

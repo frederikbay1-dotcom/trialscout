@@ -166,27 +166,6 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
     <div className="min-h-screen flex flex-col justify-start pb-32">
       <InlineProgressBar currentStep={3} totalSteps={3} stepLabel="Your Matches" />
 
-      {/* Privacy Reminder */}
-      <div className="px-4 mt-4">
-        <div className="container max-w-3xl mx-auto">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <Shield className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm">
-                <p className="text-green-900 font-semibold mb-1">
-                  🔒 Your Privacy is Protected
-                </p>
-                <p className="text-green-800">
-                  Your search results are generated locally in your browser. We don't store or 
-                  transmit your medical information. This data will be automatically cleared when 
-                  you close this page.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className="py-8 px-4">
         <div className="container max-w-3xl mx-auto space-y-6">
           {/* Encouragement Banner */}
@@ -215,24 +194,51 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
             </Button>
           </motion.div>
 
-          {/* Important Disclaimer Banner */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-amber-50 border-2 border-amber-200 rounded-xl p-4"
-          >
-            <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm">
-                <p className="text-amber-900">
-                  <strong>Important:</strong> These are preliminary matches only. Your doctor must confirm 
-                  eligibility and determine if a trial is appropriate for you. This tool does not provide 
-                  medical advice or guarantee enrollment.
-                </p>
+          {/* Actions Bar */}
+          <div className="bg-white border border-gray-200 rounded-xl p-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 text-sm font-medium">
+                  <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                  {eligibleCount} Possibly Eligible
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-800 text-sm font-medium">
+                  <span className="w-2 h-2 rounded-full bg-gray-500" />
+                  {totalTrialsEvaluated} Total Evaluated
+                </div>
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
+                <Button variant="outline" size="sm" className="flex-1 sm:flex-none gap-2 min-h-[44px] border-gray-300">
+                  <Filter className="w-4 h-4" />
+                  Filter
+                </Button>
+                <Button variant="outline" size="sm" onClick={onReset} className="flex-1 sm:flex-none gap-2 min-h-[44px] border-gray-300">
+                  <RotateCcw className="w-4 h-4" />
+                  Start Over
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    let key = 'her2_low';
+                    if (patientData.biomarkerProfile?.expression?.HER2 === 'low') key = 'her2_low';
+                    else if (patientData.breastTreatments?.cdk46Inhibitors === true) key = 'post_cdk46';
+                    else if (patientData.cancerType === 'lung') key = 'egfr';
+                    else if (
+                      patientData.biomarkerProfile?.hormoneReceptors?.ER === 'absent' &&
+                      patientData.biomarkerProfile?.hormoneReceptors?.PR === 'absent' &&
+                      patientData.biomarkerProfile?.expression?.HER2 === '0'
+                    ) key = 'tnbc';
+                    window.open(`/walkthrough?patient=${key}`, '_blank');
+                  }}
+                  className="flex-1 sm:flex-none gap-2 min-h-[44px] border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-700"
+                >
+                  <Layout className="w-4 h-4" />
+                  Walkthrough
+                </Button>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Match Score Legend */}
           <motion.div
@@ -280,9 +286,15 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
                 </div>
               </div>
             </div>
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-900">
-              <strong>Note:</strong> Match scores are preliminary only. Trial coordinators make final eligibility 
-              determinations. Your doctor should review these results with you.
+            <div className="mt-4 p-3 bg-amber-50 border-2 border-amber-200 rounded-lg text-sm">
+              <div className="flex items-start gap-2">
+                <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <p className="text-amber-900">
+                  <strong>Important:</strong> These are preliminary matches only. Your doctor must confirm
+                  eligibility and determine if a trial is appropriate for you. This tool does not provide
+                  medical advice or guarantee enrollment.
+                </p>
+              </div>
             </div>
           </motion.div>
 
@@ -326,52 +338,6 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Actions Bar */}
-          <div className="bg-white border border-gray-200 rounded-xl p-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 text-sm font-medium">
-                  <span className="w-2 h-2 rounded-full bg-emerald-600" />
-                  {eligibleCount} Possibly Eligible
-                </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-800 text-sm font-medium">
-                  <span className="w-2 h-2 rounded-full bg-gray-500" />
-                  {totalTrialsEvaluated} Total Evaluated
-                </div>
-              </div>
-              <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
-                <Button variant="outline" size="sm" className="flex-1 sm:flex-none gap-2 min-h-[44px] border-gray-300">
-                  <Filter className="w-4 h-4" />
-                  Filter
-                </Button>
-                <Button variant="outline" size="sm" onClick={onReset} className="flex-1 sm:flex-none gap-2 min-h-[44px] border-gray-300">
-                  <RotateCcw className="w-4 h-4" />
-                  Start Over
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    let key = 'her2_low';
-                    if (patientData.biomarkerProfile?.expression?.HER2 === 'low') key = 'her2_low';
-                    else if (patientData.breastTreatments?.cdk46Inhibitors === true) key = 'post_cdk46';
-                    else if (patientData.cancerType === 'lung') key = 'egfr';
-                    else if (
-                      patientData.biomarkerProfile?.hormoneReceptors?.ER === 'absent' &&
-                      patientData.biomarkerProfile?.hormoneReceptors?.PR === 'absent' &&
-                      patientData.biomarkerProfile?.expression?.HER2 === '0'
-                    ) key = 'tnbc';
-                    window.open(`/walkthrough?patient=${key}`, '_blank');
-                  }}
-                  className="flex-1 sm:flex-none gap-2 min-h-[44px] border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-700"
-                >
-                  <Layout className="w-4 h-4" />
-                  Walkthrough
-                </Button>
-              </div>
-            </div>
-          </div>
 
           {/* Empty State for no possibly eligible trials */}
           {eligibleCount === 0 && otherTrials.length > 0 && (

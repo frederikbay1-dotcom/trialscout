@@ -1,0 +1,219 @@
+PATHOLOGY ASSOCIATES OF NEW YORK
+Anatomic Pathology Report
+
+PATIENT INFORMATION:
+Name: [REDACTED FOR DEMO]
+Patient ID: NYP-2025-01147
+Date of Birth: 05/18/1963 (Age: 62 years)
+Sex: Female
+MRN: 7392846
+
+CLINICAL INFORMATION:
+62-year-old female with recurrent metastatic breast cancer.
+Original diagnosis 2019: Stage IIA invasive ductal carcinoma, ER+/PR+/HER2+ (IHC 3+)
+Treated with lumpectomy, chemotherapy, trastuzumab + pertuzumab, and radiation
+Developed metastatic disease to liver and lungs in 2024
+Liver biopsy performed to confirm metastatic disease and reassess biomarkers
+
+SPECIMEN:
+A. Liver, Segment VI, CT-guided core needle biopsy
+
+DATE OF PROCEDURE: January 18, 2025
+DATE RECEIVED: January 18, 2025, 10:45 AM  
+DATE REPORTED: January 21, 2025, 14:15 PM
+
+================================================================================
+FINAL PATHOLOGIC DIAGNOSIS:
+================================================================================
+
+LIVER, SEGMENT VI, CORE NEEDLE BIOPSY:
+- Metastatic adenocarcinoma, consistent with breast primary
+- See immunohistochemistry results below
+
+GROSS DESCRIPTION:
+Received in formalin labeled with patient name and "liver biopsy" are three tan-brown tissue cores, 
+each measuring up to 1.6 cm in length and 0.12 cm in diameter. Entirely submitted in one cassette.
+
+MICROSCOPIC DESCRIPTION:
+Sections show hepatic parenchyma extensively infiltrated by adenocarcinoma arranged in solid nests 
+and cords. The tumor cells are moderately pleomorphic with vesicular chromatin and small nucleoli. 
+Mitotic figures are present (12 per 10 HPF). The morphologic features are consistent with metastatic 
+breast carcinoma. Adjacent hepatocytes show compression and mild reactive changes.
+
+================================================================================
+IMMUNOHISTOCHEMISTRY RESULTS:
+================================================================================
+
+HORMONE RECEPTOR PANEL:
+
+Estrogen Receptor (ER) - Clone SP1:
+  RESULT: POSITIVE
+  Tumor cell staining: 85%
+  Intensity: Strong (3+)
+  H-Score: 255/300
+  Allred Score: 8/8
+  INTERPRETATION: Strong ER expression maintained from primary tumor
+
+Progesterone Receptor (PR) - Clone 1E2:
+  RESULT: POSITIVE
+  Tumor cell staining: 65%
+  Intensity: Moderate to Strong (2-3+)
+  H-Score: 185/300
+  Allred Score: 7/8
+  INTERPRETATION: PR expression maintained
+
+HER2/NEU ASSESSMENT:
+
+HER2 Immunohistochemistry (PATHWAY 4B5):
+  RESULT: 3+ (HER2-POSITIVE)
+  Interpretation: Strong complete membrane staining in >10% of tumor cells
+  
+  Details: Uniform, intense, complete circumferential membrane staining observed in 
+  approximately 90% of tumor cells. Strong, "chicken wire" appearance typical of 
+  HER2 3+ staining.
+  
+  Per ASCO/CAP 2023 Guidelines:
+  - IHC Score 3+ = HER2-POSITIVE
+  - FISH/ISH testing not required (IHC 3+ is definitive for HER2-positive status)
+  
+  CLINICAL NOTE: This tumor maintains HER2-positive status from the primary tumor. 
+  HER2-targeted therapies (trastuzumab, pertuzumab, T-DM1, trastuzumab deruxtecan, etc.) 
+  remain appropriate treatment options.
+
+PROLIFERATION MARKER:
+
+Ki-67 Proliferation Index (Clone MIB-1):
+  RESULT: 42%
+  Interpretation: High proliferative activity
+
+ADDITIONAL CONFIRMATORY MARKERS:
+
+Cytokeratin 7 (CK7): POSITIVE (diffuse)
+GATA3: POSITIVE (diffuse, strong nuclear)
+Mammaglobin: POSITIVE (diffuse)
+Gross Cystic Disease Fluid Protein-15 (GCDFP-15): POSITIVE (focal)
+TTF-1: NEGATIVE
+CDX2: NEGATIVE
+CK20: NEGATIVE
+Arginase-1: NEGATIVE
+Hep Par-1: NEGATIVE
+
+INTERPRETATION: Immunophenotype consistent with metastatic breast carcinoma. The tumor 
+is negative for hepatocellular markers, confirming this is metastatic disease rather 
+than primary liver cancer.
+
+TUMOR GRADE (Modified Bloom-Richardson/Nottingham):
+  Tubule formation: Score 2 (moderate tubule formation, 10-75%)
+  Nuclear pleomorphism: Score 2 (moderate variation)
+  Mitotic count: Score 2 (12 mitoses per 10 HPF)
+  TOTAL SCORE: 6/9
+  HISTOLOGIC GRADE: 2 (Moderately differentiated)
+
+================================================================================
+COMMENT:
+================================================================================
+
+The morphologic features and immunophenotype are consistent with metastatic breast carcinoma 
+of ductal type. This represents disease recurrence/metastasis from the patient's known 
+primary breast cancer diagnosed in 2019.
+
+BIOMARKER COMPARISON:
+
+Primary Tumor (2019):
+- ER: Positive (90%)
+- PR: Positive (70%)
+- HER2: 3+ (IHC positive)
+- Grade: 2
+
+Current Metastasis (2025):
+- ER: Positive (85%) - MAINTAINED
+- PR: Positive (65%) - MAINTAINED
+- HER2: 3+ (IHC positive) - MAINTAINED
+- Grade: 2 - UNCHANGED
+
+CLINICAL SIGNIFICANCE:
+
+The biomarker profile has remained stable from primary to metastatic disease. This is clinically 
+significant because:
+
+1. HER2-POSITIVE STATUS MAINTAINED: The tumor continues to express high levels of HER2 protein, 
+   confirming that HER2-targeted therapies remain appropriate. Patient has previously received 
+   trastuzumab + pertuzumab.
+
+2. HORMONE RECEPTOR STATUS MAINTAINED: Continued ER/PR positivity suggests endocrine therapy 
+   may still play a role, though HER2-targeted therapy is the primary driver of treatment 
+   in HER2+ disease.
+
+3. TREATMENT IMPLICATIONS:
+   - Patient has progressed after first-line trastuzumab + pertuzumab
+   - Second-line options include:
+     * Trastuzumab deruxtecan (T-DXd/Enhertu) - FDA approved, superior PFS vs T-DM1
+     * T-DM1 (ado-trastuzumab emtansine)
+     * Tucatinib + trastuzumab + capecitabine (especially if brain metastases develop)
+     * Neratinib + capecitabine
+     * Clinical trials with novel HER2-targeted agents
+
+4. BRAIN METASTASIS RISK: HER2-positive breast cancer has higher propensity for CNS metastases. 
+   Baseline brain MRI recommended. Consider tucatinib-based therapy which has excellent CNS 
+   penetration if brain metastases develop.
+
+5. PROGNOSIS: HER2-positive metastatic breast cancer has improved significantly with modern 
+   HER2-targeted therapies. Median overall survival with contemporary treatment approaches 
+   exceeds 5 years.
+
+Ki-67 proliferation index of 42% indicates high proliferative activity. This, combined with 
+Grade 2 histology, suggests moderately aggressive biology.
+
+TREATMENT RECOMMENDATIONS:
+
+Based on progression after first-line trastuzumab/pertuzumab therapy:
+
+PREFERRED REGIMEN:
+- Trastuzumab deruxtecan (T-DXd) 5.4 mg/kg IV every 3 weeks
+  * DESTINY-Breast03 trial showed superior PFS and OS compared to T-DM1
+  * ORR approximately 80%
+  * Important to monitor for interstitial lung disease (ILD)
+  * Requires baseline pulmonary function assessment
+
+ALTERNATIVE REGIMENS:
+- T-DM1 (if T-DXd contraindicated or unavailable)
+- Tucatinib + trastuzumab + capecitabine (particularly if CNS involvement)
+- Clinical trial enrollment
+
+MONITORING:
+- Restaging imaging every 6-8 weeks initially
+- Brain MRI at baseline and periodically (HER2+ disease has high CNS risk)
+- Cardiac monitoring (LVEF assessment before and during treatment)
+- Pulmonary symptom monitoring (if on T-DXd)
+
+================================================================================
+ANCILLARY STUDIES RECOMMENDED:
+================================================================================
+
+1. BASELINE IMAGING:
+   - Brain MRI (screen for CNS metastases - common in HER2+ disease)
+   - PET-CT for complete staging if not recently performed
+
+2. CARDIAC ASSESSMENT:
+   - MUGA scan or echocardiogram to assess LVEF (must be ≥50% for HER2-targeted therapy)
+   - Repeat every 3 months during treatment
+
+3. PULMONARY FUNCTION:
+   - Baseline pulmonary function tests if considering T-DXd
+   - Patient should report any new cough, dyspnea (ILD risk with T-DXd)
+
+4. ADDITIONAL MOLECULAR TESTING (OPTIONAL):
+   - PIK3CA mutation testing (if considering PI3K inhibitor combinations)
+   - Circulating tumor DNA (ctDNA) monitoring may help assess treatment response
+
+================================================================================
+ELECTRONICALLY SIGNED:
+================================================================================
+Jennifer Martinez, MD, PhD
+Attending Pathologist
+Board Certified: Anatomic Pathology and Clinical Pathology
+Fellowship Trained: Breast Pathology
+
+DATE/TIME: January 21, 2025 at 14:15 PM EST
+
+Report distributed to: Dr. Sarah Chen (Medical Oncology)

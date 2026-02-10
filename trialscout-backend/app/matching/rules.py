@@ -19,6 +19,11 @@ def is_hard_excluded(patient: PatientProfile, trial: Trial) -> Optional[str]:
     if biomarker_exclusion:
         return biomarker_exclusion
     
+    # NEW: Check eligibility criteria exclusions
+    criteria_exclusion = check_eligibility_criteria_exclusions(patient, trial)
+    if criteria_exclusion:
+        return criteria_exclusion
+    
     # Check ECOG exclusions
     ecog_exclusion = check_ecog_exclusion(patient, trial)
     if ecog_exclusion:
@@ -66,10 +71,47 @@ def check_breast_biomarker_exclusion(patient: PatientProfile, trial: Trial) -> O
         if biomarkers.HER2 in ["negative", "low"]:
             return f"HER2+ trial requires HER2-positive status (patient is {biomarkers.HER2})"
     
-    # HER2-LOW trials exclude HER2-negative or HER2-positive
-    if "HER2-low" in trial.title.lower() or "HER2 low" in trial.title.lower():
-        if biomarkers.HER2 in ["negative", "positive"]:
-            return f"HER2-low trial requires HER2-low status (patient is {biomarkers.HER2})"
+    # HER2-LOW TRIALS EXCLUSION
+    # Clinical definition:
+    # - HER2-low = IHC 1+ or IHC 2+/ISH-
+    # - HER2 IHC 0 = negative (NOT low)
+    # - HER2 IHC 3+ or ISH+ = positive (NOT low)
+    
+    trial_title_lower = trial.title.lower()
+    
+    # Get HER2 status as string and lowercase for comparison
+    her2_status_str = str(biomarkers.HER2).lower() if biomarkers.HER2 else "unknown"
+    
+    # Check if this is a HER2-low specific trial (by title)
+    if "her2-low" in trial_title_lower or "her2 low" in trial_title_lower:
+        
+        # Exclude if patient is HER2 IHC 0 (negative)
+        if "0" in her2_status_str or "negative" in her2_status_str:
+            return "HER2-low trial requires HER2-low status (IHC 1+ or IHC 2+/ISH-), patient is HER2 IHC 0 (negative)"
+        
+        # Exclude if patient is HER2-positive (IHC 3+ or amplified)
+        if "3+" in her2_status_str or "positive" in her2_status_str or "amplified" in her2_status_str:
+            return "HER2-low trial requires HER2-low status (IHC 1+ or IHC 2+/ISH-), patient is HER2-positive"
+        
+        # If patient is HER2 "1+" or "2+/ISH-" or "low", they qualify (don't exclude)
+        # If HER2 is unknown, don't exclude (will appear in "What to Confirm")
+    
+    # ALSO check eligibility criteria (in case title doesn't say "HER2-low")
+    for criterion in trial.eligibility_criteria:
+        if criterion.category == "biomarker":
+            criterion_text = criterion.criterion.lower()
+            
+            # Look for HER2-low requirement
+            if "her2-low" in criterion_text or ("her2" in criterion_text and "low" in criterion_text):
+                if "required" in criterion_text or "ihc 1+" in criterion_text or "ihc 2+" in criterion_text:
+                    
+                    # Exclude HER2 IHC 0 patients
+                    if "0" in her2_status_str or "negative" in her2_status_str:
+                        return "Trial requires HER2-low (IHC 1+), patient is HER2 IHC 0"
+                    
+                    # Exclude HER2-positive patients
+                    if "3+" in her2_status_str or "positive" in her2_status_str:
+                        return "Trial requires HER2-low, patient is HER2-positive"
     
     # HER2-NEGATIVE trials (HR+/HER2-) - treat HER2-low as HER2-negative for HR+ trials
     if ("HER2-" in trial.title or "HER2 -" in trial.title or "HER2-negative" in trial.title.lower()) and \
@@ -99,6 +141,129 @@ def check_breast_biomarker_exclusion(patient: PatientProfile, trial: Trial) -> O
        not ("HR+" in trial.title or " or " in trial.title):
         if biomarkers.ER == "present" or biomarkers.PR == "present" or biomarkers.HER2 == "positive":
             return "Triple-negative trial requires ER-/PR-/HER2- (patient has positive receptors)"
+    
+    return None
+
+
+def check_eligibility_criteria_exclusions(patient: PatientProfile, trial: Trial) -> Optional[str]:
+    """
+    Check if patient violates any eligibility criteria that require
+    ABSENCE of certain biomarkers (e.g., "No EGFR mutations").
+    
+    This catches trials that don't have exclusions in their title.
+    """
+    if patient.cancer_type == "lung":
+        biomarkers = patient.biomarkers
+        if not isinstance(biomarkers, LungBiomarkers):
+            return None
+        
+        # Check each eligibility criterion
+        for criterion in trial.eligibility_criteria:
+            if criterion.category != "biomarker":
+                continue
+            
+            criterion_lower = criterion.criterion.lower()
+            
+            # "No EGFR mutations" requirement
+            if ("no egfr" in criterion_lower or "egfr-negative" in criterion_lower or
+                "without egfr" in criterion_lower):
+                if biomarkers.EGFR.status == "present":
+                    return "Trial requires no EGFR mutations (patient is EGFR-positive)"
+            
+            # "No ALK rearrangements" requirement
+            if ("no alk" in criterion_lower or "alk-negative" in criterion_lower or
+                "without alk" in criterion_lower):
+                if biomarkers.ALK == "present":
+                    return "Trial requires no ALK rearrangements (patient is ALK-positive)"
+            
+            # "No ROS1 rearrangements" requirement
+            if ("no ros1" in criterion_lower or "ros1-negative" in criterion_lower or
+                "without ros1" in criterion_lower):
+                if biomarkers.ROS1 == "present":
+                    return "Trial requires no ROS1 rearrangements (patient is ROS1-positive)"
+            
+            # "No EGFR/ALK/ROS1" combined requirement
+            if "no egfr" in criterion_lower and "alk" in criterion_lower:
+                if biomarkers.EGFR.status == "present":
+                    return "Trial requires no EGFR/ALK alterations (patient is EGFR-positive)"
+                if biomarkers.ALK == "present":
+                    return "Trial requires no EGFR/ALK alterations (patient is ALK-positive)"
+            
+            # "No EGFR/ALK/ROS1" triple requirement
+            if ("no egfr" in criterion_lower and "alk" in criterion_lower and "ros1" in criterion_lower):
+                if biomarkers.EGFR.status == "present":
+                    return "Trial requires no driver mutations (patient is EGFR-positive)"
+                if biomarkers.ALK == "present":
+                    return "Trial requires no driver mutations (patient is ALK-positive)"
+                if biomarkers.ROS1 == "present":
+                    return "Trial requires no driver mutations (patient is ROS1-positive)"
+            
+            # "No driver mutations" or "driver-negative" requirement
+            if ("no driver" in criterion_lower or "driver-negative" in criterion_lower or
+                "driver negative" in criterion_lower):
+                if biomarkers.EGFR.status == "present":
+                    return "Trial requires no driver mutations (patient is EGFR-positive)"
+                if biomarkers.ALK == "present":
+                    return "Trial requires no driver mutations (patient is ALK-positive)"
+                if biomarkers.ROS1 == "present":
+                    return "Trial requires no driver mutations (patient is ROS1-positive)"
+                if biomarkers.KRAS.status == "present" and biomarkers.KRAS.mutation == "G12C":
+                    return "Trial requires no driver mutations (patient is KRAS G12C-positive)"
+            
+            # NEW: "HER2 mutation (required)"
+            if "her2 mutation" in criterion_lower and "required" in criterion_lower:
+                return "Trial requires HER2 mutation (patient HER2 status not available for lung cancer)"
+            
+            # NEW: "MET exon 14 skipping mutation (required)"
+            if ("met exon 14" in criterion_lower or "met ex14" in criterion_lower) and "required" in criterion_lower:
+                if biomarkers.MET.status != "present":
+                    return "Trial requires MET exon 14 skipping (patient is MET-negative)"
+                # If MET is present, check if it's specifically exon 14
+                if biomarkers.MET.status == "present":
+                    if not biomarkers.MET.alteration or "exon 14" not in biomarkers.MET.alteration.lower():
+                        return f"Trial requires MET exon 14 skipping (patient MET status: {biomarkers.MET.alteration or 'unspecified'})"
+            
+            # NEW: "BRAF V600E mutation (required)"
+            if "braf v600e" in criterion_lower and "required" in criterion_lower:
+                if biomarkers.BRAF != "present":
+                    return "Trial requires BRAF V600E mutation (patient is BRAF-negative)"
+            
+            # NEW: "RET fusion (required)"
+            if ("ret fusion" in criterion_lower or "ret rearrangement" in criterion_lower) and "required" in criterion_lower:
+                return "Trial requires RET fusion (patient RET status not available)"
+            
+            # NEW: "NTRK fusion (required)"
+            if "ntrk fusion" in criterion_lower and "required" in criterion_lower:
+                return "Trial requires NTRK fusion (patient NTRK status not available)"
+    
+    elif patient.cancer_type == "breast":
+        biomarkers = patient.biomarkers
+        if not isinstance(biomarkers, BreastBiomarkers):
+            return None
+        
+        # Check for HER2 requirements in eligibility criteria
+        for criterion in trial.eligibility_criteria:
+            if criterion.category != "biomarker":
+                continue
+            
+            criterion_lower = criterion.criterion.lower()
+            
+            # "HER2-negative" or "No HER2" requirement
+            if ("her2-negative" in criterion_lower or "her2 negative" in criterion_lower or
+                "no her2" in criterion_lower):
+                if biomarkers.HER2 == "positive":
+                    return "Trial requires HER2-negative status (patient is HER2-positive)"
+            
+            # "ER-positive" requirement
+            if ("er-positive" in criterion_lower or "er positive" in criterion_lower or
+                "er+" in criterion_lower):
+                if biomarkers.ER == "absent":
+                    return "Trial requires ER-positive status (patient is ER-negative)"
+            
+            # "Triple-negative" requirement
+            if "triple-negative" in criterion_lower or "tnbc" in criterion_lower:
+                if biomarkers.ER == "present" or biomarkers.PR == "present" or biomarkers.HER2 == "positive":
+                    return "Trial requires triple-negative status (patient has positive receptors)"
     
     return None
 
@@ -169,6 +334,35 @@ def check_lung_biomarker_exclusion(patient: PatientProfile, trial: Trial) -> Opt
             return "No-driver trial excludes ROS1-positive patients"
         if biomarkers.KRAS.status == "present" and biomarkers.KRAS.mutation == "G12C":
             return "No-driver trial excludes KRAS G12C-positive patients"
+    
+    # NEW: HER2 MUTATION trials (requires specific mutation patient doesn't have)
+    # HER2 is not in LungBiomarkers model, so any HER2-mutant trial should be excluded
+    if "HER2" in trial.title and ("mutation" in trial.title.lower() or "mutant" in trial.title.lower()):
+        return "HER2-mutant trial requires documented HER2 mutation (patient HER2 status not available for lung cancer)"
+    
+    # NEW: MET EXON 14 trials
+    if "MET" in trial.title and ("exon 14" in trial.title.lower() or "ex14" in trial.title.lower() or "Exon 14" in trial.title):
+        if biomarkers.MET.status != "present":
+            return "MET exon 14 trial requires MET exon 14 skipping mutation (patient is MET-negative)"
+        # If MET is present, check if it's specifically exon 14
+        if biomarkers.MET.status == "present":
+            if not biomarkers.MET.alteration or "exon 14" not in biomarkers.MET.alteration.lower():
+                return f"MET exon 14 trial requires exon 14 skipping (patient MET status: {biomarkers.MET.alteration or 'unspecified'})"
+    
+    # NEW: BRAF V600E trials
+    if "BRAF" in trial.title and ("V600E" in trial.title or "V600" in trial.title):
+        if biomarkers.BRAF != "present":
+            return "BRAF V600E trial requires BRAF V600E mutation (patient is BRAF-negative)"
+    
+    # NEW: RET FUSION trials
+    # RET is not in LungBiomarkers model, so any RET fusion trial should be excluded
+    if "RET" in trial.title and ("fusion" in trial.title.lower() or "rearrangement" in trial.title.lower()):
+        return "RET fusion trial requires RET rearrangement (patient RET status not available)"
+    
+    # NEW: NTRK FUSION trials
+    # NTRK is not in LungBiomarkers model, so any NTRK fusion trial should be excluded
+    if "NTRK" in trial.title and ("fusion" in trial.title.lower() or "rearrangement" in trial.title.lower()):
+        return "NTRK fusion trial requires NTRK fusion (patient NTRK status not available)"
     
     return None
 

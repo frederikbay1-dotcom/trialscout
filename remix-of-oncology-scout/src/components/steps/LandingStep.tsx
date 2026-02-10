@@ -85,42 +85,6 @@ export function LandingStep({ onStart, onTrySample }: LandingStepProps) {
             </div>
           </motion.div>
 
-          {/* Privacy Badges */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="bg-green-50 border-2 border-green-200 rounded-xl p-6 max-w-2xl mx-auto mb-8"
-          >
-            <div className="flex items-start gap-3 mb-4">
-              <Shield className="w-6 h-6 text-green-600 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold text-green-900 mb-2">
-                  🔒 Your Privacy is Protected
-                </h3>
-                <p className="text-sm text-green-800">
-                  We don't collect or store your medical information. All trial matching 
-                  happens locally in your browser. Your data never leaves your device and 
-                  is automatically cleared when you close the page.
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-green-700">
-              <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4" />
-                <span>No Data Storage</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4" />
-                <span>HTTPS Encrypted</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4" />
-                <span>Privacy First</span>
-              </div>
-            </div>
-          </motion.div>
-
           <div className="flex items-center justify-center mb-6">
             <Button
               onClick={onStart}
@@ -132,44 +96,6 @@ export function LandingStep({ onStart, onTrySample }: LandingStepProps) {
             </Button>
           </div>
         </motion.div>
-
-        {/* Sample Patient Selector */}
-        {onTrySample && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="mb-8"
-          >
-            <h2 className="text-center text-lg font-semibold text-gray-700 mb-2">
-              Or Try a Sample Patient
-            </h2>
-            <p className="text-center text-sm text-gray-500 mb-6">
-              See intelligent matching in action with curated examples
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {(Object.keys(SAMPLE_PATIENT_DESCRIPTIONS) as SamplePatientKey[]).map((key) => {
-                const desc = SAMPLE_PATIENT_DESCRIPTIONS[key];
-                return (
-                  <button
-                    key={key}
-                    onClick={() => onTrySample(key)}
-                    className={`p-5 border-2 rounded-xl transition-all text-left cursor-pointer hover:shadow-lg ${sampleColors[key]}`}
-                  >
-                    <p className="font-semibold text-gray-900 text-sm">
-                      {desc.name} — {desc.subtitle}
-                    </p>
-                    <p className="text-xs text-gray-600 mt-1">{desc.description}</p>
-                    <p className="text-xs text-blue-600 mt-2 font-medium">→ {desc.highlights}</p>
-                  </button>
-                );
-              })}
-            </div>
-            <div className="mt-4">
-              <FictionalPatientDisclaimer />
-            </div>
-          </motion.div>
-        )}
 
         {/* How It Works */}
         <motion.div
@@ -203,6 +129,42 @@ export function LandingStep({ onStart, onTrySample }: LandingStepProps) {
                 )}
               </motion.div>
             ))}
+          </div>
+        </motion.div>
+
+        {/* Privacy Badges */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="bg-green-50 border-2 border-green-200 rounded-xl p-6 max-w-2xl mx-auto mb-8"
+        >
+          <div className="flex items-start gap-3 mb-4">
+            <Shield className="w-6 h-6 text-green-600 flex-shrink-0" />
+            <div>
+              <h3 className="font-semibold text-green-900 mb-2">
+                🔒 Your Privacy is Protected
+              </h3>
+              <p className="text-sm text-green-800">
+                We don't collect or store your medical information. All trial matching
+                happens locally in your browser. Your data never leaves your device and
+                is automatically cleared when you close the page.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-green-700">
+            <div className="flex items-center gap-2">
+              <Lock className="w-4 h-4" />
+              <span>No Data Storage</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              <span>HTTPS Encrypted</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Eye className="w-4 h-4" />
+              <span>Privacy First</span>
+            </div>
           </div>
         </motion.div>
 

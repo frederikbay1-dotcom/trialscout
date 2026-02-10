@@ -20,44 +20,48 @@ import { toast } from '@/hooks/use-toast';
 function transformPatientDataToProfile(patientData: PatientData): PatientProfile {
   const profile = patientData.biomarkerProfile;
   
-  // Transform biomarkers based on cancer type
+  // Transform biomarkers based on cancer type - must match backend models
   let biomarkers: any;
   
   if (patientData.cancerType === 'breast') {
+    // BreastBiomarkers model
     biomarkers = {
       ER: profile.hormoneReceptors.ER || 'unknown',
       PR: profile.hormoneReceptors.PR || 'unknown',
-      HER2: profile.expression.HER2 === '0' ? 'negative' :
+      HER2: profile.expression.HER2 === 'positive' ? 'positive' :
             profile.expression.HER2 === 'low' ? 'low' :
-            profile.expression.HER2 === 'positive' ? 'positive' : 'unknown',
-      Ki67: undefined,
+            profile.expression.HER2 === '0' ? 'negative' : 'unknown',
+      Ki67: null,
     };
   } else if (patientData.cancerType === 'lung') {
+    // LungBiomarkers model
     biomarkers = {
       EGFR: {
         status: profile.genetic.EGFR.state || 'unknown',
-        mutation: profile.genetic.EGFR.subtype !== 'unknown' ? profile.genetic.EGFR.subtype : undefined,
+        mutation: profile.genetic.EGFR.subtype !== 'unknown' ? profile.genetic.EGFR.subtype : null,
       },
       ALK: profile.genetic.ALK || 'unknown',
       ROS1: profile.genetic.ROS1 || 'unknown',
       KRAS: {
         status: profile.genetic.KRAS_G12C || 'unknown',
-        mutation: profile.genetic.KRAS_G12C === 'present' ? 'G12C' : undefined,
+        mutation: profile.genetic.KRAS_G12C === 'present' ? 'G12C' : null,
       },
       MET: {
         status: profile.genetic.MET || 'unknown',
-        alteration: undefined,
+        alteration: null,
       },
       BRAF: profile.genetic.BRAF || 'unknown',
       PDL1: {
         status: profile.expression.PDL1 !== 'unknown' ? 'present' : 'unknown',
-        percentage: profile.expression.PDL1 !== 'unknown' ? parseInt(profile.expression.PDL1) : undefined,
+        percentage: profile.expression.PDL1 === 'high' ? 50 :
+                   profile.expression.PDL1 === 'low' ? 5 : null,
       },
     };
   }
   
-  // Transform prior therapies
+  // Transform prior treatments - backend expects List[PriorTreatment] objects
   const prior_treatments: any[] = [];
+  
   if (patientData.cancerType === 'breast') {
     if (patientData.breastTreatments.cdk46Inhibitors === true) {
       prior_treatments.push({
@@ -69,6 +73,18 @@ function transformPatientDataToProfile(patientData: PatientData): PatientProfile
       prior_treatments.push({
         category: 'hormone_therapy',
         name: 'Endocrine therapy',
+      });
+    }
+    if (patientData.breastTreatments.antiHer2 === true) {
+      prior_treatments.push({
+        category: 'targeted_therapy',
+        name: 'Anti-HER2 therapy',
+      });
+    }
+    if (patientData.breastTreatments.adcs === true) {
+      prior_treatments.push({
+        category: 'targeted_therapy',
+        name: 'Antibody-drug conjugate',
       });
     }
   } else if (patientData.cancerType === 'lung') {
@@ -92,12 +108,26 @@ function transformPatientDataToProfile(patientData: PatientData): PatientProfile
     }
   }
   
+  // Add high-level treatment categories
+  if (patientData.priorTreatmentTypes.surgery) {
+    prior_treatments.push({
+      category: 'surgery',
+      name: 'Surgery',
+    });
+  }
+  if (patientData.priorTreatmentTypes.radiation) {
+    prior_treatments.push({
+      category: 'radiation',
+      name: 'Radiation therapy',
+    });
+  }
+  
   return {
     age: patientData.age || 50,
     sex: (patientData.sex || 'female') as 'male' | 'female' | 'other',
     cancer_type: patientData.cancerType as 'breast' | 'lung',
     stage: patientData.cancerStage || 'IV',
-    ecog: (patientData.ecogStatus?.toString() || 'unknown') as '0' | '1' | '2' | '3' | '4' | 'unknown',
+    ecog: patientData.ecogStatus !== null ? String(patientData.ecogStatus) as '0' | '1' | '2' | '3' | '4' | 'unknown' : '1',
     biomarkers,
     prior_treatments,
     line_of_therapy: (patientData.lineOfTherapy || 'later_line') as 'first' | 'post_targeted' | 'later_line',
@@ -121,6 +151,8 @@ export function useTrialMatching(
     queryKey: ['trial-matches', patientData],
     queryFn: async () => {
       const profile = transformPatientDataToProfile(patientData);
+      console.log('=== SENDING TO BACKEND ===');
+      console.log('Profile:', JSON.stringify(profile, null, 2));
       return api.trials.match(profile);
     },
     enabled: options.enabled !== false && patientData.cancerType !== null,

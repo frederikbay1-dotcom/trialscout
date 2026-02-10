@@ -1,0 +1,136 @@
+PATHOLOGY ASSOCIATES OF NEW YORK
+Anatomic Pathology Report
+
+PATIENT INFORMATION:
+Name: [REDACTED FOR DEMO]
+Patient ID: NYP-2025-00614
+Date of Birth: 03/15/1964 (Age: 61 years)
+Sex: Female
+MRN: 8471923
+
+CLINICAL INFORMATION:
+61-year-old female with history of invasive ductal carcinoma of the left breast, diagnosed 2021.
+Initially ER+/PR+/HER2-. Status post lumpectomy and adjuvant endocrine therapy.
+Developed metastatic disease to liver in 2024, treated with letrozole + palbociclib (CDK4/6 inhibitor).
+Recent imaging shows disease progression with new hepatic lesions.
+Repeat biopsy requested for biomarker confirmation prior to consideration of clinical trial enrollment.
+
+SPECIMEN:
+A. Liver, Segment VI, ultrasound-guided core needle biopsy
+
+DATE OF PROCEDURE: January 15, 2025
+DATE RECEIVED: January 15, 2025, 11:30 AM  
+DATE REPORTED: January 18, 2025, 14:45 PM
+
+================================================================================
+FINAL PATHOLOGIC DIAGNOSIS:
+================================================================================
+
+LIVER, SEGMENT VI, CORE NEEDLE BIOPSY:
+- Metastatic adenocarcinoma, consistent with breast primary
+- See immunohistochemistry results below
+
+GROSS DESCRIPTION:
+Received in formalin labeled with patient name and "liver biopsy" are three tan-brown tissue cores, 
+each measuring up to 1.5 cm in length and 0.1 cm in diameter. Entirely submitted in one cassette.
+
+MICROSCOPIC DESCRIPTION:
+Sections show hepatic parenchyma infiltrated by adenocarcinoma with morphologic features 
+consistent with breast origin. The tumor cells are arranged in cords and small glands within 
+the hepatic sinusoids. Tumor cells demonstrate moderate nuclear pleomorphism with vesicular 
+chromatin and small nucleoli. Mitotic figures are present (approximately 8 per 10 HPF). 
+No necrosis is identified.
+
+================================================================================
+IMMUNOHISTOCHEMISTRY RESULTS:
+================================================================================
+
+HORMONE RECEPTOR PANEL:
+
+Estrogen Receptor (ER) - Clone SP1:
+  RESULT: POSITIVE
+  Tumor cell staining: 95%
+  Intensity: Strong (3+)
+  H-Score: 285/300
+  Allred Score: 8/8
+  INTERPRETATION: Strong ER expression maintained from primary tumor
+
+Progesterone Receptor (PR) - Clone 1E2:
+  RESULT: POSITIVE
+  Tumor cell staining: 80%
+  Intensity: Moderate to Strong (2-3+)
+  H-Score: 220/300
+  Allred Score: 7/8
+  INTERPRETATION: Strong PR expression
+
+HER2/NEU ASSESSMENT:
+
+HER2 Immunohistochemistry (PATHWAY 4B5):
+  RESULT: 1+ (HER2-LOW / HER2-NEGATIVE)
+  Interpretation: Faint/barely perceptible incomplete membrane staining in >10% of tumor cells
+  
+  Per ASCO/CAP 2023 Guidelines:
+  - IHC Score 1+ = HER2-NEGATIVE for trastuzumab/pertuzumab eligibility
+  - IHC Score 1+ = HER2-LOW for novel antibody-drug conjugate eligibility (e.g., T-DXd)
+  
+  HER2 FISH/ISH: Not performed per current guidelines (FISH not indicated for IHC 0 or 1+)
+  
+  CLINICAL NOTE: The designation "HER2-low" has therapeutic implications. Clinical trials 
+  with trastuzumab deruxtecan (Enhertu) have shown efficacy in HER2-low metastatic breast cancer.
+
+PROLIFERATION MARKER:
+
+Ki-67 Proliferation Index (Clone MIB-1):
+  RESULT: 28%
+  Interpretation: Moderate proliferative activity
+
+ADDITIONAL CONFIRMATORY MARKERS:
+
+Cytokeratin 7 (CK7): POSITIVE (diffuse)
+GATA3: POSITIVE (diffuse, strong nuclear)
+Mammaglobin: POSITIVE (focal)
+Gross Cystic Disease Fluid Protein-15 (GCDFP-15): POSITIVE (focal)
+TTF-1: NEGATIVE
+CDX2: NEGATIVE
+CK20: NEGATIVE
+
+TUMOR GRADE (Modified Bloom-Richardson/Nottingham):
+  Tubule formation: Score 2 (moderate, 10-75%)
+  Nuclear pleomorphism: Score 2 (moderate variation)
+  Mitotic count: Score 2 (8 mitoses per 10 HPF)
+  TOTAL SCORE: 6/9
+  HISTOLOGIC GRADE: 2 (Moderately differentiated)
+
+================================================================================
+COMMENT:
+================================================================================
+
+The morphologic features and immunophenotype are consistent with metastatic breast carcinoma 
+of ductal type. The tumor retains strong estrogen and progesterone receptor expression, 
+confirming hormone receptor-positive status.
+
+HER2 testing shows IHC 1+ staining, which classifies this tumor as "HER2-low" per updated 
+ASCO/CAP guidelines (2023). While this result is considered HER2-negative for traditional 
+anti-HER2 therapies (trastuzumab, pertuzumab), it may predict benefit from newer 
+antibody-drug conjugates such as trastuzumab deruxtecan, which have shown efficacy in 
+the HER2-low population.
+
+The Ki-67 proliferation index of 28% indicates moderate proliferative activity.
+
+Comparison with prior pathology (2021 primary tumor): Similar ER/PR/HER2 profile maintained, 
+confirming endocrine-sensitive disease biology despite clinical progression on CDK4/6 inhibitor.
+
+Clinical correlation and multidisciplinary discussion recommended for treatment planning, 
+including consideration of clinical trial enrollment.
+
+================================================================================
+ELECTRONICALLY SIGNED:
+================================================================================
+Jennifer Martinez, MD, PhD
+Attending Pathologist
+Board Certified: Anatomic Pathology and Clinical Pathology
+Fellowship Trained: Breast Pathology
+
+DATE/TIME: January 18, 2025 at 14:45 PM EST
+
+Report distributed to: Dr. Sarah Chen (Medical Oncology)

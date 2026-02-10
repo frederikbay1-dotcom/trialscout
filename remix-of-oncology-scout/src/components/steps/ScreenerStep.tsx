@@ -10,7 +10,8 @@ import { InlineProgressBar } from "@/components/InlineProgressBar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { PatientData, CancerType, CancerStage } from "@/types/oncology";
+import { PatientData, CancerType, CancerStage, ECOGStatus } from "@/types/oncology";
+import { BiomarkerProfile, BiomarkerState, EGFRSubtype, defaultBiomarkerProfile } from "@/types/biomarkers";
 import {
   extractFromPathologyReport,
   extractFromOncologyNote,
@@ -29,18 +30,401 @@ export function ScreenerStep({
 }: ScreenerStepProps) {
   const [hasAutoFilled, setHasAutoFilled] = useState(false);
 
-  const handlePathologyUpload = () => {
-    const extracted = extractFromPathologyReport();
-    const updates = pathologyToPatientData(extracted);
-    onUpdatePatientData({ ...updates, hasPathologyReport: true });
-    setHasAutoFilled(true);
+  // Helper function to convert API biomarker format to frontend BiomarkerProfile
+  const convertApiBiomarkersToProfile = (apiBiomarkers: any): BiomarkerProfile => {
+    const profile: BiomarkerProfile = JSON.parse(JSON.stringify(defaultBiomarkerProfile));
+    
+    if (!apiBiomarkers || typeof apiBiomarkers !== 'object') {
+      return profile;
+    }
+
+    // Helper to convert API status to BiomarkerState
+    const toBiomarkerState = (value: any): BiomarkerState => {
+      if (!value || typeof value !== 'string') return "unknown";
+      const normalized = value.toLowerCase();
+      if (normalized === "positive" || normalized === "present" || normalized === "detected") return "present";
+      if (normalized === "negative" || normalized === "absent" || normalized === "not detected") return "absent";
+      return "unknown";
+    };
+
+    // Helper to convert EGFR subtype
+    const toEGFRSubtype = (subtype: any): EGFRSubtype => {
+      if (!subtype || typeof subtype !== 'string') return "unknown";
+      const normalized = subtype.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (normalized.includes("exon19") || normalized.includes("e19")) return "exon19_del";
+      if (normalized.includes("l858r")) return "l858r";
+      if (normalized.includes("exon20") || normalized.includes("e20")) return "exon20_ins";
+      if (normalized.includes("t790m")) return "t790m";
+      if (normalized === "unknown") return "unknown";
+      return "other";
+    };
+
+    // Process each biomarker from API
+    Object.entries(apiBiomarkers).forEach(([key, data]: [string, any]) => {
+      if (!data || typeof data !== 'object') return;
+      
+      const normalizedKey = key.toUpperCase().replace(/[^A-Z0-9_]/g, '');
+      const value = data.value || data.status;
+      const state = toBiomarkerState(value);
+
+      // Map to genetic alterations
+      if (normalizedKey === "EGFR") {
+        profile.genetic.EGFR = {
+          state,
+          subtype: toEGFRSubtype(data.subtype || data.mutation)
+        };
+      } else if (normalizedKey === "ALK") {
+        profile.genetic.ALK = state;
+      } else if (normalizedKey === "ROS1") {
+        profile.genetic.ROS1 = state;
+      } else if (normalizedKey === "BRAF") {
+        profile.genetic.BRAF = state;
+      } else if (normalizedKey === "KRAS" || normalizedKey === "KRASG12C" || normalizedKey === "KRAS_G12C") {
+        profile.genetic.KRAS_G12C = state;
+      } else if (normalizedKey === "MET") {
+        profile.genetic.MET = state;
+      } else if (normalizedKey === "RET") {
+        profile.genetic.RET = state;
+      } else if (normalizedKey === "NTRK") {
+        profile.genetic.NTRK = state;
+      }
+      // Map to expression markers
+      else if (normalizedKey === "PDL1" || normalizedKey === "PD-L1" || normalizedKey === "PD_L1") {
+        // PD-L1 can come as percentage (number) or status (string)
+        if (typeof data.percentage === 'number') {
+          // Store as "high" (≥50%) or "low" (<50%) for display
+          profile.expression.PDL1 = data.percentage >= 50 ? "high" : "low";
+        } else 
+        if (value && typeof value === 'string') {
+          const normalized = value.toLowerCase();
+          if (normalized.includes("high") || normalized.includes(">50") || normalized.includes("≥50")) {
+            profile.expression.PDL1 = "high";
+          } else if (normalized.includes("low") || normalized.includes("<50")) {
+            profile.expression.PDL1 = "low";
+          }
+        }
+      } else if (normalizedKey === "HER2") {
+        if (value && typeof value === 'string') {
+          const normalized = value.toLowerCase();
+          if (normalized.includes("3+") || normalized === "positive") {
+            profile.expression.HER2 = "positive";
+          } else if (normalized.includes("1+") || normalized.includes("2+") || normalized.includes("low")) {
+            profile.expression.HER2 = "low";
+          } else if (normalized === "0" || normalized === "negative") {
+            profile.expression.HER2 = "0";
+          }
+        }
+      }
+      // Map to hormone receptors (breast cancer)
+      else if (normalizedKey === "ER") {
+        profile.hormoneReceptors.ER = state;
+      } else if (normalizedKey === "PR") {
+        profile.hormoneReceptors.PR = state;
+      } else if (normalizedKey === "BRCA1" || normalizedKey === "BRCA2" || normalizedKey === "BRCA1_2" || normalizedKey === "BRCA") {
+        profile.hormoneReceptors.BRCA1_2 = state;
+      } else if (normalizedKey === "PIK3CA") {
+        profile.hormoneReceptors.PIK3CA = state;
+      } else if (normalizedKey === "ESR1") {
+        profile.hormoneReceptors.ESR1 = state;
+      }
+    });
+
+    return profile;
   };
 
-  const handleOncologyUpload = () => {
-    const extracted = extractFromOncologyNote();
-    const updates = oncologyNoteToPatientData(extracted);
-    onUpdatePatientData({ ...updates, hasOncologyNote: true });
-    setHasAutoFilled(true);
+  const handlePathologyUpload = (extractedData?: any) => {
+    if (extractedData) {
+      // Real API extraction
+      console.log('Extracted data from API:', extractedData);
+      
+      const updates: Partial<PatientData> = {
+        hasPathologyReport: true,
+      };
+      
+      // Extract patient demographics (age, sex)
+      if (extractedData.patient_demographics) {
+        const demographics = extractedData.patient_demographics;
+        if (demographics.age && typeof demographics.age === 'number') {
+          updates.age = demographics.age;
+        }
+        if (demographics.sex && typeof demographics.sex === 'string') {
+          const sex = demographics.sex.toLowerCase();
+          if (sex === 'male' || sex === 'female') {
+            updates.sex = sex as 'male' | 'female';
+          }
+        }
+      }
+      
+      // Extract clinical status (stage, ECOG, histology)
+      if (extractedData.clinical_status) {
+        const clinical = extractedData.clinical_status;
+        
+        // Stage
+        if (clinical.stage && typeof clinical.stage === 'string') {
+          let stage = clinical.stage.replace(/^Stage\s+/i, '').trim();
+          stage = stage.replace(/[ABC]$/i, '');
+          if (stage && ['I', 'II', 'III', 'IV'].includes(stage)) {
+            updates.cancerStage = stage as CancerStage;
+          }
+        }
+        
+        // ECOG (will be used in next step)
+        if (clinical.ecog && typeof clinical.ecog === 'string' && clinical.ecog !== 'unknown') {
+          // Convert string to number for ECOGStatus type
+          const ecogNum = parseInt(clinical.ecog, 10);
+          if (!isNaN(ecogNum) && ecogNum >= 0 && ecogNum <= 4) {
+            updates.ecogStatus = ecogNum as ECOGStatus;
+          }
+        }
+      }
+      
+      // Map API response to PatientData (legacy fields)
+      if (extractedData.cancer_type) {
+        updates.cancerType = extractedData.cancer_type as CancerType;
+      }
+      if (extractedData.stage && !updates.cancerStage) {
+        // Fallback to legacy stage field if clinical_status.stage not found
+        const stageStr = typeof extractedData.stage === 'string' ? extractedData.stage : String(extractedData.stage);
+        let stage = stageStr.replace(/^Stage\s+/i, '').trim();
+        stage = stage.replace(/[ABC]$/i, '');
+        updates.cancerStage = stage as CancerStage;
+      }
+      if (extractedData.biomarkers) {
+        // Convert API biomarker format to frontend BiomarkerProfile structure
+        const biomarkerProfile = convertApiBiomarkersToProfile(extractedData.biomarkers);
+        updates.biomarkerProfile = biomarkerProfile;
+        
+        // Also create legacy string array for backward compatibility
+        const biomarkerStrings: string[] = [];
+        Object.entries(extractedData.biomarkers).forEach(([key, data]: [string, any]) => {
+          if (data && typeof data === 'object') {
+            const value = data.value || data.status;
+            if (value && typeof value === 'string' && value !== 'unknown') {
+              const subtypeStr = data.subtype && typeof data.subtype === 'string' ? ` (${data.subtype})` : '';
+              biomarkerStrings.push(`${key}: ${value}${subtypeStr}`);
+            }
+          }
+        });
+        updates.biomarkers = biomarkerStrings;
+      }
+      
+      onUpdatePatientData(updates);
+      setHasAutoFilled(true);
+    } else {
+      // Fallback to mock extraction
+      const extracted = extractFromPathologyReport();
+      const updates = pathologyToPatientData(extracted);
+      onUpdatePatientData({ ...updates, hasPathologyReport: true });
+      setHasAutoFilled(true);
+    }
+  };
+
+  const handleOncologyUpload = (extractedData?: any) => {
+    if (extractedData) {
+      // Real API extraction
+      console.log('Oncology note extracted data:', extractedData);
+      
+      const updates: Partial<PatientData> = {
+        hasOncologyNote: true,
+      };
+      
+      // Extract patient demographics (age, sex) - preserve existing if not in oncology note
+      if (extractedData.patient_demographics) {
+        const demographics = extractedData.patient_demographics;
+        if (demographics.age && typeof demographics.age === 'number' && !patientData.age) {
+          updates.age = demographics.age;
+        }
+        if (demographics.sex && typeof demographics.sex === 'string' && !patientData.sex) {
+          const sex = demographics.sex.toLowerCase();
+          if (sex === 'male' || sex === 'female') {
+            updates.sex = sex as 'male' | 'female';
+          }
+        }
+      }
+      
+      // Extract clinical status (stage, ECOG)
+      if (extractedData.clinical_status) {
+        const clinical = extractedData.clinical_status;
+        
+        // Stage
+        if (clinical.stage && typeof clinical.stage === 'string') {
+          let stage = clinical.stage.replace(/^Stage\s+/i, '').trim();
+          stage = stage.replace(/[ABC]$/i, '');
+          if (stage && ['I', 'II', 'III', 'IV'].includes(stage)) {
+            updates.cancerStage = stage as CancerStage;
+          }
+        }
+        
+        // ECOG - this is critical for oncology notes
+        if (clinical.ecog && typeof clinical.ecog === 'string' && clinical.ecog !== 'unknown') {
+          // Convert string to number for ECOGStatus type
+          const ecogNum = parseInt(clinical.ecog, 10);
+          if (!isNaN(ecogNum) && ecogNum >= 0 && ecogNum <= 4) {
+            updates.ecogStatus = ecogNum as ECOGStatus;
+          }
+        }
+      }
+      
+      // Extract treatment status (line of therapy)
+      if (extractedData.treatment_status) {
+        const status = extractedData.treatment_status;
+        
+        console.log('🔍 Extracted treatment status:', status);
+        
+        let currentTreatmentStatus = "unknown";
+        let lineOfTherapy = "unknown";
+        
+        // Check if progression was detected
+        if (status.progression_detected === true || status.current_status?.includes("progressed")) {
+          
+          // Progressed on targeted therapy
+          if (status.current_status === "progressed_on_targeted") {
+            currentTreatmentStatus = "progressed_targeted";
+            lineOfTherapy = "second_line"; // Patient needs second-line now
+            
+            console.log('✅ Mapped to: progressed on targeted therapy');
+          }
+          // Progressed on chemo/immunotherapy
+          else if (status.current_status === "progressed_on_chemo" ||
+                   status.current_status === "progressed_on_immunotherapy") {
+            currentTreatmentStatus = "progressed_chemo_immuno";
+            lineOfTherapy = "second_line";
+            
+            console.log('✅ Mapped to: progressed on chemo/immunotherapy');
+          }
+        }
+        // Newly diagnosed
+        else if (status.current_status === "newly_diagnosed") {
+          currentTreatmentStatus = "first_line";
+          lineOfTherapy = "first_line";
+          
+          console.log('✅ Mapped to: newly diagnosed, first-line');
+        }
+        
+        // Update patient data with new fields
+        updates.currentTreatmentStatus = currentTreatmentStatus;
+        updates.lineOfTherapy = lineOfTherapy === "first_line" ? "first" :
+                                lineOfTherapy === "second_line" ? "post_targeted" :
+                                null;
+        updates.priorRegimenName = status.prior_regimen;
+        updates.progressionDetected = status.progression_detected;
+        
+        console.log('📊 Final status:', {
+          currentTreatmentStatus,
+          lineOfTherapy: updates.lineOfTherapy,
+          priorRegimen: status.prior_regimen,
+          progressionDetected: status.progression_detected
+        });
+      }
+      
+      // Map API response to PatientData (legacy fields)
+      if (extractedData.cancer_type) {
+        updates.cancerType = extractedData.cancer_type as CancerType;
+      }
+      if (extractedData.stage && !updates.cancerStage) {
+        // Fallback to legacy stage field
+        const stageStr = typeof extractedData.stage === 'string' ? extractedData.stage : String(extractedData.stage);
+        let stage = stageStr.replace(/^Stage\s+/i, '').trim();
+        stage = stage.replace(/[ABC]$/i, '');
+        if (stage && ['I', 'II', 'III', 'IV'].includes(stage)) {
+          updates.cancerStage = stage as CancerStage;
+        }
+      }
+      
+      // Map prior treatments from array to specific fields
+      if (extractedData.prior_treatments && Array.isArray(extractedData.prior_treatments)) {
+        const treatments = extractedData.prior_treatments;
+        
+        console.log('Processing prior treatments:', treatments);
+        
+        // Store detailed treatment history for PDF (NEW)
+        updates.treatmentHistory = treatments;
+        
+        // Helper function to check if treatment array contains any of the keywords
+        const hasAnyTreatment = (keywords: string[]): boolean => {
+          return treatments.some(t => {
+            // Handle both string format and object format {treatment: "...", date: "...", etc}
+            let treatmentText = '';
+            if (typeof t === 'string') {
+              treatmentText = t.toLowerCase();
+            } else if (t && typeof t === 'object') {
+              // Check treatment, name, category, details fields
+              treatmentText = [t.treatment, t.name, t.category, t.details].filter(Boolean).join(' ').toLowerCase();
+            }
+            return keywords.some(keyword => treatmentText.includes(keyword));
+          });
+        };
+        
+        // Map to high-level treatment categories
+        const surgery = hasAnyTreatment(['surgery', 'resection', 'lumpectomy', 'mastectomy', 'lobectomy']);
+        const radiation = hasAnyTreatment(['radiation', 'radiotherapy', 'xrt', 'sbrt', 'imrt']);
+        const chemotherapy = hasAnyTreatment([
+          'chemotherapy', 'chemo', 'paclitaxel', 'taxol', 'carboplatin', 'cisplatin',
+          'docetaxel', 'gemcitabine', 'pemetrexed', 'etoposide'
+        ]);
+        const immunotherapy = hasAnyTreatment([
+          'immunotherapy', 'pembrolizumab', 'keytruda', 'nivolumab', 'opdivo',
+          'atezolizumab', 'durvalumab', 'tecentriq'
+        ]);
+        const targetedTherapy = hasAnyTreatment([
+          'targeted', 'trastuzumab', 'herceptin', 'pertuzumab', 'perjeta',
+          'osimertinib', 'tagrisso', 'erlotinib', 'tarceva', 'gefitinib',
+          'iressa', 'alectinib', 'crizotinib', 'lorbrena'
+        ]);
+        const hormoneTherapy = hasAnyTreatment([
+          'hormone', 'endocrine', 'tamoxifen', 'letrozole', 'femara',
+          'anastrozole', 'arimidex', 'exemestane', 'fulvestrant', 'faslodex'
+        ]);
+        const cdk46 = hasAnyTreatment([
+          'palbociclib', 'ibrance', 'ribociclib', 'kisqali', 'abemaciclib', 'verzenio'
+        ]);
+        const adc = hasAnyTreatment([
+          'enhertu', 'kadcyla', 'trodelvy', 'trastuzumab deruxtecan', 'ado-trastuzumab',
+          'sacituzumab'
+        ]);
+        
+        updates.priorTreatmentTypes = {
+          surgery,
+          radiation,
+          medication: chemotherapy || targetedTherapy || immunotherapy || hormoneTherapy,
+        };
+        
+        // Map to cancer-specific treatment fields based on cancer type
+        const cancerType = extractedData.cancer_type || patientData.cancerType;
+        
+        if (cancerType === 'breast') {
+          updates.breastTreatments = {
+            endocrineTherapy: hormoneTherapy,
+            cdk46Inhibitors: cdk46,
+            antiHer2: hasAnyTreatment(['trastuzumab', 'herceptin', 'pertuzumab', 'perjeta']),
+            adcs: adc,
+          };
+        } else if (cancerType === 'lung') {
+          updates.lungTreatments = {
+            immunotherapy,
+            targetedTherapy,
+            platinumChemo: hasAnyTreatment(['carboplatin', 'cisplatin', 'platinum']),
+          };
+        }
+        
+        console.log('Mapped treatment categories:', {
+          priorTreatmentTypes: updates.priorTreatmentTypes,
+          breastTreatments: updates.breastTreatments,
+          lungTreatments: updates.lungTreatments,
+        });
+      } else {
+        console.log('No prior treatments found or not in array format');
+      }
+      
+      onUpdatePatientData(updates);
+      setHasAutoFilled(true);
+    } else {
+      // Fallback to mock extraction
+      const extracted = extractFromOncologyNote();
+      const updates = oncologyNoteToPatientData(extracted);
+      onUpdatePatientData({ ...updates, hasOncologyNote: true });
+      setHasAutoFilled(true);
+    }
   };
 
   const cancerTypeExtracted = patientData.extractedFields?.cancerType;
@@ -64,6 +448,49 @@ export function ScreenerStep({
               Help us understand your situation to find the best matches
             </p>
           </motion.div>
+
+          {/* Clinical Records Upload */}
+          <GlassContainer className="p-6 md:p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex-1">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-1">Clinical Records</h2>
+                <p className="text-base text-gray-600">
+                  Upload your medical documents for AI-powered data extraction
+                </p>
+              </div>
+              {!hasAutoFilled && (
+                <div className="flex items-center gap-2 text-sm font-medium bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Auto-fills your info</span>
+                </div>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <FileUploadZone
+                icon={<Microscope className="w-8 h-8" />}
+                label="Upload Pathology Report"
+                description="PDF or TXT files"
+                isUploaded={patientData.hasPathologyReport}
+                onUploadComplete={handlePathologyUpload}
+                cancerType={patientData.cancerType || undefined}
+              />
+              <FileUploadZone
+                icon={<ClipboardList className="w-8 h-8" />}
+                label="Upload Oncology Note"
+                description="PDF or TXT files"
+                isUploaded={patientData.hasOncologyNote}
+                onUploadComplete={handleOncologyUpload}
+                cancerType={patientData.cancerType || undefined}
+              />
+            </div>
+
+            {/* Security note */}
+            <p className="text-sm text-gray-500 flex items-center gap-2">
+              <Lock className="w-4 h-4" />
+              Encrypted and never shared
+            </p>
+          </GlassContainer>
 
           {/* Demographics */}
           <GlassContainer className="p-6 md:p-8">
@@ -122,47 +549,6 @@ export function ScreenerStep({
                 </RadioGroup>
               </div>
             </div>
-          </GlassContainer>
-
-          {/* Clinical Records Upload */}
-          <GlassContainer className="p-6 md:p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex-1">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-1">Clinical Records</h2>
-                <p className="text-base text-gray-600">
-                  Upload your medical documents for AI-powered data extraction
-                </p>
-              </div>
-              {!hasAutoFilled && (
-                <div className="flex items-center gap-2 text-sm font-medium bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full">
-                  <Sparkles className="w-4 h-4" />
-                  <span>Auto-fills your info</span>
-                </div>
-              )}
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <FileUploadZone
-                icon={<Microscope className="w-8 h-8" />}
-                label="Upload Pathology Report"
-                description="PDF, DOC, or image files"
-                isUploaded={patientData.hasPathologyReport}
-                onUploadComplete={handlePathologyUpload}
-              />
-              <FileUploadZone
-                icon={<ClipboardList className="w-8 h-8" />}
-                label="Upload Oncology Note"
-                description="Clinical notes from your oncologist"
-                isUploaded={patientData.hasOncologyNote}
-                onUploadComplete={handleOncologyUpload}
-              />
-            </div>
-
-            {/* Security note */}
-            <p className="text-sm text-gray-500 flex items-center gap-2">
-              <Lock className="w-4 h-4" />
-              Encrypted and never shared
-            </p>
           </GlassContainer>
 
           {/* Auto-fill Notice */}

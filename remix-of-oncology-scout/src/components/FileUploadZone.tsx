@@ -1,13 +1,14 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, Check, Loader2 } from "lucide-react";
+import { Upload, Check, Loader2, AlertCircle } from "lucide-react";
 
 interface FileUploadZoneProps {
   icon: React.ReactNode;
   label: string;
   description: string;
   isUploaded: boolean;
-  onUploadComplete: () => void;
+  onUploadComplete: (extractedData?: any) => void;
+  cancerType?: 'breast' | 'lung';
 }
 
 export function FileUploadZone({
@@ -16,20 +17,70 @@ export function FileUploadZone({
   description,
   isUploaded,
   onUploadComplete,
+  cancerType,
 }: FileUploadZoneProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = useCallback(async (file: File) => {
+    if (isUploaded || isScanning) return;
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'text/plain'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Please upload a PDF or text file');
+      return;
+    }
+
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setError('File is too large. Maximum size is 10MB');
+      return;
+    }
+
+    setIsScanning(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      if (cancerType) {
+        formData.append('cancer_type', cancerType);
+      }
+
+      const response = await fetch('http://localhost:8000/api/v1/extract-biomarkers', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to extract biomarkers');
+      }
+
+      const result = await response.json();
+      setIsScanning(false);
+      onUploadComplete(result.biomarker_data);
+    } catch (err: any) {
+      setIsScanning(false);
+      setError(err.message || 'Failed to process document');
+      console.error('Upload error:', err);
+    }
+  }, [isUploaded, isScanning, onUploadComplete, cancerType]);
 
   const handleUpload = useCallback(() => {
     if (isUploaded || isScanning) return;
+    fileInputRef.current?.click();
+  }, [isUploaded, isScanning]);
 
-    setIsScanning(true);
-    // Simulate AI scanning for 2.5 seconds
-    setTimeout(() => {
-      setIsScanning(false);
-      onUploadComplete();
-    }, 2500);
-  }, [isUploaded, isScanning, onUploadComplete]);
+  const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  }, [handleFileSelect]);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -40,24 +91,35 @@ export function FileUploadZone({
     setIsDragOver(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    handleUpload();
-  };
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  }, [handleFileSelect]);
 
   return (
-    <div
-      onClick={handleUpload}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      className={`upload-zone relative p-8 flex flex-col items-center justify-center min-h-[200px] text-center ${
-        isDragOver ? "upload-zone-active" : ""
-      } ${isUploaded ? "border-success bg-success/5" : ""} ${
-        isScanning ? "pointer-events-none" : ""
-      }`}
-    >
+    <>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,.txt"
+        onChange={handleFileInputChange}
+        className="hidden"
+      />
+      <div
+        onClick={handleUpload}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={`upload-zone relative p-8 flex flex-col items-center justify-center min-h-[200px] text-center ${
+          isDragOver ? "upload-zone-active" : ""
+        } ${isUploaded ? "border-success bg-success/5" : ""} ${
+          error ? "border-destructive" : ""
+        } ${isScanning ? "pointer-events-none" : ""}`}
+      >
       <AnimatePresence mode="wait">
         {isScanning ? (
           <motion.div
@@ -83,9 +145,9 @@ export function FileUploadZone({
             <div className="flex flex-col items-center gap-1">
               <div className="flex items-center gap-2 text-primary">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm font-medium">Analyzing document...</span>
+                <span className="text-sm font-medium">Analyzing document with AI...</span>
               </div>
-              <span className="text-xs text-muted-foreground">Extracting clinical data</span>
+              <span className="text-xs text-muted-foreground">This may take 5-10 seconds</span>
             </div>
           </motion.div>
         ) : isUploaded ? (
@@ -123,6 +185,17 @@ export function FileUploadZone({
           </motion.div>
         )}
       </AnimatePresence>
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="absolute bottom-2 left-2 right-2 bg-destructive/10 border border-destructive rounded-lg p-3 flex items-start gap-2"
+        >
+          <AlertCircle className="w-4 h-4 text-destructive flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-destructive">{error}</p>
+        </motion.div>
+      )}
     </div>
+    </>
   );
 }

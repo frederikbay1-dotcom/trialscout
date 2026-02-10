@@ -1,0 +1,189 @@
+PATHOLOGY ASSOCIATES OF NEW YORK
+Anatomic Pathology Report
+
+PATIENT INFORMATION:
+Name: [REDACTED FOR DEMO]
+Patient ID: NYP-2025-00892
+Date of Birth: 08/12/1969 (Age: 56 years)
+Sex: Female
+MRN: 9284731
+
+CLINICAL INFORMATION:
+56-year-old female with newly diagnosed breast cancer.
+Left breast mass detected on screening mammogram, confirmed by ultrasound.
+Core needle biopsy performed for definitive diagnosis and biomarker testing.
+Patient presents for treatment planning after recent diagnosis.
+
+SPECIMEN:
+A. Left breast, upper outer quadrant, ultrasound-guided core needle biopsy
+
+DATE OF PROCEDURE: January 10, 2025
+DATE RECEIVED: January 10, 2025, 09:15 AM  
+DATE REPORTED: January 13, 2025, 16:30 PM
+
+================================================================================
+FINAL PATHOLOGIC DIAGNOSIS:
+================================================================================
+
+LEFT BREAST, CORE NEEDLE BIOPSY:
+- Invasive ductal carcinoma, high grade
+- See immunohistochemistry results below
+
+GROSS DESCRIPTION:
+Received in formalin labeled with patient name and "left breast biopsy" are four tan tissue cores, 
+each measuring up to 1.8 cm in length and 0.15 cm in diameter. Entirely submitted in two cassettes.
+
+MICROSCOPIC DESCRIPTION:
+Sections show breast tissue infiltrated by invasive ductal carcinoma arranged in sheets and irregular 
+nests. The tumor cells demonstrate marked nuclear pleomorphism with vesicular chromatin and prominent 
+nucleoli. Numerous mitotic figures are present (32 per 10 HPF). Central necrosis is identified within 
+tumor nests. The tumor shows minimal tubule formation. Adjacent ductal carcinoma in situ (DCIS) is 
+present, high nuclear grade, with comedo necrosis.
+
+================================================================================
+IMMUNOHISTOCHEMISTRY RESULTS:
+================================================================================
+
+HORMONE RECEPTOR PANEL:
+
+Estrogen Receptor (ER) - Clone SP1:
+  RESULT: NEGATIVE
+  Tumor cell staining: 0%
+  Intensity: None
+  H-Score: 0/300
+  Allred Score: 0/8
+  INTERPRETATION: Complete absence of ER expression
+  
+  Note: Per ASCO/CAP guidelines (2020), ER is considered positive if ≥1% of tumor cells 
+  show nuclear staining. This tumor shows 0% staining and is therefore ER-negative.
+
+Progesterone Receptor (PR) - Clone 1E2:
+  RESULT: NEGATIVE
+  Tumor cell staining: 0%
+  Intensity: None
+  H-Score: 0/300
+  Allred Score: 0/8
+  INTERPRETATION: Complete absence of PR expression
+
+HER2/NEU ASSESSMENT:
+
+HER2 Immunohistochemistry (PATHWAY 4B5):
+  RESULT: 0 (HER2-NEGATIVE)
+  Interpretation: No staining observed OR incomplete membrane staining that is faint/barely 
+  perceptible and within ≤10% of tumor cells
+  
+  Per ASCO/CAP 2023 Guidelines:
+  - IHC Score 0 = HER2-NEGATIVE
+  - FISH/ISH testing not performed (not indicated for IHC 0)
+  
+  CLINICAL NOTE: This tumor is classified as HER2-negative. It does not meet criteria for 
+  HER2-low (which requires IHC 1+ or 2+/ISH-).
+
+TRIPLE-NEGATIVE BREAST CANCER CONFIRMATION:
+This tumor is ER-negative, PR-negative, and HER2-negative, confirming the diagnosis of 
+TRIPLE-NEGATIVE BREAST CANCER (TNBC).
+
+PROLIFERATION MARKER:
+
+Ki-67 Proliferation Index (Clone MIB-1):
+  RESULT: 78%
+  Interpretation: Very high proliferative activity
+  
+  Note: Ki-67 >30% indicates high proliferative activity. This tumor shows exceptionally 
+  high proliferation at 78%, consistent with aggressive biology.
+
+ADDITIONAL CONFIRMATORY MARKERS:
+
+Cytokeratin 7 (CK7): POSITIVE (diffuse)
+GATA3: POSITIVE (focal, supporting breast primary)
+Mammaglobin: NEGATIVE
+CK5/6: POSITIVE (focal - basal marker, common in TNBC)
+EGFR: POSITIVE (focal membrane staining - seen in ~50% of TNBC)
+
+TUMOR GRADE (Modified Bloom-Richardson/Nottingham):
+  Tubule formation: Score 3 (minimal tubule formation, <10%)
+  Nuclear pleomorphism: Score 3 (marked variation, vesicular chromatin, prominent nucleoli)
+  Mitotic count: Score 3 (32 mitoses per 10 HPF - high)
+  TOTAL SCORE: 9/9
+  HISTOLOGIC GRADE: 3 (Poorly differentiated)
+
+================================================================================
+PD-L1 TESTING:
+================================================================================
+
+PD-L1 Immunohistochemistry (22C3 pharmDx):
+  Combined Positive Score (CPS): 15
+  Tumor Proportion Score (TPS): 8%
+  
+  Interpretation: PD-L1 POSITIVE by CPS ≥10 criteria
+  
+  Clinical Significance:
+  - CPS ≥10 indicates potential benefit from pembrolizumab + chemotherapy per KEYNOTE-355 trial
+  - PD-L1 positivity by CPS in TNBC predicts improved outcomes with immune checkpoint inhibitors
+  - Consider pembrolizumab combination therapy for metastatic disease
+
+================================================================================
+COMMENT:
+================================================================================
+
+This is an invasive ductal carcinoma, high grade (Grade 3), with triple-negative phenotype 
+(ER-negative, PR-negative, HER2-negative).
+
+TRIPLE-NEGATIVE BREAST CANCER represents approximately 15% of all breast cancers and is defined 
+by the absence of ER, PR, and HER2 expression. TNBC is associated with:
+- Younger age at diagnosis
+- Higher histologic grade
+- Higher Ki-67 proliferation index
+- More aggressive clinical behavior
+- Higher risk of visceral metastases
+- Higher risk of brain metastases
+- Better response to chemotherapy (paradoxically)
+- Lack of endocrine therapy options
+- Lack of HER2-targeted therapy options
+
+PD-L1 POSITIVITY (CPS 15) in this tumor suggests potential benefit from immune checkpoint 
+inhibitor therapy. Per KEYNOTE-355 study results, pembrolizumab combined with chemotherapy 
+significantly improved outcomes in PD-L1 positive (CPS ≥10) TNBC compared to chemotherapy alone.
+
+TREATMENT IMPLICATIONS:
+- Chemotherapy is the primary systemic treatment modality
+- Consider neoadjuvant chemotherapy if patient desires breast conservation
+- Pembrolizumab + chemotherapy should be considered for metastatic disease (CPS ≥10)
+- Germline BRCA testing recommended for all TNBC patients
+- PARP inhibitor therapy if BRCA mutation identified
+- Clinical trial enrollment should be considered given aggressive biology
+
+Ki-67 proliferation index of 78% indicates very high proliferative activity and aggressive 
+tumor biology. Combined with Grade 3 histology, this suggests high-risk disease requiring 
+aggressive multimodal treatment.
+
+Additional molecular profiling (genomic testing, BRCA testing) recommended to identify 
+potential therapeutic targets and assess hereditary risk.
+
+================================================================================
+ANCILLARY STUDIES RECOMMENDED:
+================================================================================
+
+1. GERMLINE BRCA1/2 TESTING: 
+   Recommended for all patients with TNBC, particularly those <60 years old
+   Identifies candidates for PARP inhibitor therapy (olaparib, talazoparib)
+
+2. TUMOR GENOMIC PROFILING:
+   Consider next-generation sequencing (NGS) panel to identify actionable mutations
+   May identify PIK3CA, AKT1, or other targetable alterations
+
+3. IMAGING WORKUP:
+   Complete staging with CT chest/abdomen/pelvis
+   Consider brain MRI given TNBC's propensity for CNS metastases
+
+================================================================================
+ELECTRONICALLY SIGNED:
+================================================================================
+Jennifer Martinez, MD, PhD
+Attending Pathologist
+Board Certified: Anatomic Pathology and Clinical Pathology
+Fellowship Trained: Breast Pathology
+
+DATE/TIME: January 13, 2025 at 16:30 PM EST
+
+Report distributed to: Dr. Rachel Thompson (Medical Oncology)

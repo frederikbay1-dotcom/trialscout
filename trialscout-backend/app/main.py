@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 
 from app.models.patient import PatientProfile, CancerType
+from app.api.extraction import router as extraction_router
 from app.models.trial import Trial, TrialPartialUpdate
 from app.models.matching import MatchingResponse
 from app.models.trial_db import TrialDB
@@ -59,6 +60,9 @@ else:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+# Include routers
+app.include_router(extraction_router)
 
 
 @app.get("/")
@@ -150,6 +154,13 @@ async def match_patient(patient: PatientProfile, db: Session = Depends(get_db)):
     Returns ranked trials with scores, reasons, and confidence levels.
     """
     try:
+        logger.info(f"=== RECEIVED PATIENT PROFILE ===")
+        logger.info(f"Cancer type: {patient.cancer_type}")
+        logger.info(f"Stage: {patient.stage}")
+        logger.info(f"ECOG: {patient.ecog}")
+        logger.info(f"Biomarkers: {patient.biomarkers}")
+        logger.info(f"Prior treatments: {patient.prior_treatments}")
+        
         # Import here to avoid circular dependency
         from app.matching.matcher import match_trials
         
@@ -165,6 +176,9 @@ async def match_patient(patient: PatientProfile, db: Session = Depends(get_db)):
         return result
     except Exception as e:
         logger.error(f"Matching error: {e}")
+        logger.error(f"Error type: {type(e)}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Matching engine error: {str(e)}")
 
 

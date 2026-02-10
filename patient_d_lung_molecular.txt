@@ -1,0 +1,267 @@
+MEMORIAL SLOAN KETTERING CANCER CENTER
+Molecular Diagnostics Service
+Department of Pathology
+
+COMPREHENSIVE MOLECULAR PROFILE REPORT
+
+PATIENT INFORMATION:
+Name: [REDACTED FOR DEMO]
+Patient ID: MSK-2024-05812
+Date of Birth: 06/22/1967 (Age: 58 years)
+Sex: Male
+MRN: 7856234
+
+ORDERING PHYSICIAN: Michael Rodriguez, MD (Thoracic Oncology)
+
+SPECIMEN INFORMATION:
+Specimen Type: Lung tissue, right upper lobe, CT-guided core needle biopsy
+Collection Date: November 28, 2024
+Received Date: November 28, 2024, 14:00 PM
+Report Date: December 5, 2024, 10:30 AM
+
+CLINICAL INDICATION:
+58-year-old male with newly diagnosed lung adenocarcinoma, stage IV with brain and bone metastases.
+Comprehensive molecular testing requested for treatment selection and clinical trial eligibility.
+
+PATHOLOGIC DIAGNOSIS:
+Right upper lobe lung mass, core needle biopsy:
+  - ADENOCARCINOMA, LUNG PRIMARY
+  - See molecular testing results below
+
+================================================================================
+SPECIMEN ADEQUACY:
+================================================================================
+Tumor Content: 65% (adequate for all requested assays)
+Necrosis: Minimal (<5%)
+Quality Control: PASSED - Sufficient cellularity and DNA quality
+
+================================================================================
+MOLECULAR TESTING METHODOLOGY:
+================================================================================
+- Next-Generation Sequencing (NGS): MSK-IMPACT (Memorial Sloan Kettering-Integrated Mutation Profiling of Actionable Cancer Targets)
+  Coverage: 505 cancer-associated genes
+- Immunohistochemistry (IHC): PD-L1 (22C3 pharmDx), ALK (D5F3)
+- Fluorescence In Situ Hybridization (FISH): ALK, ROS1
+- Tissue Quality: Formalin-fixed, paraffin-embedded (FFPE)
+
+================================================================================
+ACTIONABLE MUTATIONS DETECTED:
+================================================================================
+
+EGFR (Epidermal Growth Factor Receptor) - TIER 1 ACTIONABLE
+  Gene: EGFR (chr 7:55174776)
+  Variant: Exon 19 deletion
+  Specific Mutation: p.Glu746_Ala750del (c.2236_2250del15)
+  Alternative Nomenclature: E746_A750del, del E746-A750
+  Variant Allele Frequency (VAF): 38.4%
+  Variant Classification: PATHOGENIC
+  Functional Impact: ACTIVATING MUTATION
+  
+  CLINICAL SIGNIFICANCE:
+  This is a well-characterized activating mutation in the EGFR tyrosine kinase domain.
+  Associated with sensitivity to EGFR tyrosine kinase inhibitors (TKIs).
+  
+  FDA-APPROVED TARGETED THERAPIES:
+  - First-line: Osimertinib (Tagrisso), Erlotinib (Tarceva), Gefitinib (Iressa), Afatinib (Gilotrif)
+  - Osimertinib is preferred first-line agent per NCCN guidelines
+  
+  PROGNOSIS: EGFR exon 19 deletions are associated with longer progression-free survival 
+  on EGFR TKI therapy compared to wild-type EGFR (median PFS 12-18 months).
+
+================================================================================
+RESISTANCE MUTATIONS: NONE DETECTED
+================================================================================
+EGFR T790M: NOT DETECTED (associated with acquired TKI resistance)
+EGFR C797S: NOT DETECTED (associated with osimertinib resistance)
+
+Note: These resistance mutations are typically acquired after TKI treatment and are 
+not expected in treatment-naive patients.
+
+================================================================================
+ADDITIONAL GENOMIC ALTERATIONS TESTED:
+================================================================================
+
+ALK (Anaplastic Lymphoma Kinase):
+  Method: IHC (D5F3 clone) + FISH confirmation
+  Result: NEGATIVE - No rearrangement detected
+  IHC Score: 0 (no staining)
+  FISH: No break-apart signal (<15% of cells)
+  
+ROS1 (ROS Proto-Oncogene 1):
+  Method: FISH break-apart probe
+  Result: NEGATIVE - No rearrangement detected
+  Positive cells: 2% (cutoff: ≥15%)
+
+RET (Rearranged During Transfection):
+  Method: NGS
+  Result: NEGATIVE - No fusion detected
+
+BRAF:
+  V600E Mutation: NOT DETECTED
+  Other BRAF variants: NOT DETECTED
+
+KRAS:
+  Result: NEGATIVE - No mutations detected in codons 12, 13, 61, 117, 146
+  Note: Typically mutually exclusive with EGFR mutations
+
+ERBB2 (HER2):
+  Amplification: NOT DETECTED
+  Mutations: NOT DETECTED
+
+MET:
+  Exon 14 Skipping Mutation: NOT DETECTED
+  Amplification: NOT DETECTED (MET/CEP7 ratio: 1.2, not amplified)
+
+NTRK1/2/3:
+  Fusions: NOT DETECTED
+
+NRG1:
+  Fusions: NOT DETECTED
+
+PIK3CA:
+  Mutations: NOT DETECTED
+
+TP53:
+  Mutation: c.524G>A (p.Arg175His) - DETECTED
+  VAF: 42.1%
+  Clinical Note: TP53 mutations are common in lung cancer but not currently actionable
+
+STK11 (LKB1):
+  Mutation: NOT DETECTED
+
+KEAP1:
+  Mutation: NOT DETECTED
+
+================================================================================
+IMMUNOHISTOCHEMISTRY:
+================================================================================
+
+PD-L1 Expression (22C3 pharmDx assay):
+  Tumor Proportion Score (TPS): 5%
+  Interpretation: LOW EXPRESSION
+  
+  Clinical Significance:
+  - TPS <1%: PD-L1 negative
+  - TPS 1-49%: PD-L1 low/intermediate (5% = LOW)
+  - TPS ≥50%: PD-L1 high
+  
+  Therapy Implications:
+  - Pembrolizumab monotherapy FDA approved for TPS ≥1% (patient qualifies)
+  - However, EGFR+ patients typically treated with EGFR TKI first-line per guidelines
+  - Checkpoint inhibitors may be considered after TKI progression
+
+ALK Immunohistochemistry (D5F3 clone):
+  Result: NEGATIVE (score 0)
+  No cytoplasmic staining in tumor cells
+
+HISTOLOGIC MARKERS:
+  TTF-1 (Thyroid Transcription Factor-1): POSITIVE (diffuse nuclear)
+  Napsin A: POSITIVE (diffuse cytoplasmic)
+  CK7: POSITIVE
+  CK20: NEGATIVE
+  p40: NEGATIVE
+  
+  Interpretation: Profile consistent with lung adenocarcinoma primary
+
+================================================================================
+TUMOR MUTATIONAL BURDEN (TMB):
+================================================================================
+Result: 3.8 mutations per megabase (mut/Mb)
+Interpretation: TMB-LOW
+
+Clinical Note: TMB-low tumors typically have limited benefit from immunotherapy.
+EGFR-mutant tumors characteristically have low TMB.
+
+Reference Range:
+  - TMB-Low: <10 mut/Mb
+  - TMB-Intermediate: 10-20 mut/Mb
+  - TMB-High: >20 mut/Mb (associated with checkpoint inhibitor response)
+
+================================================================================
+MICROSATELLITE INSTABILITY (MSI):
+================================================================================
+Result: Microsatellite Stable (MSS)
+No evidence of mismatch repair deficiency
+
+================================================================================
+ADDITIONAL FINDINGS:
+================================================================================
+
+HISTOLOGIC SUBTYPE: Adenocarcinoma, acinar and papillary pattern
+TUMOR GRADE: Moderately differentiated (Grade 2)
+LYMPHOVASCULAR INVASION: Not identified in this small biopsy sample
+NECROSIS: <5%
+
+TUMOR STAGING (based on clinical information):
+  cT3N2M1c - Stage IVB
+  - Primary tumor: Right upper lobe (4.2 cm by CT)
+  - Lymph nodes: Mediastinal lymphadenopathy (N2)
+  - Distant metastases: Brain (multiple lesions), bone (T10 vertebra)
+
+================================================================================
+CLINICAL INTERPRETATION & RECOMMENDATIONS:
+================================================================================
+
+SUMMARY:
+This lung adenocarcinoma harbors an EGFR exon 19 deletion, a well-established oncogenic 
+driver mutation that predicts sensitivity to EGFR tyrosine kinase inhibitors.
+
+TREATMENT RECOMMENDATIONS:
+1. FIRST-LINE THERAPY:
+   - Osimertinib (Tagrisso) 80 mg daily is the preferred first-line agent
+   - Alternative TKIs: erlotinib, gefitinib, afatinib (if osimertinib not available)
+   - Expected response rate: 70-80%
+   - Median PFS: 15-18 months
+
+2. AVOID CONCURRENT IMMUNOTHERAPY:
+   - EGFR TKI + checkpoint inhibitor combinations show increased toxicity without benefit
+   - Reserve immunotherapy for post-TKI progression (if no T790M)
+
+3. BRAIN METASTASES MANAGEMENT:
+   - Osimertinib has excellent CNS penetration
+   - Consider concurrent stereotactic radiosurgery (SRS) depending on lesion size/number
+   - Monitor CNS response closely with brain MRI
+
+4. MONITORING:
+   - Repeat imaging every 6-8 weeks initially
+   - At progression: Repeat biopsy or liquid biopsy to assess for T790M or other resistance mechanisms
+   - ~60% of patients develop T790M resistance mutation → treatable with continued osimertinib
+
+5. CLINICAL TRIAL CONSIDERATIONS:
+   - Patient may be eligible for trials combining EGFR TKI with novel agents
+   - Consider fourth-generation EGFR inhibitors at progression
+
+PROGNOSIS:
+EGFR-mutant NSCLC with exon 19 deletion has favorable prognosis with targeted therapy.
+Median overall survival with modern TKI therapy: 30-40 months.
+
+ADDITIONAL NOTES:
+- No concurrent resistance mutations detected (T790M negative - expected in treatment-naive patient)
+- Low PD-L1 expression and TMB-low status suggest limited benefit from immunotherapy
+- TP53 co-mutation detected but not currently actionable
+- Mutually exclusive pattern with KRAS (as expected)
+
+================================================================================
+REPORT REVIEWED AND APPROVED BY:
+================================================================================
+
+Robert Chen, MD, PhD
+Director, Molecular Diagnostics Laboratory
+Board Certified: Molecular Genetic Pathology, Anatomic Pathology
+CLIA Laboratory Director
+
+Maria Gonzalez, PhD
+Clinical Molecular Geneticist
+ABMGG Board Certified
+
+Date/Time: December 5, 2024 at 10:30 AM EST
+
+Report Status: FINAL
+CLIA #: 33D2098667
+CAP #: 7033566
+
+================================================================================
+For questions regarding this report, contact:
+Molecular Diagnostics Service: (212) 639-5905
+Clinical interpretation: Thoracic Oncology Service: (212) 639-7590
+================================================================================

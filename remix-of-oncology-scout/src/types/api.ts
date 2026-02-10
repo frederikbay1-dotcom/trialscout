@@ -63,7 +63,7 @@ export interface PatientProfile {
   ecog: '0' | '1' | '2' | '3' | '4' | 'unknown';
   biomarkers: BreastBiomarkers | LungBiomarkers;
   prior_treatments: PriorTreatment[];
-  line_of_therapy: 'first' | 'post_targeted' | 'later_line';
+  line_of_therapy?: 'first' | 'post_targeted' | 'later_line';
 }
 
 // Trial Types

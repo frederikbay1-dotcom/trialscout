@@ -4,14 +4,114 @@ interface TreatmentHistorySectionProps {
   patientData: PatientData;
 }
 
-function getLineOfTherapyLabel(line: string | null): string {
-  switch (line) {
+function formatCurrentLine(patientData: PatientData): string {
+  const status = patientData.currentTreatmentStatus;
+  const regimen = patientData.priorRegimenName;
+  const progressed = patientData.progressionDetected;
+  
+  // If progression detected
+  if (progressed === true || status?.includes("progressed")) {
+    
+    // Progressed on targeted therapy
+    if (status === "progressed_targeted" || status?.includes("targeted")) {
+      if (regimen) {
+        // Capitalize first letter of drug name
+        const drugName = regimen.charAt(0).toUpperCase() + regimen.slice(1);
+        return `Progressed on targeted therapy (${drugName})`;
+      }
+      return "Progressed on targeted therapy";
+    }
+    
+    // Progressed on chemo/immunotherapy
+    if (status === "progressed_chemo_immuno") {
+      return "Progressed on chemotherapy/immunotherapy";
+    }
+    
+    // Generic progression
+    return "Progressed on prior therapy";
+  }
+  
+  // First-line (newly diagnosed)
+  if (status === "first_line") {
+    return "First-line (newly diagnosed)";
+  }
+  
+  // Fallback to legacy line of therapy mapping
+  switch (patientData.lineOfTherapy) {
     case "first": return "First-line (newly diagnosed)";
     case "post_targeted": return "Progressed on targeted therapy";
     case "post_chemo_immuno": return "Progressed on chemo/immunotherapy";
     case "later_line": return "Later-line (multiple prior therapies)";
-    default: return "Not specified";
+    default: return "Treatment line not determined";
   }
+}
+
+// Helper function to identify drug class
+function identifyDrugClass(treatment: string): string {
+  if (!treatment) return '';
+  
+  const treatmentLower = treatment.toLowerCase();
+  
+  // EGFR TKIs
+  if (treatmentLower.includes('osimertinib') || treatmentLower.includes('tagrisso')) {
+    return 'EGFR TKI';
+  }
+  if (treatmentLower.includes('erlotinib') || treatmentLower.includes('tarceva')) {
+    return 'EGFR TKI';
+  }
+  if (treatmentLower.includes('gefitinib') || treatmentLower.includes('iressa')) {
+    return 'EGFR TKI';
+  }
+  
+  // CDK4/6 inhibitors
+  if (treatmentLower.includes('palbociclib') || treatmentLower.includes('ibrance')) {
+    return 'CDK4/6 inhibitor';
+  }
+  if (treatmentLower.includes('ribociclib') || treatmentLower.includes('kisqali')) {
+    return 'CDK4/6 inhibitor';
+  }
+  if (treatmentLower.includes('abemaciclib') || treatmentLower.includes('verzenio')) {
+    return 'CDK4/6 inhibitor';
+  }
+  
+  // HER2-targeted
+  if (treatmentLower.includes('trastuzumab') || treatmentLower.includes('herceptin')) {
+    return 'HER2-targeted';
+  }
+  if (treatmentLower.includes('pertuzumab') || treatmentLower.includes('perjeta')) {
+    return 'HER2-targeted';
+  }
+  
+  // Chemotherapy
+  if (treatmentLower.includes('paclitaxel') || treatmentLower.includes('taxol')) {
+    return 'Chemotherapy';
+  }
+  if (treatmentLower.includes('carboplatin') || treatmentLower.includes('cisplatin')) {
+    return 'Chemotherapy';
+  }
+  
+  return '';
+}
+
+// Helper function to format date
+function formatDate(dateStr: string): string {
+  if (!dateStr) return '';
+  
+  // If format is YYYY-MM
+  if (/^\d{4}-\d{2}$/.test(dateStr)) {
+    const [year, month] = dateStr.split('-');
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${monthNames[parseInt(month) - 1]} ${year}`;
+  }
+  
+  return dateStr;
+}
+
+// Helper function to capitalize first letter
+function capitalizeFirstLetter(str: string): string {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function getTherapyEndDateLabel(date: string | null): string {
@@ -37,6 +137,51 @@ function getBestResponseLabel(response: string | null): string {
 
 export function TreatmentHistorySection({ patientData }: TreatmentHistorySectionProps) {
   const getTreatmentList = () => {
+    // NEW: Use detailed treatment history if available
+    if (patientData.treatmentHistory && Array.isArray(patientData.treatmentHistory) && patientData.treatmentHistory.length > 0) {
+      return patientData.treatmentHistory.map((t, index) => {
+        // Handle both string format and object format
+        if (typeof t === 'string') {
+          return `${index + 1}. ${capitalizeFirstLetter(t)}`;
+        }
+        
+        // If it's an object with details
+        let line = `${index + 1}. ${capitalizeFirstLetter(t.treatment || t.name || 'Unknown treatment')}`;
+        
+        // Add drug class if we can identify it
+        const drugClass = identifyDrugClass(t.treatment || t.name);
+        if (drugClass) {
+          line += ` (${drugClass})`;
+        }
+        
+        // Add date
+        if (t.date) {
+          line += ` - ${formatDate(t.date)}`;
+        }
+        
+        // Add duration
+        if (t.duration) {
+          line += ` - Duration: ${t.duration}`;
+        }
+        
+        // Add response
+        if (t.response) {
+          line += ` - Response: ${capitalizeFirstLetter(t.response)}`;
+        }
+        
+        // Add details/site
+        if (t.details) {
+          line += ` - ${t.details}`;
+        }
+        if (t.site) {
+          line += ` - Site: ${t.site}`;
+        }
+        
+        return line;
+      });
+    }
+    
+    // FALLBACK: Use legacy treatment categories
     const treatments: string[] = [];
     
     if (patientData.priorTreatmentTypes.surgery) {
@@ -81,7 +226,7 @@ export function TreatmentHistorySection({ patientData }: TreatmentHistorySection
           <div>
             <p className="text-slate-500 text-xs uppercase tracking-wide mb-1">Current Line</p>
             <p className="font-medium text-slate-800">
-              {getLineOfTherapyLabel(patientData.lineOfTherapy)}
+              {formatCurrentLine(patientData)}
             </p>
           </div>
           
@@ -111,11 +256,11 @@ export function TreatmentHistorySection({ patientData }: TreatmentHistorySection
         <div>
           <p className="text-slate-500 text-xs uppercase tracking-wide mb-2">Prior Treatments Received</p>
           {treatments.length > 0 ? (
-            <ul className="list-disc list-inside space-y-1 text-slate-800">
+            <div className="space-y-1 text-slate-800">
               {treatments.map((treatment, i) => (
-                <li key={i}>{treatment}</li>
+                <div key={i} className="text-sm leading-relaxed">{treatment}</div>
               ))}
-            </ul>
+            </div>
           ) : (
             <p className="text-slate-600 italic">
               {hasAnyTreatment ? "Treatment types not specified" : "No prior systemic treatment reported"}

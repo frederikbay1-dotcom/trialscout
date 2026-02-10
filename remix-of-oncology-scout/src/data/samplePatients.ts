@@ -216,26 +216,26 @@ export const SAMPLE_PATIENT_DESCRIPTIONS: Record<SamplePatientKey, {
 }> = {
   her2_low: {
     name: "Sample Patient A",
-    subtitle: "HER2-low Breast Cancer Example",
-    description: "Fictional example: 61yo female, Stage IV ER+/PR+/HER2-low breast cancer",
+    subtitle: "HER2-low Breast Cancer",
+    description: "61yo female, Stage IV ER+/PR+/HER2-low breast cancer",
     highlights: "Demonstrates HER2-low interpretation per FDA 2022",
   },
   post_cdk46: {
     name: "Sample Patient B",
-    subtitle: "Post-CDK4/6 Inhibitor Example",
-    description: "Fictional example: 52yo female, Stage IV ER+/HER2-, progressed on palbociclib",
+    subtitle: "Post-CDK4/6 Inhibitor",
+    description: "52yo female, Stage IV ER+/HER2-, progressed on palbociclib",
     highlights: "Demonstrates treatment sequencing logic",
   },
   tnbc: {
     name: "Sample Patient C",
-    subtitle: "Triple-Negative First-Line Example",
-    description: "Fictional example: 45yo female, Stage IV TNBC, PD-L1 high, first-line",
+    subtitle: "Triple-Negative First-Line",
+    description: "45yo female, Stage IV TNBC, PD-L1 high, first-line",
     highlights: "Demonstrates stage exclusion safety guards",
   },
   egfr: {
     name: "Sample Patient D",
-    subtitle: "EGFR+ NSCLC Example",
-    description: "Fictional example: 58yo male, Stage IV NSCLC with EGFR exon 19 deletion",
+    subtitle: "EGFR+ NSCLC",
+    description: "58yo male, Stage IV NSCLC with EGFR exon 19 deletion",
     highlights: "Demonstrates lung cancer matching",
   },
 };

@@ -1,0 +1,253 @@
+NYU LANGONE HEALTH - PERLMUTTER CANCER CENTER
+Medical Oncology Progress Note
+
+PATIENT: [REDACTED FOR DEMO]
+MRN: 8471923
+DOB: 03/15/1964 (Age: 61)
+Date of Visit: January 22, 2025
+Visit Type: Follow-up - Metastatic Breast Cancer
+
+ATTENDING PHYSICIAN: Sarah Chen, MD
+Division: Breast Medical Oncology
+
+================================================================================
+CHIEF COMPLAINT:
+================================================================================
+Follow-up visit to discuss treatment options after disease progression on CDK4/6 inhibitor.
+
+================================================================================
+HISTORY OF PRESENT ILLNESS:
+================================================================================
+
+Ms. [REDACTED] is a pleasant 61-year-old woman with metastatic hormone receptor-positive, 
+HER2-low breast cancer who presents today to discuss next treatment options.
+
+ONCOLOGIC HISTORY:
+- 2021: Diagnosed with stage IIA (T2N0M0) invasive ductal carcinoma, left breast
+  - ER 90%+, PR 85%+, HER2 IHC 1+ (HER2-negative at that time)
+  - Grade 2, Ki-67 22%
+  - Treated with lumpectomy + sentinel lymph node biopsy (0/3 nodes positive)
+  - Adjuvant treatment: tamoxifen x 2 years, well tolerated
+
+- December 2023: Developed right upper quadrant pain
+  - CT abdomen: Multiple new hepatic lesions, largest 3.2 cm
+  - Liver biopsy confirmed metastatic breast adenocarcinoma
+  - Restaging: Stage IV, oligometastatic disease to liver only
+
+- January 2024 - December 2024: First-line therapy for metastatic disease
+  - Treatment: Letrozole 2.5 mg daily + Palbociclib 125 mg daily (21 days on/7 days off)
+  - Initially excellent response: PR by RECIST with 45% reduction in liver lesions by March 2024
+  - Tolerated well with manageable grade 2 neutropenia (held palbociclib occasionally)
+  - CEA normalized (baseline 85 → nadir 12 ng/mL)
+
+- December 2024: Routine surveillance CT shows disease progression
+  - Liver metastases increased in size (largest now 4.1 cm, previously 2.2 cm)
+  - Two new small hepatic lesions identified
+  - CEA rising (now 62 ng/mL, up from 18 three months ago)
+  - Patient reports increased fatigue, no abdominal pain
+
+- January 2025: Repeat liver biopsy performed for biomarker confirmation
+  - Confirms ER+/PR+/HER2-low (IHC 1+) status maintained
+  - See pathology report dated 1/18/2025
+
+CURRENT SYMPTOMS:
+Patient reports mild fatigue (grade 1), no pain, no nausea. ECOG performance status remains 0-1.
+She is active, working part-time, and caring for grandchildren twice weekly.
+
+================================================================================
+PAST MEDICAL HISTORY:
+================================================================================
+- Hypertension (well-controlled on lisinopril)
+- Hypothyroidism (on levothyroxine)
+- Osteoporosis (on denosumab)
+
+================================================================================
+CURRENT MEDICATIONS:
+================================================================================
+1. Letrozole 2.5 mg daily (discontinued 1/15/2025 per plan)
+2. Palbociclib 125 mg daily (discontinued 1/15/2025 per plan)
+3. Lisinopril 10 mg daily
+4. Levothyroxine 75 mcg daily
+5. Denosumab 120 mg SC monthly
+6. Calcium/Vitamin D supplementation
+
+================================================================================
+ALLERGIES:
+================================================================================
+No known drug allergies (NKDA)
+
+================================================================================
+FAMILY HISTORY:
+================================================================================
+Mother: Breast cancer, age 68 (ER+, survived)
+Sister: Ovarian cancer, age 55 (deceased)
+BRCA testing: Negative (performed 2021)
+
+================================================================================
+SOCIAL HISTORY:
+================================================================================
+Former smoker (quit 2010, 10 pack-year history)
+Alcohol: Occasional wine (1-2 glasses/week)
+Lives with husband, supportive family
+Works part-time as librarian
+
+================================================================================
+REVIEW OF SYSTEMS:
+================================================================================
+Constitutional: Mild fatigue, no fevers, no weight loss
+HEENT: No visual changes, no headaches
+Respiratory: No cough, no dyspnea
+Cardiovascular: No chest pain, no palpitations
+GI: No nausea, no vomiting, no abdominal pain, normal appetite
+GU: No urinary symptoms
+Musculoskeletal: Mild arthralgias (baseline, not worsened)
+Neurologic: No numbness, no weakness
+Skin: No rash
+
+================================================================================
+PHYSICAL EXAMINATION:
+================================================================================
+Vitals: BP 128/76, HR 72, RR 14, Temp 98.4°F, O2 Sat 98% on RA
+Performance Status: ECOG 1 (ambulatory, capable of light work)
+
+General: Well-appearing woman in no acute distress, appropriate affect
+HEENT: PERRLA, EOMI, oropharynx clear
+Neck: Supple, no lymphadenopathy
+Cardiovascular: RRR, no murmurs
+Pulmonary: Clear to auscultation bilaterally
+Abdomen: Soft, non-tender, no hepatomegaly palpable, no masses
+Extremities: No edema, pulses intact
+Neurologic: Alert and oriented x3, CN II-XII intact, strength 5/5 throughout
+Skin: No rash, well-healed lumpectomy scar left breast
+
+================================================================================
+RECENT LABORATORY DATA (1/20/2025):
+================================================================================
+CBC:
+  WBC: 5.2 K/uL (normal, recovered from palbociclib-related neutropenia)
+  Hemoglobin: 12.8 g/dL
+  Platelets: 185 K/uL
+  ANC: 3.1 K/uL
+
+Comprehensive Metabolic Panel:
+  Creatinine: 0.9 mg/dL (eGFR >60)
+  AST: 42 U/L (mildly elevated, likely from liver mets)
+  ALT: 38 U/L
+  Alkaline phosphatase: 165 U/L (elevated)
+  Total bilirubin: 0.8 mg/dL
+  Albumin: 3.9 g/dL
+
+Tumor Markers:
+  CEA: 62 ng/mL (up from 18, three months ago)
+  CA 27-29: 95 U/mL (up from 45)
+
+================================================================================
+RECENT IMAGING:
+================================================================================
+
+CT Chest/Abdomen/Pelvis with contrast (12/28/2024):
+- CHEST: No pulmonary nodules, no pleural effusion
+- ABDOMEN: 
+  * Multiple hepatic metastases, increased in size
+  * Largest segment VI lesion now 4.1 cm (previously 2.2 cm on 9/15/2024)
+  * Two new lesions in segment VII (8 mm and 12 mm)
+  * No ascites
+- PELVIS: No evidence of metastatic disease
+- BONES: No suspicious osseous lesions
+
+IMPRESSION: Progression of metastatic disease in liver
+
+================================================================================
+ASSESSMENT & PLAN:
+================================================================================
+
+DIAGNOSIS: Metastatic hormone receptor-positive (ER+/PR+), HER2-low breast cancer, 
+           with progression after 12 months of first-line CDK4/6 inhibitor + aromatase inhibitor
+
+DISEASE STATUS: Progressive disease (PD) by RECIST criteria
+
+ECOG PERFORMANCE STATUS: 1
+
+SUMMARY:
+Ms. [REDACTED] is a 61-year-old woman with metastatic ER+/PR+/HER2-low breast cancer who 
+has progressed after 12 months of excellent disease control on first-line letrozole + palbociclib. 
+Repeat biopsy confirms maintained hormone receptor and HER2-low status. She remains highly 
+functional with ECOG PS 1 and is an excellent candidate for second-line therapy.
+
+TREATMENT OPTIONS DISCUSSED:
+
+1. CHEMOTHERAPY (Standard of Care):
+   - Single-agent options: paclitaxel, nab-paclitaxel, capecitabine, eribulin
+   - Combination options: gemcitabine/carboplatin
+   - Pros: Established efficacy, covered by insurance
+   - Cons: More toxicity, hair loss, neuropathy risk, IV administration
+
+2. ENDOCRINE-BASED THERAPY:
+   - Fulvestrant 500 mg IM + capivasertib (AKT inhibitor) - if PIK3CA mutant
+   - Fulvestrant + alpelisib - if PIK3CA mutant
+   - Elacestrant (oral SERD) - if ESR1 mutant
+   - Note: Would need additional genomic testing (ctDNA or tissue NGS)
+
+3. ANTIBODY-DRUG CONJUGATES (ADC):
+   - Sacituzumab govitecan (Trodelvy) - FDA approved for HR+/HER2- after 2+ prior lines
+     * Currently 1 prior line (may not meet criteria yet)
+   - Trastuzumab deruxtecan (Enhertu) - Emerging data for HER2-low breast cancer
+     * DESTINY-Breast04 showed benefit in HER2-low (IHC 1+ or 2+/FISH-)
+     * Patient has HER2 IHC 1+ → qualifies as HER2-low
+     * FDA approved August 2022 for HER2-low after 1-2 prior lines of chemo
+
+4. CLINICAL TRIALS:
+   - Discussed clinical trial options given HER2-low status
+   - Patient interested in trials evaluating novel HER2-low targeted therapies
+   - Will refer to clinical trial nurse coordinator for enrollment screening
+
+PLAN:
+1. Obtain liquid biopsy (Guardant360 CDx) to assess for actionable mutations:
+   - PIK3CA, AKT1, ESR1 mutations
+   - Other potential targetable alterations
+   - Expected turnaround: 10-14 days
+
+2. Refer to clinical trial coordinator for HER2-low breast cancer trials:
+   - DESTINY-Breast06 (T-DXd vs chemotherapy in HER2-low)
+   - TROPiCS-02 (sacituzumab govitecan vs chemotherapy in HR+/HER2-)
+   - Additional trials as available
+
+3. If not eligible for clinical trials or patient preference for standard therapy:
+   - Plan for trastuzumab deruxtecan 5.4 mg/kg IV q3weeks
+   - Pre-medications: dexamethasone, antiemetics
+   - Baseline pulmonary function tests (ILD screening)
+   - Baseline MUGA or echocardiogram (LVEF must be ≥50%)
+
+4. Hold letrozole and palbociclib (already discontinued)
+
+5. Supportive care:
+   - Continue denosumab for bone health
+   - Monitor for symptoms, especially dyspnea (ILD risk with T-DXd)
+
+6. Follow-up:
+   - Return in 2 weeks to review liquid biopsy results
+   - Discuss clinical trial options vs standard therapy
+   - Begin treatment within 3-4 weeks
+
+PATIENT COUNSELING:
+Lengthy discussion with patient and husband regarding disease progression, treatment options, 
+clinical trials, and prognosis. Patient expresses strong interest in clinical trial participation, 
+particularly trials targeting HER2-low disease. She understands the risks and benefits of 
+chemotherapy vs targeted therapy. She will think about her options and discuss with family.
+
+Patient is aware that HER2-low is a newer classification with emerging treatment options. 
+She understands trastuzumab deruxtecan has shown benefit in clinical trials but has risks 
+including interstitial lung disease (ILD). She will report any new cough or shortness of breath.
+
+Patient verbalized understanding and agreement with plan.
+
+TIME: 45 minutes (>50% spent in counseling and coordination of care)
+
+================================================================================
+ELECTRONICALLY SIGNED:
+================================================================================
+Sarah Chen, MD
+Attending Physician, Medical Oncology
+Board Certified: Medical Oncology, Hematology
+
+Date/Time: January 22, 2025 at 16:30 PM EST
