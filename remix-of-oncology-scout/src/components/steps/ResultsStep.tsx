@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useTrialMatching } from "@/hooks/useTrialMatching";
 import { useProfileChangeDetection } from "@/hooks/useProfileChangeDetection";
 import type { MatchedTrial as APIMatchedTrial } from "@/types/api";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ResultsStepProps {
   patientData: PatientData;
@@ -24,7 +25,16 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
   const [showOtherTrials, setShowOtherTrials] = useState(false);
   const [acknowledgedMismatch, setAcknowledgedMismatch] = useState(false);
   
+  const queryClient = useQueryClient();
   const { hasProfileChanges, isRematching, confirmReMatch, resetDetection } = useProfileChangeDetection(patientData);
+  
+  // Handle reset with cache clearing
+  const handleReset = () => {
+    // Clear all React Query caches
+    queryClient.clear();
+    // Call the original reset function
+    onReset();
+  };
   
   // Use backend API for trial matching
   const {
@@ -174,7 +184,7 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
             animate={{ opacity: 1, y: 0 }}
             className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg p-6"
           >
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-4 mb-4">
               <div className="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
                 <Check className="w-7 h-7 text-white" />
               </div>
@@ -182,143 +192,42 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
                   ✓ We Found {eligibleCount} Precision {eligibleCount === 1 ? 'Match' : 'Matches'}
                 </h3>
-                <p className="text-base text-gray-700">
+                <p className="text-base text-gray-700 mb-3">
                   From {totalTrialsEvaluated} trials in our database, we excluded {totalTrialsEvaluated - eligibleCount} that don't match your biomarkers.
                 </p>
+                {eligibleCount > 0 && (
+                  <p className="text-gray-700 text-base leading-relaxed">
+                    Each offers a different treatment approach that your doctor can help you evaluate.
+                  </p>
+                )}
               </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                onClick={() => setShowBriefModal(true)}
+                className="bg-blue-600 text-white hover:bg-blue-700 font-medium min-h-[48px] px-6"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download Report for Your Doctor
+              </Button>
+              <Button
+                variant="outline"
+                className="gap-2 min-h-[48px] px-4 border-gray-300"
+              >
+                <Filter className="w-4 h-4" />
+                Filter
+              </Button>
+              <Button
+                variant="outline"
+                onClick={onReset}
+                className="gap-2 min-h-[48px] px-4 border-gray-300"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Start Over
+              </Button>
             </div>
           </motion.div>
 
-          {/* Encouragement Banner */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-blue-50 border border-blue-200 rounded-xl p-6"
-          >
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              {eligibleCount > 0
-                ? `${eligibleCount} trial${eligibleCount > 1 ? 's' : ''} may match your profile`
-                : "We didn't find trials that exactly match your profile"
-              }
-            </h2>
-            {eligibleCount > 0 && (
-              <p className="text-gray-700 mb-4 text-base leading-relaxed">
-                Each offers a different treatment approach that your doctor can help you evaluate.
-              </p>
-            )}
-            <Button
-              onClick={() => setShowBriefModal(true)}
-              className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 font-medium min-h-[48px] px-6"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Download Report for Your Doctor
-            </Button>
-          </motion.div>
-
-          {/* Actions Bar */}
-          <div className="bg-white border border-gray-200 rounded-xl p-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 text-sm font-medium">
-                  <span className="w-2 h-2 rounded-full bg-emerald-600" />
-                  {eligibleCount} Precision Matches
-                </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-100 text-purple-800 text-sm font-medium">
-                  <span className="w-2 h-2 rounded-full bg-purple-600" />
-                  {totalTrialsEvaluated - eligibleCount} Excluded
-                </div>
-              </div>
-              <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
-                <Button variant="outline" size="sm" className="flex-1 sm:flex-none gap-2 min-h-[44px] border-gray-300">
-                  <Filter className="w-4 h-4" />
-                  Filter
-                </Button>
-                <Button variant="outline" size="sm" onClick={onReset} className="flex-1 sm:flex-none gap-2 min-h-[44px] border-gray-300">
-                  <RotateCcw className="w-4 h-4" />
-                  Start Over
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    let key = 'her2_low';
-                    if (patientData.biomarkerProfile?.expression?.HER2 === 'low') key = 'her2_low';
-                    else if (patientData.breastTreatments?.cdk46Inhibitors === true) key = 'post_cdk46';
-                    else if (patientData.cancerType === 'lung') key = 'egfr';
-                    else if (
-                      patientData.biomarkerProfile?.hormoneReceptors?.ER === 'absent' &&
-                      patientData.biomarkerProfile?.hormoneReceptors?.PR === 'absent' &&
-                      patientData.biomarkerProfile?.expression?.HER2 === '0'
-                    ) key = 'tnbc';
-                    window.open(`/walkthrough?patient=${key}`, '_blank');
-                  }}
-                  className="flex-1 sm:flex-none gap-2 min-h-[44px] border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-700"
-                >
-                  <Layout className="w-4 h-4" />
-                  Walkthrough
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Match Score Legend */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="bg-white border-2 border-gray-200 rounded-xl p-6"
-          >
-            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-              <Info className="w-5 h-5 text-blue-600" />
-              Understanding Your Match Scores
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-20 h-9 bg-green-100 border-2 border-green-400 rounded flex items-center justify-center font-bold text-green-800 text-sm flex-shrink-0">
-                  95-100
-                </div>
-                <div>
-                  <div className="font-semibold text-sm">Strong Potential Match</div>
-                  <div className="text-sm text-gray-600">
-                    You appear to meet most initial requirements. High likelihood of eligibility pending verification.
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-20 h-9 bg-yellow-100 border-2 border-yellow-400 rounded flex items-center justify-center font-bold text-yellow-800 text-sm flex-shrink-0">
-                  80-94
-                </div>
-                <div>
-                  <div className="font-semibold text-sm">Good Potential Match</div>
-                  <div className="text-sm text-gray-600">
-                    You meet key criteria. Some items need confirmation with your doctor.
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-20 h-9 bg-orange-100 border-2 border-orange-400 rounded flex items-center justify-center font-bold text-orange-800 text-sm flex-shrink-0">
-                  65-79
-                </div>
-                <div>
-                  <div className="font-semibold text-sm">Possible Match</div>
-                  <div className="text-sm text-gray-600">
-                    You match some criteria. Discuss with your doctor about potential exceptions.
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 p-3 bg-amber-50 border-2 border-amber-200 rounded-lg text-sm">
-              <div className="flex items-start gap-2">
-                <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-amber-900">
-                  <strong>Important:</strong> These are preliminary matches only. Your doctor must confirm
-                  eligibility and determine if a trial is appropriate for you. This tool does not provide
-                  medical advice or guarantee enrollment.
-                </p>
-              </div>
-            </div>
-          </motion.div>
 
           {/* Profile Updated Alert */}
           <AnimatePresence>

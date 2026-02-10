@@ -3,6 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Target, FlaskConical, Calendar, ClipboardList, MapPin, ArrowRight, Clock, Activity, AlertTriangle, Syringe, Building, CheckCircle2, HelpCircle, XCircle, Phone, Globe, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Trial } from "@/types/oncology";
+import {
+  getPatientFriendlyExplanation,
+  translateMatchReason,
+  translateConfirmationItem
+} from "@/lib/patientLanguage";
 
 interface LearnMoreModalProps {
   trial: Trial | null;
@@ -64,12 +69,36 @@ export function LearnMoreModal({ trial, onClose }: LearnMoreModalProps) {
         ...(trial.whyCantMatch || []).map(reason => ({ label: reason, status: "not_met" as const })),
       ];
 
-  const metCriteria = eligibilityCriteria.filter(c => c.status === "met");
-  const unknownCriteria = eligibilityCriteria.filter(c => c.status === "unknown");
-  const notMetCriteria = eligibilityCriteria.filter(c => c.status === "not_met");
+  // Helper function to deduplicate criteria after translation
+  const deduplicateCriteria = (criteria: Array<{ label: string; status: "met" | "not_met" | "unknown" }>, translateFn: (label: string) => string) => {
+    const seen = new Set<string>();
+    return criteria.filter(criterion => {
+      const translated = translateFn(criterion.label);
+      if (seen.has(translated)) {
+        return false;
+      }
+      seen.add(translated);
+      return true;
+    });
+  };
+
+  const metCriteria = deduplicateCriteria(
+    eligibilityCriteria.filter(c => c.status === "met"),
+    translateMatchReason
+  );
+  const unknownCriteria = deduplicateCriteria(
+    eligibilityCriteria.filter(c => c.status === "unknown"),
+    translateConfirmationItem
+  );
+  const notMetCriteria = deduplicateCriteria(
+    eligibilityCriteria.filter(c => c.status === "not_met"),
+    translateMatchReason
+  );
   const sites = SITE_CONTACTS[trial.id] || [];
 
   const renderTabContent = () => {
+    const explanation = getPatientFriendlyExplanation(trial);
+    
     switch (activeTab) {
       case "overview":
         return (
@@ -77,10 +106,10 @@ export function LearnMoreModal({ trial, onClose }: LearnMoreModalProps) {
             {/* In Plain English */}
             <div className="prose prose-sm max-w-none">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">What's Being Tested</h3>
-              <p className="text-base text-gray-700 leading-relaxed">{trial.translatedInfo.design}</p>
+              <p className="text-base text-gray-700 leading-relaxed">{explanation.whatIsIt}</p>
               
               <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">The Goal</h3>
-              <p className="text-base text-gray-700 leading-relaxed">{trial.translatedInfo.goal}</p>
+              <p className="text-base text-gray-700 leading-relaxed">{explanation.goal}</p>
             </div>
 
             {/* Why This Matched */}
@@ -94,7 +123,7 @@ export function LearnMoreModal({ trial, onClose }: LearnMoreModalProps) {
                   {trial.whyMatched.map((reason, i) => (
                     <li key={i} className="flex items-start gap-2 text-base text-gray-700">
                       <span className="text-emerald-600 mt-1">✓</span>
-                      {reason}
+                      {translateMatchReason(reason)}
                     </li>
                   ))}
                 </ul>
@@ -112,7 +141,7 @@ export function LearnMoreModal({ trial, onClose }: LearnMoreModalProps) {
                   {trial.whatToConfirm.map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-base text-gray-700">
                       <span className="text-amber-600 mt-1">•</span>
-                      {item}
+                      {translateConfirmationItem(item)}
                     </li>
                   ))}
                 </ul>
@@ -264,7 +293,7 @@ export function LearnMoreModal({ trial, onClose }: LearnMoreModalProps) {
                 <ClipboardList className="w-5 h-5 text-blue-600" />
                 What Happens
               </h4>
-              <p className="text-base text-gray-700 leading-relaxed">{trial.translatedInfo.whatHappens}</p>
+              <p className="text-base text-gray-700 leading-relaxed">{explanation.whatHappens}</p>
             </div>
 
             {/* Duration */}
@@ -273,7 +302,7 @@ export function LearnMoreModal({ trial, onClose }: LearnMoreModalProps) {
                 <Calendar className="w-5 h-5 text-blue-600" />
                 How Long
               </h4>
-              <p className="text-base text-gray-700 leading-relaxed">{trial.translatedInfo.duration}</p>
+              <p className="text-base text-gray-700 leading-relaxed">{explanation.howLong}</p>
             </div>
           </div>
         );
@@ -296,7 +325,7 @@ export function LearnMoreModal({ trial, onClose }: LearnMoreModalProps) {
                   {metCriteria.map((criterion, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg">
                       {getStatusIcon(criterion.status)}
-                      <span className="text-base text-gray-700">{criterion.label}</span>
+                      <span className="text-base text-gray-700">{translateMatchReason(criterion.label)}</span>
                     </div>
                   ))}
                 </div>
@@ -314,7 +343,7 @@ export function LearnMoreModal({ trial, onClose }: LearnMoreModalProps) {
                   {unknownCriteria.map((criterion, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg">
                       {getStatusIcon(criterion.status)}
-                      <span className="text-base text-gray-700">{criterion.label}</span>
+                      <span className="text-base text-gray-700">{translateConfirmationItem(criterion.label)}</span>
                     </div>
                   ))}
                 </div>
@@ -332,7 +361,7 @@ export function LearnMoreModal({ trial, onClose }: LearnMoreModalProps) {
                   {notMetCriteria.map((criterion, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 bg-red-50 rounded-lg">
                       {getStatusIcon(criterion.status)}
-                      <span className="text-base text-gray-700">{criterion.label}</span>
+                      <span className="text-base text-gray-700">{translateMatchReason(criterion.label)}</span>
                     </div>
                   ))}
                 </div>

@@ -11,6 +11,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  getPatientFriendlyTitle,
+  translateMatchReason,
+  translateConfirmationItem,
+  getPatientFriendlyExplanation,
+  formatLogistics
+} from "@/lib/patientLanguage";
 
 interface TrialCardProps {
   trial: Trial;
@@ -169,27 +176,11 @@ export function TrialCard({
           : 'border border-gray-200'
       }`}
     >
-      {/* Trial Ranking Badge - NEW */}
+      {/* Trial Ranking Badge - Only show for #1 BEST MATCH */}
       {index === 0 && matchScore >= 90 && (
         <div className="mb-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-emerald-600 text-white">
             #1 ⭐ BEST MATCH
-          </div>
-        </div>
-      )}
-      
-      {index === 1 && (
-        <div className="mb-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-blue-600 text-white">
-            #2 STRONG MATCH
-          </div>
-        </div>
-      )}
-      
-      {index >= 2 && (
-        <div className="mb-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-gray-600 text-white">
-            #{index + 1} MATCH
           </div>
         </div>
       )}
@@ -269,9 +260,24 @@ export function TrialCard({
         </span>
       </div>
 
-      {/* Title and metadata */}
+      {/* Title and metadata - PATIENT-FRIENDLY */}
       <div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2 leading-snug">{trial.title}</h3>
+        {(() => {
+          const patientTitle = getPatientFriendlyTitle(trial);
+          return (
+            <>
+              <h3 className="text-xl font-bold text-gray-900 mb-1 leading-snug">
+                {patientTitle.main}
+              </h3>
+              <p className="text-base text-gray-700 mb-2">
+                {patientTitle.subtitle}
+              </p>
+              <p className="text-xs text-gray-500 mb-3">
+                {trial.title} • {trial.nctNumber}
+              </p>
+            </>
+          );
+        })()}
         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
           <span className="flex items-center gap-1">
             <FlaskConical className="w-4 h-4" />
@@ -289,76 +295,68 @@ export function TrialCard({
         </div>
       </div>
 
-      {/* In Plain English */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-start gap-2 mb-2">
-          <Lightbulb className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-          <h4 className="font-semibold text-blue-900">In Plain English</h4>
-        </div>
-        <p className="text-sm text-gray-700">
-          {trial.translatedInfo.design}
-        </p>
-        <p className="text-sm text-gray-700 mt-2">
-          <strong>Goal:</strong> {trial.translatedInfo.goal}
-        </p>
-      </div>
+      {/* What This Trial Tests - PATIENT-FRIENDLY */}
+      {(() => {
+        const explanation = getPatientFriendlyExplanation(trial);
+        return (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-start gap-2 mb-2">
+              <Lightbulb className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <h4 className="font-semibold text-blue-900">What This Trial Tests:</h4>
+            </div>
+            <p className="text-sm text-blue-900 leading-relaxed mb-2">
+              {explanation.whatIsIt}
+            </p>
+            <p className="text-sm text-blue-800">
+              <strong>Goal:</strong> {explanation.goal}
+            </p>
+          </div>
+        );
+      })()}
 
-      {/* Location */}
-      <div className="flex items-center gap-2 text-base text-gray-700">
-        <MapPin className="w-4 h-4 text-gray-500" />
-        <span>{trial.location}</span>
-        {/* Site count removed - not available in new backend API */}
-      </div>
+      {/* Logistics Bar - PATIENT-FRIENDLY */}
+      {(() => {
+        const logistics = formatLogistics(trial);
+        return (
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm text-gray-700">
+              <div className="flex items-center gap-1">
+                <span>{logistics.distance}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span>{logistics.visits}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span>{logistics.treatment}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span>{logistics.biopsy}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span>{logistics.overnight}</span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
-      {/* Why You Match - with medical term tooltips */}
+      {/* Why This Fits Your Profile - PATIENT-FRIENDLY */}
       {whyMatched.length > 0 && isPossiblyEligible && (
         <div>
-          <h4 className="font-medium text-gray-900 mb-2">Why You May Match:</h4>
-          <ul className="space-y-1.5">
-            {whyMatched.map((reason, i) => renderReasonWithTooltip(reason, i))}
+          <h4 className="font-semibold text-gray-900 mb-2">Why This Fits Your Profile:</h4>
+          <ul className="space-y-2">
+            {whyMatched.map((reason, idx) => (
+              <li key={idx} className="flex items-start gap-2 text-sm">
+                <span className="text-green-600 mt-0.5 flex-shrink-0">✓</span>
+                <span className="text-gray-800">
+                  {translateMatchReason(reason)}
+                </span>
+              </li>
+            ))}
           </ul>
         </div>
       )}
 
-      {/* Why This Ranked Higher - NEW */}
-      {index === 0 && matchScore >= 90 && (
-        <div className="bg-emerald-50 border-2 border-emerald-300 rounded-lg p-4">
-          <div className="flex items-start gap-2 mb-2">
-            <svg className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-            <h4 className="font-bold text-emerald-900">Why This Is Your #1 Match:</h4>
-          </div>
-          <p className="text-sm text-emerald-900 leading-relaxed">
-            {trial.title.toLowerCase().includes('cdk4/6') || trial.title.toLowerCase().includes('post-') ? (
-              <>
-                This trial is specifically designed for patients who have <strong>progressed
-                after prior therapy</strong>. Your treatment history shows progression on CDK4/6
-                inhibitor therapy, making this trial's focus on post-CDK4/6 treatment an
-                excellent clinical fit.
-              </>
-            ) : trial.title.toLowerCase().includes('trop-2') || trial.title.toLowerCase().includes('sacituzumab') ? (
-              <>
-                This trial targets <strong>TROP-2 expressing cancers</strong> with advanced
-                antibody-drug conjugate therapy. Your biomarker profile and prior treatment
-                history align with this trial's enrollment criteria, making it highly relevant
-                to your current clinical situation.
-              </>
-            ) : trial.title.toLowerCase().includes('egfr') || trial.title.toLowerCase().includes('osimertinib') ? (
-              <>
-                This trial is designed for <strong>EGFR-mutated lung cancer</strong> patients
-                who have progressed on prior targeted therapy. Your EGFR mutation status and
-                treatment history make this an optimal match for your clinical profile.
-              </>
-            ) : (
-              <>
-                This trial's eligibility criteria closely match your biomarker profile and
-                treatment history, making it the strongest clinical match in our database.
-              </>
-            )}
-          </p>
-        </div>
-      )}
 
       {/* Why This May Not Match - softer styling */}
       {whyCantMatch.length > 0 && (
@@ -393,19 +391,24 @@ export function TrialCard({
         </div>
       )}
 
-      {/* What to Confirm */}
+      {/* Items to Verify - PATIENT-FRIENDLY & COLLAPSIBLE */}
       {whatToConfirm.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <h4 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+        <details className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <summary className="font-semibold text-gray-900 cursor-pointer hover:text-gray-700 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-amber-600" />
-            What to Confirm with Your Doctor:
-          </h4>
-          <ul className="space-y-1">
+            Items to Verify with Your Doctor ({whatToConfirm.length}) ▼
+          </summary>
+          <ul className="mt-3 space-y-2">
             {whatToConfirm.map((item, i) => (
-              <li key={i} className="text-base text-gray-700">• {item}</li>
+              <li key={i} className="flex items-start gap-2 text-sm">
+                <span className="text-amber-600 mt-0.5 flex-shrink-0">□</span>
+                <span className="text-gray-700">
+                  {translateConfirmationItem(item)}
+                </span>
+              </li>
             ))}
           </ul>
-        </div>
+        </details>
       )}
 
       {/* Biomarker mismatch warning (legacy - softened) */}
