@@ -521,7 +521,7 @@ export function ScreenerStep({
           </div>
 
           {/* Clinical Records Upload */}
-          <GlassContainer className="p-6 md:p-8">
+          <GlassContainer className="p-6 md:p-8 min-h-[380px]">
             <div className="flex items-center gap-3 mb-6">
               <div className="flex-1">
                 <h2 className="text-2xl font-semibold text-gray-900 mb-1">Clinical Records</h2>
@@ -529,13 +529,13 @@ export function ScreenerStep({
                   Upload your medical documents for AI-powered data extraction
                 </p>
               </div>
-              <div className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full ${
+              <div className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full w-[180px] justify-center ${
                 hasAutoFilled
                   ? 'bg-green-100 text-green-800'
                   : 'bg-emerald-100 text-emerald-800'
               }`}>
-                <Sparkles className="w-4 h-4" />
-                <span>{hasAutoFilled ? 'Data extracted' : 'Auto-fills your info'}</span>
+                <Sparkles className="w-4 h-4 flex-shrink-0" />
+                <span className="whitespace-nowrap">{hasAutoFilled ? 'Data extracted' : 'Auto-fills your info'}</span>
               </div>
             </div>
             
@@ -566,7 +566,7 @@ export function ScreenerStep({
           </GlassContainer>
 
           {/* Auto-fill Notice - Permanent info box */}
-          <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+          <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl min-h-[140px]">
             <AlertCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
             <div>
               <p className="text-base font-medium text-gray-900">
@@ -581,7 +581,7 @@ export function ScreenerStep({
           </div>
 
           {/* Demographics */}
-          <GlassContainer className="p-6 md:p-8">
+          <GlassContainer className="p-6 md:p-8 min-h-[240px]">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
                 <User className="w-5 h-5" />
@@ -632,7 +632,7 @@ export function ScreenerStep({
           </GlassContainer>
 
           {/* Cancer Type Selection */}
-          <GlassContainer className="p-6 md:p-8">
+          <GlassContainer className="p-6 md:p-8 min-h-[500px]">
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 mb-1">Diagnosis</h2>
               <p className="text-base text-gray-600">
