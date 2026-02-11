@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Upload, Check, Loader2, AlertCircle } from "lucide-react";
 
 interface FileUploadZoneProps {
@@ -120,25 +119,11 @@ export function FileUploadZone({
           error ? "border-destructive" : ""
         } ${isScanning ? "pointer-events-none" : ""}`}
       >
-      <AnimatePresence mode="wait">
         {isScanning ? (
-          <motion.div
-            key="scanning"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col items-center gap-3 w-full"
-          >
+          <div className="flex flex-col items-center gap-3 w-full">
             {/* Scanning Animation */}
             <div className="relative w-16 h-16 flex-shrink-0">
-              <div className="absolute inset-0 rounded-xl bg-primary/10 overflow-hidden">
-                <motion.div
-                  className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"
-                  animate={{ y: ["-100%", "1600%"] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                />
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center text-primary">
+              <div className="absolute inset-0 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                 {icon}
               </div>
             </div>
@@ -149,14 +134,9 @@ export function FileUploadZone({
               </div>
               <span className="text-xs text-muted-foreground">This may take 5-10 seconds</span>
             </div>
-          </motion.div>
+          </div>
         ) : isUploaded ? (
-          <motion.div
-            key="complete"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center gap-3 w-full"
-          >
+          <div className="flex flex-col items-center gap-3 w-full">
             <div className="w-16 h-16 flex-shrink-0 rounded-xl bg-success/10 flex items-center justify-center text-success">
               <Check className="w-8 h-8" />
             </div>
@@ -164,15 +144,9 @@ export function FileUploadZone({
               <span className="text-sm font-medium text-success">Uploaded & Analyzed</span>
               <span className="text-xs text-muted-foreground">{label}</span>
             </div>
-          </motion.div>
+          </div>
         ) : (
-          <motion.div
-            key="upload"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col items-center gap-3 w-full"
-          >
+          <div className="flex flex-col items-center gap-3 w-full">
             <div className="w-16 h-16 flex-shrink-0 rounded-xl bg-muted flex items-center justify-center text-muted-foreground">
               {icon}
             </div>
@@ -184,18 +158,13 @@ export function FileUploadZone({
               <Upload className="w-3 h-3" />
               <span>Drop file or click to upload</span>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
       {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute bottom-2 left-2 right-2 bg-destructive/10 border border-destructive rounded-lg p-3 flex items-start gap-2"
-        >
+        <div className="absolute bottom-2 left-2 right-2 bg-destructive/10 border border-destructive rounded-lg p-3 flex items-start gap-2">
           <AlertCircle className="w-4 h-4 text-destructive flex-shrink-0 mt-0.5" />
           <p className="text-xs text-destructive">{error}</p>
-        </motion.div>
+        </div>
       )}
     </div>
     </>

@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { FlaskConical, MapPin, Building2, ChevronRight, CheckCircle2, AlertTriangle, Database, Star, Info, Lightbulb, Check, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Trial } from "@/types/oncology";
@@ -166,10 +165,7 @@ export function TrialCard({
   const whatToConfirm = matchResult?.whatToConfirm ?? trial.whatToConfirm ?? [];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
+    <div
       className={`bg-white rounded-xl p-6 space-y-5 hover:shadow-lg transition-shadow ${
         index === 0 && matchScore >= 90
           ? 'border-2 border-emerald-300'
@@ -456,6 +452,6 @@ export function TrialCard({
           Download Brief
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 }

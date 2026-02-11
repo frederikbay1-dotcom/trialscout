@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Microscope, ClipboardList, User, Sparkles, AlertCircle, Lock } from "lucide-react";
 import { GlassContainer } from "@/components/GlassContainer";
 import { FileUploadZone } from "@/components/FileUploadZone";
@@ -588,16 +587,8 @@ export function ScreenerStep({
                 <User className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-2xl font-semibold text-gray-900">Demographics</h2>
-                  {patientData.hasOncologyNote && patientData.age && (
-                    <span className="auto-fill-badge">
-                      <Sparkles className="w-4 h-4" />
-                      ✓ Found in your report
-                    </span>
-                  )}
-                </div>
-                <p className="text-base text-gray-600 mt-1">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-1">Demographics</h2>
+                <p className="text-base text-gray-600">
                   Some trials have specific age or sex requirements
                 </p>
               </div>
@@ -642,27 +633,11 @@ export function ScreenerStep({
 
           {/* Cancer Type Selection */}
           <GlassContainer className="p-6 md:p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 flex-wrap">
-                  <h2 className="text-2xl font-semibold text-gray-900">Diagnosis</h2>
-                  {patientData.hasPathologyReport && patientData.cancerType && (
-                    <span className="auto-fill-badge">
-                      <Sparkles className="w-4 h-4" />
-                      ✓ Found in your report
-                    </span>
-                  )}
-                  {cancerTypeExtracted && (
-                    <ConfidenceIndicator 
-                      confidence={cancerTypeExtracted.confidence} 
-                      source={cancerTypeExtracted.source}
-                    />
-                  )}
-                </div>
-                <p className="text-base text-gray-600 mt-1">
-                  Select your primary cancer type
-                </p>
-              </div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-1">Diagnosis</h2>
+              <p className="text-base text-gray-600">
+                Select your primary cancer type
+              </p>
             </div>
             <CancerTypeSelector
               value={patientData.cancerType}
@@ -671,29 +646,13 @@ export function ScreenerStep({
 
             {/* Cancer Stage - always visible to prevent jitter */}
             <div className="section-divider">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <h3 className="text-xl font-semibold text-gray-900">Stage</h3>
-                    {patientData.hasPathologyReport && patientData.cancerStage && (
-                      <span className="auto-fill-badge">
-                        <Sparkles className="w-4 h-4" />
-                        ✓ Found in your report
-                      </span>
-                    )}
-                    {cancerStageExtracted && (
-                      <ConfidenceIndicator
-                        confidence={cancerStageExtracted.confidence}
-                        source={cancerStageExtracted.source}
-                      />
-                    )}
-                  </div>
-                  <p className="text-base text-gray-600 mt-1">
-                    {patientData.cancerType
-                      ? "What stage is your cancer? This helps narrow down relevant trials."
-                      : "Select a cancer type above first, then choose your stage."}
-                  </p>
-                </div>
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold text-gray-900 mb-1">Stage</h3>
+                <p className="text-base text-gray-600">
+                  {patientData.cancerType
+                    ? "What stage is your cancer? This helps narrow down relevant trials."
+                    : "Select a cancer type above first, then choose your stage."}
+                </p>
               </div>
               <div className={!patientData.cancerType ? "opacity-50 pointer-events-none" : ""}>
                 <CancerStageSelector
