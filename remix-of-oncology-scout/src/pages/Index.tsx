@@ -90,17 +90,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1 mesh-gradient">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3 }}
-        >
-          {renderStep()}
-        </motion.div>
-      </AnimatePresence>
+        {renderStep()}
 
       {currentStep > 1 && (
         <StepNavigation

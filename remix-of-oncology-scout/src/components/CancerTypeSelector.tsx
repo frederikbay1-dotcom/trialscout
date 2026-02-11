@@ -23,12 +23,9 @@ const cancerTypes: { value: CancerType; label: string; description: string }[] =
 export function CancerTypeSelector({ value, onChange }: CancerTypeSelectorProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {cancerTypes.map((type, index) => (
-        <motion.button
+      {cancerTypes.map((type) => (
+        <button
           key={type.value}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
           onClick={() => onChange(type.value)}
           className={`selection-tile text-left ${
             value === type.value ? "selection-tile-active" : ""
@@ -49,7 +46,7 @@ export function CancerTypeSelector({ value, onChange }: CancerTypeSelectorProps)
               <p className="text-sm text-muted-foreground">{type.description}</p>
             </div>
           </div>
-        </motion.button>
+        </button>
       ))}
     </div>
   );

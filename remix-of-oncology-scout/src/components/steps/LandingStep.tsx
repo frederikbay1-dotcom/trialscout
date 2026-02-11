@@ -46,12 +46,7 @@ export function LandingStep({ onStart, onTrySample }: LandingStepProps) {
     <div className="min-h-screen flex flex-col justify-center py-12 px-4">
       <div className="container max-w-4xl mx-auto">
         {/* Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 text-sm font-medium mb-6 border border-blue-200">
             <Shield className="w-4 h-4" />
             Privacy-First Clinical Trial Matching
@@ -69,12 +64,7 @@ export function LandingStep({ onStart, onTrySample }: LandingStepProps) {
           </p>
           
           {/* Trust Signals Box */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 max-w-2xl mx-auto mb-8"
-          >
+          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 max-w-2xl mx-auto mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               {trustSignals.map((signal, index) => (
                 <div key={index} className="flex items-center gap-2">
@@ -83,7 +73,7 @@ export function LandingStep({ onStart, onTrySample }: LandingStepProps) {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           <div className="flex items-center justify-center mb-6">
             <Button
@@ -95,23 +85,15 @@ export function LandingStep({ onStart, onTrySample }: LandingStepProps) {
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </div>
-        </motion.div>
+        </div>
 
         {/* How It Works */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <h2 className="text-center text-xl font-semibold text-gray-900 mb-8">How It Works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {howItWorksSteps.map((step, index) => (
-              <motion.div
+              <div
                 key={step.title}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
                 className="relative flex flex-col items-center text-center p-6 bg-gray-50 rounded-xl"
               >
                 <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mb-4 relative">
@@ -127,18 +109,13 @@ export function LandingStep({ onStart, onTrySample }: LandingStepProps) {
                     <ArrowRight className="w-6 h-6 text-gray-300" />
                   </div>
                 )}
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Privacy Badges */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="bg-green-50 border-2 border-green-200 rounded-xl p-6 max-w-2xl mx-auto mb-8"
-        >
+        <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6 max-w-2xl mx-auto mb-8">
           <div className="flex items-start gap-3 mb-4">
             <Shield className="w-6 h-6 text-green-600 flex-shrink-0" />
             <div>
@@ -166,32 +143,22 @@ export function LandingStep({ onStart, onTrySample }: LandingStepProps) {
               <span>Privacy First</span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Disclaimer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="text-center text-sm text-gray-600 mt-8 max-w-2xl mx-auto"
-        >
+        <div className="text-center text-sm text-gray-600 mt-8 max-w-2xl mx-auto">
           <AlertTriangle className="w-4 h-4 inline-block mr-1 text-amber-500" />
           <span className="italic">
             <strong>Important:</strong> This tool provides educational information only.
             It does not provide medical advice or guarantee trial enrollment.
             Always consult your healthcare provider before making treatment decisions.
           </span>
-        </motion.div>
+        </div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9 }}
-          className="text-center text-base text-gray-600 mt-4 flex items-center justify-center gap-2"
-        >
+        <p className="text-center text-base text-gray-600 mt-4 flex items-center justify-center gap-2">
           <Shield className="w-4 h-4 text-blue-600" />
           Your data stays in your browser. Nothing is sent to our servers.
-        </motion.p>
+        </p>
       </div>
     </div>
   );

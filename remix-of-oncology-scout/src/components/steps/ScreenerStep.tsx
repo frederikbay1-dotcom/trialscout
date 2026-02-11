@@ -514,16 +514,12 @@ export function ScreenerStep({
       <div className="py-8 px-4">
         <div className="container max-w-3xl mx-auto space-y-8">
           {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-4"
-          >
+          <div className="text-center mb-4">
             <h1 className="text-3xl font-semibold text-gray-900 mb-3">Medical Information</h1>
             <p className="text-lg text-gray-600 leading-relaxed">
               Help us understand your situation to find the best matches
             </p>
-          </motion.div>
+          </div>
 
           {/* Clinical Records Upload */}
           <GlassContainer className="p-6 md:p-8">
@@ -534,12 +530,14 @@ export function ScreenerStep({
                   Upload your medical documents for AI-powered data extraction
                 </p>
               </div>
-              {!hasAutoFilled && (
-                <div className="flex items-center gap-2 text-sm font-medium bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full">
-                  <Sparkles className="w-4 h-4" />
-                  <span>Auto-fills your info</span>
-                </div>
-              )}
+              <div className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full ${
+                hasAutoFilled
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-emerald-100 text-emerald-800'
+              }`}>
+                <Sparkles className="w-4 h-4" />
+                <span>{hasAutoFilled ? 'Data extracted' : 'Auto-fills your info'}</span>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

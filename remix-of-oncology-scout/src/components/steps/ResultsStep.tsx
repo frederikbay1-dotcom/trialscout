@@ -179,11 +179,7 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
       <div className="py-8 px-4">
         <div className="container max-w-3xl mx-auto space-y-6">
           {/* Match Summary Header - NEW */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg p-6"
-          >
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg p-6">
             <div className="flex items-start gap-4 mb-4">
               <div className="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
                 <Check className="w-7 h-7 text-white" />
@@ -226,7 +222,7 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
                 Start Over
               </Button>
             </div>
-          </motion.div>
+          </div>
 
 
           {/* Profile Updated Alert */}
@@ -272,11 +268,7 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
 
           {/* Empty State for no possibly eligible trials */}
           {eligibleCount === 0 && otherTrials.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-gray-50 rounded-lg p-8 text-center"
-            >
+            <div className="bg-gray-50 rounded-lg p-8 text-center">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 We didn't find trials that exactly match your current profile
               </h3>
@@ -301,7 +293,7 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
                   Contact a clinical trial navigator
                 </a>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Matched Trial Cards */}
@@ -388,12 +380,7 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
               </button>
               
               {showOtherTrials && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mt-6 space-y-6"
-                >
+                <div className="mt-6 space-y-6">
                   <div className="space-y-6 opacity-75">
                     {otherTrials.map((trial, index) => (
                       <TrialCard
@@ -417,7 +404,7 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
                       />
                     ))}
                   </div>
-                </motion.div>
+                </div>
               )}
             </div>
           )}
@@ -500,12 +487,7 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
           </div>
 
           {/* Data Source Footer */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="bg-gray-50 border border-gray-200 rounded-xl p-4"
-          >
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
             <div className="flex items-start gap-3">
               <Database className="w-5 h-5 text-gray-500 shrink-0 mt-0.5" />
               <p className="text-sm text-gray-600">
@@ -514,19 +496,14 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
                 Last sync: {new Date().toLocaleDateString()}.
               </p>
             </div>
-          </motion.div>
+          </div>
 
           {/* Privacy Reminder */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="bg-gray-50 rounded-xl p-4 text-center"
-          >
+          <div className="bg-gray-50 rounded-xl p-4 text-center">
             <p className="text-base text-gray-600">
               🔒 Your data remains in your browser session. Closing this tab will clear all information.
             </p>
-          </motion.div>
+          </div>
         </div>
       </div>
 

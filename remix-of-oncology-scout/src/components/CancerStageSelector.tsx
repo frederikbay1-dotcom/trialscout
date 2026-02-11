@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { CancerStage } from "@/types/oncology";
 
 interface CancerStageSelectorProps {
@@ -16,16 +15,13 @@ const stages: { value: CancerStage; label: string; description: string }[] = [
 export function CancerStageSelector({ value, onChange }: CancerStageSelectorProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-      {stages.map((stage, index) => {
+      {stages.map((stage) => {
         const isSelected = value === stage.value;
         return (
-          <motion.button
+          <button
             key={stage.value}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
             onClick={() => onChange(stage.value)}
-            className={`p-4 rounded-xl border-2 transition-all duration-200 text-center ${
+            className={`p-4 rounded-xl border-2 text-center ${
               isSelected
                 ? "border-primary bg-primary/10 shadow-md"
                 : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
@@ -41,7 +37,7 @@ export function CancerStageSelector({ value, onChange }: CancerStageSelectorProp
             <span className="block text-xs text-muted-foreground mt-1">
               {stage.description}
             </span>
-          </motion.button>
+          </button>
         );
       })}
     </div>

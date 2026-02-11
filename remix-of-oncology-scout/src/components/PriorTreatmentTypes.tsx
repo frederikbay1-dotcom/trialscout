@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Scissors, Zap, Pill } from "lucide-react";
@@ -40,17 +39,14 @@ export function PriorTreatmentTypes({ values, onChange, showHeader = true }: Pri
           <p className="text-sm text-muted-foreground">Check all that apply</p>
         </div>
       )}
-      {treatmentOptions.map((option, index) => {
+      {treatmentOptions.map((option) => {
         const Icon = option.icon;
         const isChecked = values[option.key];
 
         return (
-          <motion.div
+          <div
             key={option.key}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.05 }}
-            className={`p-4 rounded-xl border transition-all duration-200 ${
+            className={`p-4 rounded-xl border ${
               isChecked
                 ? "bg-primary/5 border-primary/30"
                 : "bg-card border-border hover:border-primary/20"
@@ -81,7 +77,7 @@ export function PriorTreatmentTypes({ values, onChange, showHeader = true }: Pri
                 <p className="text-sm text-muted-foreground">{option.description}</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         );
       })}
     </div>

@@ -67,16 +67,12 @@ export function ClinicalDeepDiveStep({
       <div className="py-8 px-4">
         <div className="container max-w-3xl mx-auto space-y-8">
           {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-4"
-          >
+          <div className="text-center mb-4">
             <h1 className="text-3xl font-semibold text-gray-900 mb-3">Clinical Details</h1>
             <p className="text-lg text-gray-600 leading-relaxed">
               Tell us about your treatment history and preferences
             </p>
-          </motion.div>
+          </div>
 
           {/* ECOG Performance Status */}
           <GlassContainer className="p-6 md:p-8">
@@ -197,13 +193,13 @@ export function ClinicalDeepDiveStep({
                 question="Has cancer spread to your brain (Brain Metastases)?"
                 value={patientData.organFunction.brainMetastases}
                 onChange={(value) => onUpdateOrganFunction("brainMetastases", value)}
-                delay={0.1}
+                delay={0}
               />
               <HealthQuestion
                 question="Do you have any other active cancers?"
                 value={patientData.organFunction.otherActiveCancers}
                 onChange={(value) => onUpdateOrganFunction("otherActiveCancers", value)}
-                delay={0.2}
+                delay={0}
               />
             </div>
           </GlassContainer>
