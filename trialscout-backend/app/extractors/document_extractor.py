@@ -32,13 +32,13 @@ class DocumentExtractor:
                 text = DocumentExtractor._extract_from_text_pdf(content)
                 
                 if not text or len(text.strip()) < 50:
-                    # Fallback to pdfplumber for better extraction
-                    logger.info("PyPDF2 extraction insufficient, trying pdfplumber...")
+                    # Fallback to pdfplumber for better table handling
+                    logger.info("PyPDF2 extraction minimal, trying pdfplumber...")
                     text = DocumentExtractor._extract_with_pdfplumber(content)
                 
                 return text
             
-            elif file_type in ["text/plain", "text/txt"]:
+            elif file_type in ["text/plain", "application/txt"]:
                 # Extract from plain text file
                 return content.decode('utf-8', errors='ignore')
             
@@ -58,7 +58,9 @@ class DocumentExtractor:
             
             text = ""
             for page in reader.pages:
-                text += page.extract_text() + "\n"
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
             
             return text.strip()
         except Exception as e:

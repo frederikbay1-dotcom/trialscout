@@ -22,7 +22,7 @@ async def extract_biomarkers(
     Extract biomarkers from uploaded pathology report or oncology note
     
     Args:
-        file: PDF or text file (max 10MB)
+        file: PDF or TXT file (max 10MB)
         cancer_type: Optional hint - "breast" or "lung"
     
     Returns:
@@ -36,7 +36,7 @@ async def extract_biomarkers(
     start_time = time.time()
     
     # Validate file type
-    allowed_types = ["application/pdf", "text/plain", "text/txt"]
+    allowed_types = ["application/pdf", "text/plain", "application/txt"]
     if file.content_type not in allowed_types:
         raise HTTPException(
             status_code=400,

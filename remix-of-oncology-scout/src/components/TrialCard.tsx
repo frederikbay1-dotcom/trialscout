@@ -266,7 +266,10 @@ export function TrialCard({
           {trial.translatedInfo?.patientFriendlyTitleMain || trial.title}
         </h3>
         <p className="text-base text-gray-700 mb-2">
-          {trial.translatedInfo?.patientFriendlyTitleSubtitle || "Clinical trial"}
+          {trial.translatedInfo?.patientFriendlyTitleSubtitle ||
+           (trial.title.toLowerCase().includes('breast') ? 'Breast Cancer Clinical Trial' :
+            trial.title.toLowerCase().includes('nsclc') || trial.title.toLowerCase().includes('lung') ? 'NSCLC Clinical Trial' :
+            'Clinical Trial')}
         </p>
         <p className="text-xs text-gray-500 mb-3">
           {trial.title} • {trial.nctNumber}

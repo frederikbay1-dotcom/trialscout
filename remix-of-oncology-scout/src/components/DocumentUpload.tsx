@@ -4,6 +4,7 @@ import { Upload, FileText, AlertCircle, CheckCircle, Loader2 } from 'lucide-reac
 interface ExtractedBiomarkers {
   cancer_type: string;
   stage: string;
+  ecog?: string;
   biomarkers: Record<string, any>;
   prior_treatments: string[];
   extraction_notes?: string;
@@ -18,6 +19,7 @@ export default function DocumentUpload({ onExtracted, cancerType }: DocumentUplo
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [extractedData, setExtractedData] = useState<ExtractedBiomarkers | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string>('');
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -38,6 +40,20 @@ export default function DocumentUpload({ onExtracted, cancerType }: DocumentUplo
 
     setUploading(true);
     setError(null);
+    setStatusMessage('Uploading document...');
+
+    // Progressive status messages
+    const statusUpdates = [
+      { delay: 1000, message: 'Reading pathology report...' },
+      { delay: 3000, message: 'Analyzing biomarkers with AI...' },
+      { delay: 6000, message: 'Finalizing results...' }
+    ];
+
+    statusUpdates.forEach(({ delay, message }) => {
+      setTimeout(() => {
+        if (uploading) setStatusMessage(message);
+      }, delay);
+    });
 
     try {
       const formData = new FormData();
@@ -58,9 +74,11 @@ export default function DocumentUpload({ onExtracted, cancerType }: DocumentUplo
 
       const result = await response.json();
       setExtractedData(result.biomarker_data);
+      setStatusMessage('');
     } catch (err: any) {
       setError(err.message || 'Failed to process document');
       console.error('Upload error:', err);
+      setStatusMessage('');
     } finally {
       setUploading(false);
     }
@@ -70,6 +88,11 @@ export default function DocumentUpload({ onExtracted, cancerType }: DocumentUplo
     if (extractedData) {
       onExtracted(extractedData);
     }
+  };
+
+  const handleTryAgain = () => {
+    setExtractedData(null);
+    setError(null);
   };
 
   return (
@@ -94,10 +117,10 @@ export default function DocumentUpload({ onExtracted, cancerType }: DocumentUplo
               <>
                 <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
                 <p className="text-lg font-medium text-gray-700">
-                  Extracting biomarkers from your report...
+                  {statusMessage}
                 </p>
                 <p className="text-sm text-gray-500">
-                  This may take 5-10 seconds
+                  This may take 10-30 seconds
                 </p>
               </>
             ) : (
@@ -130,6 +153,12 @@ export default function DocumentUpload({ onExtracted, cancerType }: DocumentUplo
           <div>
             <p className="font-medium text-red-900">Upload Failed</p>
             <p className="text-sm text-red-700 mt-1">{error}</p>
+            <button
+              onClick={handleTryAgain}
+              className="mt-2 text-sm text-red-600 hover:text-red-800 underline"
+            >
+              Try again
+            </button>
           </div>
         </div>
       )}
@@ -223,7 +252,7 @@ export default function DocumentUpload({ onExtracted, cancerType }: DocumentUplo
                 ✓ Looks Good - Use This Data
               </button>
               <button
-                onClick={() => setExtractedData(null)}
+                onClick={handleTryAgain}
                 className="px-6 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition"
               >
                 Try Another File

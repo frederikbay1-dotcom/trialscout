@@ -135,24 +135,36 @@ export function ScreenerStep({
   const handlePathologyUpload = (extractedData?: any) => {
     if (extractedData) {
       // Real API extraction
-      console.log('Extracted data from API:', extractedData);
+      console.log('🔬 Pathology Report - Raw API Response:', extractedData);
+      console.log('🔬 Age:', extractedData.age);
+      console.log('🔬 Sex:', extractedData.sex);
+      console.log('🔬 Current Treatment Status:', extractedData.current_treatment_status);
       
       const updates: Partial<PatientData> = {
         hasPathologyReport: true,
       };
       
-      // Extract patient demographics (age, sex)
-      if (extractedData.patient_demographics) {
-        const demographics = extractedData.patient_demographics;
-        if (demographics.age && typeof demographics.age === 'number') {
-          updates.age = demographics.age;
+      // Extract patient demographics (age, sex) - support both nested and flat structure
+      const demographics = extractedData.patient_demographics || extractedData;
+      console.log('📊 Demographics object:', demographics);
+      
+      if (demographics.age && typeof demographics.age === 'number') {
+        updates.age = demographics.age;
+        console.log('✅ Setting age to:', demographics.age);
+      } else {
+        console.log('❌ Age not found or invalid type:', demographics.age, typeof demographics.age);
+      }
+      
+      if (demographics.sex && typeof demographics.sex === 'string') {
+        const sex = demographics.sex.toLowerCase();
+        if (sex === 'male' || sex === 'female') {
+          updates.sex = sex as 'male' | 'female';
+          console.log('✅ Setting sex to:', sex);
+        } else {
+          console.log('❌ Sex value not male/female:', sex);
         }
-        if (demographics.sex && typeof demographics.sex === 'string') {
-          const sex = demographics.sex.toLowerCase();
-          if (sex === 'male' || sex === 'female') {
-            updates.sex = sex as 'male' | 'female';
-          }
-        }
+      } else {
+        console.log('❌ Sex not found or invalid type:', demographics.sex, typeof demographics.sex);
       }
       
       // Extract clinical status (stage, ECOG, histology)
@@ -208,6 +220,7 @@ export function ScreenerStep({
         updates.biomarkers = biomarkerStrings;
       }
       
+      console.log('📤 Pathology - Final updates object:', updates);
       onUpdatePatientData(updates);
       setHasAutoFilled(true);
     } else {
@@ -222,24 +235,38 @@ export function ScreenerStep({
   const handleOncologyUpload = (extractedData?: any) => {
     if (extractedData) {
       // Real API extraction
-      console.log('Oncology note extracted data:', extractedData);
+      console.log('📋 Oncology Note - Raw API Response:', extractedData);
+      console.log('📋 Age:', extractedData.age);
+      console.log('📋 Sex:', extractedData.sex);
+      console.log('📋 Current Treatment Status:', extractedData.current_treatment_status);
       
       const updates: Partial<PatientData> = {
         hasOncologyNote: true,
       };
       
-      // Extract patient demographics (age, sex) - preserve existing if not in oncology note
-      if (extractedData.patient_demographics) {
-        const demographics = extractedData.patient_demographics;
-        if (demographics.age && typeof demographics.age === 'number' && !patientData.age) {
-          updates.age = demographics.age;
+      // Extract patient demographics (age, sex) - support both nested and flat structure
+      const demographics = extractedData.patient_demographics || extractedData;
+      console.log('📊 Demographics object:', demographics);
+      console.log('📊 Current patientData.age:', patientData.age);
+      console.log('📊 Current patientData.sex:', patientData.sex);
+      
+      if (demographics.age && typeof demographics.age === 'number' && !patientData.age) {
+        updates.age = demographics.age;
+        console.log('✅ Setting age to:', demographics.age);
+      } else {
+        console.log('❌ Age not set. Reasons: age=', demographics.age, 'type=', typeof demographics.age, 'already has age=', !!patientData.age);
+      }
+      
+      if (demographics.sex && typeof demographics.sex === 'string' && !patientData.sex) {
+        const sex = demographics.sex.toLowerCase();
+        if (sex === 'male' || sex === 'female') {
+          updates.sex = sex as 'male' | 'female';
+          console.log('✅ Setting sex to:', sex);
+        } else {
+          console.log('❌ Sex value not male/female:', sex);
         }
-        if (demographics.sex && typeof demographics.sex === 'string' && !patientData.sex) {
-          const sex = demographics.sex.toLowerCase();
-          if (sex === 'male' || sex === 'female') {
-            updates.sex = sex as 'male' | 'female';
-          }
-        }
+      } else {
+        console.log('❌ Sex not set. Reasons: sex=', demographics.sex, 'type=', typeof demographics.sex, 'already has sex=', !!patientData.sex);
       }
       
       // Extract clinical status (stage, ECOG)
@@ -265,55 +292,83 @@ export function ScreenerStep({
         }
       }
       
-      // Extract treatment status (line of therapy)
-      if (extractedData.treatment_status) {
-        const status = extractedData.treatment_status;
-        
-        console.log('🔍 Extracted treatment status:', status);
+      // Extract treatment status (line of therapy) - support both nested and flat structure
+      const treatmentStatus = extractedData.treatment_status || extractedData.current_treatment_status;
+      
+      if (treatmentStatus) {
+        console.log('🔍 Extracted treatment status:', treatmentStatus);
         
         let currentTreatmentStatus = "unknown";
         let lineOfTherapy = "unknown";
         
-        // Check if progression was detected
-        if (status.progression_detected === true || status.current_status?.includes("progressed")) {
+        // Handle flat structure (current_treatment_status at top level)
+        if (typeof treatmentStatus === 'string') {
+          const status = treatmentStatus.toLowerCase();
           
-          // Progressed on targeted therapy
-          if (status.current_status === "progressed_on_targeted") {
+          if (status === "progressed_on_targeted") {
             currentTreatmentStatus = "progressed_targeted";
-            lineOfTherapy = "second_line"; // Patient needs second-line now
-            
+            lineOfTherapy = "second_line";
             console.log('✅ Mapped to: progressed on targeted therapy');
-          }
-          // Progressed on chemo/immunotherapy
-          else if (status.current_status === "progressed_on_chemo" ||
-                   status.current_status === "progressed_on_immunotherapy") {
+          } else if (status === "progressed_on_chemo" || status === "progressed_on_immunotherapy") {
             currentTreatmentStatus = "progressed_chemo_immuno";
             lineOfTherapy = "second_line";
-            
             console.log('✅ Mapped to: progressed on chemo/immunotherapy');
+          } else if (status === "newly_diagnosed") {
+            currentTreatmentStatus = "first_line";
+            lineOfTherapy = "first_line";
+            console.log('✅ Mapped to: newly diagnosed, first-line');
+          } else if (status === "on_treatment") {
+            currentTreatmentStatus = "on_treatment";
+            lineOfTherapy = "first_line";
+            console.log('✅ Mapped to: currently on treatment');
           }
-        }
-        // Newly diagnosed
-        else if (status.current_status === "newly_diagnosed") {
-          currentTreatmentStatus = "first_line";
-          lineOfTherapy = "first_line";
           
-          console.log('✅ Mapped to: newly diagnosed, first-line');
+          updates.currentTreatmentStatus = currentTreatmentStatus;
+          updates.lineOfTherapy = lineOfTherapy === "first_line" ? "first" :
+                                  lineOfTherapy === "second_line" ? "post_targeted" :
+                                  null;
         }
-        
-        // Update patient data with new fields
-        updates.currentTreatmentStatus = currentTreatmentStatus;
-        updates.lineOfTherapy = lineOfTherapy === "first_line" ? "first" :
-                                lineOfTherapy === "second_line" ? "post_targeted" :
-                                null;
-        updates.priorRegimenName = status.prior_regimen;
-        updates.progressionDetected = status.progression_detected;
+        // Handle nested structure (treatment_status object)
+        else if (typeof treatmentStatus === 'object') {
+          const status = treatmentStatus;
+          
+          // Check if progression was detected
+          if (status.progression_detected === true || status.current_status?.includes("progressed")) {
+            
+            // Progressed on targeted therapy
+            if (status.current_status === "progressed_on_targeted") {
+              currentTreatmentStatus = "progressed_targeted";
+              lineOfTherapy = "second_line";
+              console.log('✅ Mapped to: progressed on targeted therapy');
+            }
+            // Progressed on chemo/immunotherapy
+            else if (status.current_status === "progressed_on_chemo" ||
+                     status.current_status === "progressed_on_immunotherapy") {
+              currentTreatmentStatus = "progressed_chemo_immuno";
+              lineOfTherapy = "second_line";
+              console.log('✅ Mapped to: progressed on chemo/immunotherapy');
+            }
+          }
+          // Newly diagnosed
+          else if (status.current_status === "newly_diagnosed") {
+            currentTreatmentStatus = "first_line";
+            lineOfTherapy = "first_line";
+            console.log('✅ Mapped to: newly diagnosed, first-line');
+          }
+          
+          updates.currentTreatmentStatus = currentTreatmentStatus;
+          updates.lineOfTherapy = lineOfTherapy === "first_line" ? "first" :
+                                  lineOfTherapy === "second_line" ? "post_targeted" :
+                                  null;
+          updates.priorRegimenName = status.prior_regimen;
+          updates.progressionDetected = status.progression_detected;
+        }
         
         console.log('📊 Final status:', {
-          currentTreatmentStatus,
+          currentTreatmentStatus: updates.currentTreatmentStatus,
           lineOfTherapy: updates.lineOfTherapy,
-          priorRegimen: status.prior_regimen,
-          progressionDetected: status.progression_detected
+          priorRegimen: updates.priorRegimenName,
+          progressionDetected: updates.progressionDetected
         });
       }
       
@@ -416,6 +471,7 @@ export function ScreenerStep({
         console.log('No prior treatments found or not in array format');
       }
       
+      console.log('📤 Oncology - Final updates object:', updates);
       onUpdatePatientData(updates);
       setHasAutoFilled(true);
     } else {
@@ -492,6 +548,29 @@ export function ScreenerStep({
             </p>
           </GlassContainer>
 
+          {/* Auto-fill Notice - Moved here to be right after Clinical Records */}
+          <AnimatePresence>
+            {hasAutoFilled && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl"
+              >
+                <AlertCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-base font-medium text-gray-900">
+                    Data extracted from your documents
+                  </p>
+                  <p className="text-base text-gray-600 mt-1 leading-relaxed">
+                    We've auto-filled information below based on your clinical records.
+                    Confidence levels indicate extraction accuracy. Please review and correct any inaccuracies.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Demographics */}
           <GlassContainer className="p-6 md:p-8">
             <div className="flex items-center gap-3 mb-6">
@@ -550,29 +629,6 @@ export function ScreenerStep({
               </div>
             </div>
           </GlassContainer>
-
-          {/* Auto-fill Notice */}
-          <AnimatePresence>
-            {hasAutoFilled && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl"
-              >
-                <AlertCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-base font-medium text-gray-900">
-                    Data extracted from your documents
-                  </p>
-                  <p className="text-base text-gray-600 mt-1 leading-relaxed">
-                    We've auto-filled information below based on your clinical records. 
-                    Confidence levels indicate extraction accuracy. Please review and correct any inaccuracies.
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {/* Cancer Type Selection */}
           <GlassContainer className="p-6 md:p-8">
