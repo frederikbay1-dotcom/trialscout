@@ -186,7 +186,17 @@ export function ScreenerStep({
           const ecogNum = parseInt(clinical.ecog, 10);
           if (!isNaN(ecogNum) && ecogNum >= 0 && ecogNum <= 4) {
             updates.ecogStatus = ecogNum as ECOGStatus;
+            console.log('✅ Setting ECOG status to:', ecogNum);
           }
+        }
+      }
+      
+      // Also check for ECOG at top level (flat structure)
+      if (extractedData.ecog && typeof extractedData.ecog === 'string' && extractedData.ecog !== 'unknown' && !updates.ecogStatus) {
+        const ecogNum = parseInt(extractedData.ecog, 10);
+        if (!isNaN(ecogNum) && ecogNum >= 0 && ecogNum <= 4) {
+          updates.ecogStatus = ecogNum as ECOGStatus;
+          console.log('✅ Setting ECOG status (from top level) to:', ecogNum);
         }
       }
       
@@ -288,7 +298,17 @@ export function ScreenerStep({
           const ecogNum = parseInt(clinical.ecog, 10);
           if (!isNaN(ecogNum) && ecogNum >= 0 && ecogNum <= 4) {
             updates.ecogStatus = ecogNum as ECOGStatus;
+            console.log('✅ Setting ECOG status to:', ecogNum);
           }
+        }
+      }
+      
+      // Also check for ECOG at top level (flat structure)
+      if (extractedData.ecog && typeof extractedData.ecog === 'string' && extractedData.ecog !== 'unknown' && !updates.ecogStatus) {
+        const ecogNum = parseInt(extractedData.ecog, 10);
+        if (!isNaN(ecogNum) && ecogNum >= 0 && ecogNum <= 4) {
+          updates.ecogStatus = ecogNum as ECOGStatus;
+          console.log('✅ Setting ECOG status (from top level) to:', ecogNum);
         }
       }
       
@@ -548,28 +568,20 @@ export function ScreenerStep({
             </p>
           </GlassContainer>
 
-          {/* Auto-fill Notice - Moved here to be right after Clinical Records */}
-          <AnimatePresence>
-            {hasAutoFilled && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl"
-              >
-                <AlertCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-base font-medium text-gray-900">
-                    Data extracted from your documents
-                  </p>
-                  <p className="text-base text-gray-600 mt-1 leading-relaxed">
-                    We've auto-filled information below based on your clinical records.
-                    Confidence levels indicate extraction accuracy. Please review and correct any inaccuracies.
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Auto-fill Notice - Permanent info box */}
+          <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+            <AlertCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-base font-medium text-gray-900">
+                {hasAutoFilled ? "Data extracted from your documents" : "Upload documents for auto-fill"}
+              </p>
+              <p className="text-base text-gray-600 mt-1 leading-relaxed">
+                {hasAutoFilled
+                  ? "We've auto-filled information below based on your clinical records. Confidence levels indicate extraction accuracy. Please review and correct any inaccuracies."
+                  : "Upload your pathology report or oncology note above to automatically extract and fill in your medical information. You can review and edit all extracted data before proceeding."}
+              </p>
+            </div>
+          </div>
 
           {/* Demographics */}
           <GlassContainer className="p-6 md:p-8">
@@ -659,41 +671,39 @@ export function ScreenerStep({
               onChange={(value: CancerType) => onUpdatePatientData({ cancerType: value })}
             />
 
-            {/* Cancer Stage - shown after type is selected */}
-            {patientData.cancerType && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="section-divider"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <h3 className="text-xl font-semibold text-gray-900">Stage</h3>
-                      {patientData.hasPathologyReport && patientData.cancerStage && (
-                        <span className="auto-fill-badge">
-                          <Sparkles className="w-4 h-4" />
-                          ✓ Found in your report
-                        </span>
-                      )}
-                      {cancerStageExtracted && (
-                        <ConfidenceIndicator 
-                          confidence={cancerStageExtracted.confidence} 
-                          source={cancerStageExtracted.source}
-                        />
-                      )}
-                    </div>
-                    <p className="text-base text-gray-600 mt-1">
-                      What stage is your cancer? This helps narrow down relevant trials.
-                    </p>
+            {/* Cancer Stage - always visible to prevent jitter */}
+            <div className="section-divider">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h3 className="text-xl font-semibold text-gray-900">Stage</h3>
+                    {patientData.hasPathologyReport && patientData.cancerStage && (
+                      <span className="auto-fill-badge">
+                        <Sparkles className="w-4 h-4" />
+                        ✓ Found in your report
+                      </span>
+                    )}
+                    {cancerStageExtracted && (
+                      <ConfidenceIndicator
+                        confidence={cancerStageExtracted.confidence}
+                        source={cancerStageExtracted.source}
+                      />
+                    )}
                   </div>
+                  <p className="text-base text-gray-600 mt-1">
+                    {patientData.cancerType
+                      ? "What stage is your cancer? This helps narrow down relevant trials."
+                      : "Select a cancer type above first, then choose your stage."}
+                  </p>
                 </div>
+              </div>
+              <div className={!patientData.cancerType ? "opacity-50 pointer-events-none" : ""}>
                 <CancerStageSelector
                   value={patientData.cancerStage}
                   onChange={(value: CancerStage) => onUpdatePatientData({ cancerStage: value })}
                 />
-              </motion.div>
-            )}
+              </div>
+            </div>
           </GlassContainer>
         </div>
       </div>

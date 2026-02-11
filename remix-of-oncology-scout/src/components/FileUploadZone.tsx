@@ -114,7 +114,7 @@ export function FileUploadZone({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`upload-zone relative p-8 flex flex-col items-center justify-center min-h-[200px] text-center ${
+        className={`upload-zone relative p-8 flex flex-col items-center justify-center h-[200px] text-center ${
           isDragOver ? "upload-zone-active" : ""
         } ${isUploaded ? "border-success bg-success/5" : ""} ${
           error ? "border-destructive" : ""
@@ -127,10 +127,10 @@ export function FileUploadZone({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex flex-col items-center gap-4"
+            className="flex flex-col items-center gap-3 w-full"
           >
             {/* Scanning Animation */}
-            <div className="relative w-16 h-16">
+            <div className="relative w-16 h-16 flex-shrink-0">
               <div className="absolute inset-0 rounded-xl bg-primary/10 overflow-hidden">
                 <motion.div
                   className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"
@@ -155,13 +155,15 @@ export function FileUploadZone({
             key="complete"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center gap-3"
+            className="flex flex-col items-center gap-3 w-full"
           >
-            <div className="w-16 h-16 rounded-xl bg-success/10 flex items-center justify-center text-success">
+            <div className="w-16 h-16 flex-shrink-0 rounded-xl bg-success/10 flex items-center justify-center text-success">
               <Check className="w-8 h-8" />
             </div>
-            <span className="text-sm font-medium text-success">Uploaded & Analyzed</span>
-            <span className="text-xs text-muted-foreground">{label}</span>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm font-medium text-success">Uploaded & Analyzed</span>
+              <span className="text-xs text-muted-foreground">{label}</span>
+            </div>
           </motion.div>
         ) : (
           <motion.div
@@ -169,13 +171,13 @@ export function FileUploadZone({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex flex-col items-center gap-4"
+            className="flex flex-col items-center gap-3 w-full"
           >
-            <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center text-muted-foreground">
+            <div className="w-16 h-16 flex-shrink-0 rounded-xl bg-muted flex items-center justify-center text-muted-foreground">
               {icon}
             </div>
-            <div>
-              <p className="font-medium text-foreground mb-1">{label}</p>
+            <div className="flex flex-col items-center gap-1">
+              <p className="font-medium text-foreground">{label}</p>
               <p className="text-sm text-muted-foreground">{description}</p>
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
