@@ -34,9 +34,9 @@ class TranslatedInfo(BaseModel):
     what_happens: str = Field(..., description="What patients will do")
     duration: str = Field(..., description="How long treatment lasts")
     
-    # Patient-friendly title (5th-6th grade reading level)
-    patient_friendly_title_main: str = Field(..., description="Main patient-friendly title")
-    patient_friendly_title_subtitle: str = Field(..., description="Subtitle explaining who it's for")
+    # Patient-friendly title (5th-6th grade reading level) - Optional for backward compatibility
+    patient_friendly_title_main: Optional[str] = Field(None, description="Main patient-friendly title")
+    patient_friendly_title_subtitle: Optional[str] = Field(None, description="Subtitle explaining who it's for")
 
 
 class Trial(BaseModel):
