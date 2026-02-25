@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, RotateCcw, ChevronDown, ChevronUp, Database, Download, Info, RefreshCw, Mail, Clipboard, Shield, Layout, AlertCircle, Check, Star } from "lucide-react";
+import { Search, Filter, RotateCcw, ChevronDown, ChevronUp, Database, Download, Info, RefreshCw, Mail, Clipboard, Shield, Layout, AlertCircle, Check, Star, InfoIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { TrialCard } from "@/components/TrialCard";
 import { LearnMoreModal } from "@/components/LearnMoreModal";
@@ -25,6 +26,7 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
   const [showOtherTrials, setShowOtherTrials] = useState(false);
   const [acknowledgedMismatch, setAcknowledgedMismatch] = useState(false);
   
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { hasProfileChanges, isRematching, confirmReMatch, resetDetection } = useProfileChangeDetection(patientData);
   
@@ -503,6 +505,18 @@ export function ResultsStep({ patientData, onReset }: ResultsStepProps) {
             <p className="text-base text-gray-600">
               🔒 Your data remains in your browser session. Closing this tab will clear all information.
             </p>
+          </div>
+
+          {/* Vision Page Link */}
+          <div className="text-center mt-6">
+            <Button
+              variant="link"
+              onClick={() => navigate("/vision")}
+              className="text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              <InfoIcon className="w-4 h-4 mr-2" />
+              About TrialScout's Mission & Roadmap
+            </Button>
           </div>
         </div>
       </div>
