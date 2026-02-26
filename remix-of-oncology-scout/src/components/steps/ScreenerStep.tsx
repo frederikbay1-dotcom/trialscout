@@ -575,7 +575,7 @@ export function ScreenerStep({
               <p className="text-base text-gray-600 mt-1 leading-relaxed">
                 {hasAutoFilled
                   ? "We've auto-filled information below based on your clinical records. Confidence levels indicate extraction accuracy. Please review and correct any inaccuracies."
-                  : "Upload your pathology report or oncology note above to automatically extract and fill in your medical information. You can review and edit all extracted data before proceeding."}
+                  : "Upload your pathology report or oncology note above to extract relevant details and pre-fill your medical information. You can review and edit all extracted data before proceeding."}
               </p>
             </div>
           </div>

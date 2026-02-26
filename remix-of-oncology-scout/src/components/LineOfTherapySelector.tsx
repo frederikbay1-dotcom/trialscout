@@ -35,10 +35,10 @@ const lineOptions: { value: LineOfTherapy; label: string; description: string }[
     label: "Progressed on Chemo/Immunotherapy", 
     description: "Tried chemotherapy and/or immunotherapy but disease progressed" 
   },
-  { 
-    value: "later_line", 
-    label: "Ran Out of Standard Options", 
-    description: "Multiple prior therapies, looking for new options" 
+  {
+    value: "later_line",
+    label: "No Standard Treatment Options Remaining",
+    description: "Multiple prior therapies, looking for new options"
   },
 ];
 

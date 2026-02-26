@@ -9,14 +9,25 @@ export default function VisionPage() {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
       <div className="container mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(-1)}
-          className="mb-6 hover:bg-blue-100 transition-colors"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Results
-        </Button>
+        {/* Top Navigation */}
+        <div className="flex justify-between items-center mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/")}
+            className="hover:bg-blue-100 transition-colors"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Results
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/team")}
+            className="hover:bg-blue-100 transition-colors"
+          >
+            View Team & Execution
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
 
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-3">TrialScout</h1>
@@ -79,13 +90,13 @@ export default function VisionPage() {
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-700">
-                  Expand to 1000+ structured trials
+                  Expand to 100+ structured trials
                 </span>
               </li>
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-700">
-                  10 sponsored trials across 2 metro areas
+                  25 sponsored trials across 5 metro areas
                 </span>
               </li>
             </ul>
@@ -106,7 +117,7 @@ export default function VisionPage() {
                 <p className="text-gray-900 font-medium">Phase 1 — Wedge Validation</p>
                 <p className="text-gray-600">
                   Free pilots with cancer centers → Case studies proving match
-                  precision
+                  precision and referral conversion
                 </p>
               </div>
             </div>
@@ -117,7 +128,7 @@ export default function VisionPage() {
               <div>
                 <p className="text-gray-900 font-medium">Phase 2 — Monetization</p>
                 <p className="text-gray-600">
-                  Pharma sponsors pay per structured trial + per confirmed
+                  Pharma sponsors pay per structured trial plus per confirmed
                   enrollment
                 </p>
               </div>
@@ -129,7 +140,7 @@ export default function VisionPage() {
               <div>
                 <p className="text-gray-900 font-medium">Phase 3 — Scale</p>
                 <p className="text-gray-600">
-                  10 sponsored trials across 2 metros with referral
+                  25 sponsored trials across 5 metro areas with referral
                   infrastructure live
                 </p>
               </div>
@@ -188,8 +199,8 @@ export default function VisionPage() {
             <div>
               <p className="font-semibold text-gray-900 mb-1">Our Advantage</p>
               <p className="text-gray-700">
-                AI-structured matching at the patient level. Faster and
-                dramatically cheaper than CRO outreach.
+                AI-structured patient-to-protocol matching at scale. Faster and
+                dramatically cheaper than manual CRO recruitment.
               </p>
             </div>
             <div>
@@ -202,29 +213,6 @@ export default function VisionPage() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center space-y-3">
-          <div>
-            <Button
-              variant="link"
-              onClick={() => navigate("/team")}
-              className="text-blue-600 hover:text-blue-700 transition-colors text-sm"
-            >
-              View Team & Execution
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-          <div>
-            <Button
-              variant="link"
-              onClick={() => navigate("/")}
-              className="text-blue-600 hover:text-blue-800 transition-colors"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to TrialScout
-            </Button>
-          </div>
-        </div>
       </div>
     </div>
   );

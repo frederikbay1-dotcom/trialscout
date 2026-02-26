@@ -76,7 +76,7 @@ function getBadgeInfo(matchResult?: MatchResult, index: number = 0): {
 
     if (matchResult.matchConfidence === "medium") {
       return {
-        text: "POSSIBLE MATCH",
+        text: "LIKELY MATCH",
         bgColor: "bg-blue-100",
         textColor: "text-blue-800",
         icon: null,
@@ -176,7 +176,7 @@ export function TrialCard({
       {index === 0 && matchScore >= 90 && (
         <div className="mb-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-emerald-600 text-white">
-            #1 ⭐ BEST MATCH
+            #1 Top Ranked Match
           </div>
         </div>
       )}
@@ -236,7 +236,7 @@ export function TrialCard({
             </div>
             {/* Match Confidence Label - NEW */}
             <div className="mt-1 flex items-center gap-2">
-              <span className="text-xs text-gray-500">Match Confidence:</span>
+              <span className="text-xs text-gray-500">Structured Match Confidence:</span>
               <span className={`text-xs font-semibold ${
                 matchScore >= 90 ? 'text-emerald-600' :
                 matchScore >= 75 ? 'text-blue-600' :
@@ -248,6 +248,13 @@ export function TrialCard({
                  'Low'}
               </span>
             </div>
+            {/* Helper Text Under Match Score */}
+            <p className="text-xs text-gray-500 mt-1.5 italic">
+              Match score compares your clinical profile to published trial inclusion and exclusion criteria.
+            </p>
+            <p className="text-xs text-gray-500 mt-0.5 italic">
+              Confidence reflects how closely your documented details align with the criteria.
+            </p>
           </div>
         </div>
         <span className={`${badge.bgColor} ${badge.textColor} text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5 shrink-0`}>
