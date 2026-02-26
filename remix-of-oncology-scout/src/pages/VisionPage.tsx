@@ -182,15 +182,27 @@ export default function VisionPage() {
         </div>
 
         {/* Footer */}
-        <div className="text-center">
-          <Button
-            variant="link"
-            onClick={() => navigate("/")}
-            className="text-blue-600 hover:text-blue-800 transition-colors"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to TrialScout
-          </Button>
+        <div className="text-center space-y-3">
+          <div>
+            <Button
+              variant="link"
+              onClick={() => navigate("/team")}
+              className="text-blue-600 hover:text-blue-700 transition-colors text-sm"
+            >
+              View Team & Execution
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="link"
+              onClick={() => navigate("/")}
+              className="text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to TrialScout
+            </Button>
+          </div>
         </div>
       </div>
     </div>

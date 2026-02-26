@@ -8,6 +8,7 @@ import Privacy from "./pages/Privacy";
 import Walkthrough from "./pages/Walkthrough";
 import VisionPage from "./pages/VisionPage";
 import IntroPage from "./pages/IntroPage";
+import TeamPage from "./pages/TeamPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/walkthrough" element={<Walkthrough />} />
           <Route path="/vision" element={<VisionPage />} />
           <Route path="/intro" element={<IntroPage />} />
+          <Route path="/team" element={<TeamPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
