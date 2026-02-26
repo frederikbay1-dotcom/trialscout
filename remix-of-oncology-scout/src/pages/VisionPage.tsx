@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Check, Info } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -35,19 +35,27 @@ export default function VisionPage() {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <Check className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Product live</span>
+                <span className="text-gray-700">
+                  Live product with clinical text extraction
+                </span>
               </li>
               <li className="flex items-start">
                 <Check className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">AI extraction working</span>
+                <span className="text-gray-700">
+                  Biomarker and staging normalization working
+                </span>
               </li>
               <li className="flex items-start">
                 <Check className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">20 trials indexed</span>
+                <span className="text-gray-700">
+                  20 structured oncology trials indexed
+                </span>
               </li>
               <li className="flex items-start">
                 <Check className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">NYC pilot conversations</span>
+                <span className="text-gray-700">
+                  Early pilot discussions with NYC cancer centers
+                </span>
               </li>
             </ul>
           </div>
@@ -60,19 +68,25 @@ export default function VisionPage() {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">One-click scheduling</span>
+                <span className="text-gray-700">One-click referral routing</span>
               </li>
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Enrollment tracking</span>
+                <span className="text-gray-700">
+                  Enrollment conversion tracking
+                </span>
               </li>
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">100+ trials, 5 cities</span>
+                <span className="text-gray-700">
+                  Expand to 1000+ structured trials
+                </span>
               </li>
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">25 sponsored trials</span>
+                <span className="text-gray-700">
+                  10 sponsored trials across 2 metro areas
+                </span>
               </li>
             </ul>
           </div>
@@ -89,9 +103,10 @@ export default function VisionPage() {
                 1
               </div>
               <div>
-                <p className="text-gray-900 font-medium">Phase 1</p>
+                <p className="text-gray-900 font-medium">Phase 1 — Wedge Validation</p>
                 <p className="text-gray-600">
-                  Prove wedge with free pilots → Case studies
+                  Free pilots with cancer centers → Case studies proving match
+                  precision
                 </p>
               </div>
             </div>
@@ -100,9 +115,10 @@ export default function VisionPage() {
                 2
               </div>
               <div>
-                <p className="text-gray-900 font-medium">Phase 2</p>
+                <p className="text-gray-900 font-medium">Phase 2 — Monetization</p>
                 <p className="text-gray-600">
-                  Monetize with pharma sponsors → First revenue
+                  Pharma sponsors pay per structured trial + per confirmed
+                  enrollment
                 </p>
               </div>
             </div>
@@ -111,8 +127,11 @@ export default function VisionPage() {
                 3
               </div>
               <div>
-                <p className="text-gray-900 font-medium">Phase 3</p>
-                <p className="text-gray-600">Scale to 25 trials, 5 cities</p>
+                <p className="text-gray-900 font-medium">Phase 3 — Scale</p>
+                <p className="text-gray-600">
+                  10 sponsored trials across 2 metros with referral
+                  infrastructure live
+                </p>
               </div>
             </div>
           </div>
@@ -128,21 +147,20 @@ export default function VisionPage() {
               <div className="text-2xl font-bold text-gray-900">
                 $5K–10K
                 <span className="block text-sm font-normal text-gray-600">
-                  implementation fee per trial
+                  per structured trial
                 </span>
               </div>
               <div className="text-3xl text-gray-400">+</div>
               <div className="text-2xl font-bold text-gray-900">
                 $2K
                 <span className="block text-sm font-normal text-gray-600">
-                  per enrolled patient
+                  per confirmed enrollment
                 </span>
               </div>
             </div>
             <div className="border-t border-gray-300 pt-4 mt-4">
               <p className="text-gray-600">
-                <span className="font-semibold text-green-700">10x cheaper</span>{" "}
-                than CRO industry rate
+                Order-of-magnitude cheaper than CRO recruitment models
               </p>
             </div>
           </div>
@@ -157,25 +175,28 @@ export default function VisionPage() {
             <div>
               <p className="font-semibold text-gray-900 mb-1">Market Failure</p>
               <p className="text-gray-700">
-                80% of trials fail to meet enrollment targets
+                80% of oncology trials miss enrollment targets.
               </p>
             </div>
             <div>
               <p className="font-semibold text-gray-900 mb-1">Economic Impact</p>
               <p className="text-gray-700">
-                Tens to hundreds of millions lost per drug delay
+                Enrollment delays cost sponsors tens to hundreds of millions per
+                drug.
               </p>
             </div>
             <div>
               <p className="font-semibold text-gray-900 mb-1">Our Advantage</p>
               <p className="text-gray-700">
-                Order of magnitude cheaper + faster than CROs
+                AI-structured matching at the patient level. Faster and
+                dramatically cheaper than CRO outreach.
               </p>
             </div>
             <div>
               <p className="font-semibold text-gray-900 mb-1">Wedge Strategy</p>
               <p className="text-gray-700">
-                Brief gets us into workflow, scheduling drives revenue
+                Doctor-ready brief → Referral routing → Enrollment
+                infrastructure.
               </p>
             </div>
           </div>

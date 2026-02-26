@@ -1,8 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function IntroPage() {
   const navigate = useNavigate();
+  const [showPersona, setShowPersona] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowPersona(true);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -16,27 +25,55 @@ export default function IntroPage() {
         </div>
 
         <div className="space-y-8">
-          {/* Card 1 - The Problem */}
+          {/* Card 1 - The Enrollment Bottleneck */}
           <div className="bg-white rounded-lg shadow-md border border-gray-200 p-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              The Problem
+              The Enrollment Bottleneck
             </h2>
-            <p className="text-lg font-medium text-gray-800 mb-4">
-              When standard treatment isn't working, trials can be a
-              lifeline—but finding one is nearly impossible
+            <p className="text-lg text-gray-700 mb-4 leading-relaxed">
+              When standard treatment stops working, clinical trials are often
+              the last option. But matching patients to complex eligibility
+              criteria is fragmented, manual, and overwhelming.
             </p>
             <ul className="space-y-3 text-lg text-gray-700">
               <li>
-                • ClinicalTrials.gov: 5,000 unranked results in medical jargon
+                • ClinicalTrials.gov returns 5,000+ unranked trials in medical
+                jargon
               </li>
               <li>
-                • Trial matching services: Create awareness but don't help with
-                understanding or enrollment
+                • 80% of oncology trials fail to meet enrollment targets
               </li>
               <li>
-                • Most people—patients and their loved ones—give up
+                • Patients and caregivers give up before finding a qualified
+                match
               </li>
-              <li>• Treatments that could work go unused</li>
+              <li>
+                • Delayed enrollment costs sponsors tens to hundreds of millions
+                per drug
+              </li>
+            </ul>
+          </div>
+
+          {/* Meet Sarah Panel - Fades in after 2 seconds */}
+          <div
+            className={`bg-blue-50 rounded-lg border border-blue-200 p-8 transition-all duration-1000 ${
+              showPersona
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-4"
+            }`}
+          >
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              Meet Sarah
+            </h3>
+            <ul className="space-y-2 text-base text-gray-700">
+              <li>• 52 years old</li>
+              <li>• Metastatic ER+ HER2- breast cancer</li>
+              <li>• Failed two prior lines of therapy</li>
+              <li>• Lives in Newark, NJ</li>
+              <li>
+                • Oncologist mentioned trials but provided no clear guidance
+              </li>
+              <li>• Searching at 11 pm after her kids are asleep</li>
             </ul>
           </div>
 
@@ -46,9 +83,8 @@ export default function IntroPage() {
               Our Goal
             </h2>
             <p className="text-lg text-gray-700 leading-relaxed">
-              Make clinical trials accessible to everyone who could
-              benefit—whether you're searching for yourself or someone you care
-              about.
+              Turn unstructured clinical records into ranked, doctor-ready trial
+              matches.
             </p>
           </div>
 
