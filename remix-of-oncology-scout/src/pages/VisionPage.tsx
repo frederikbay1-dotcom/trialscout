@@ -96,7 +96,7 @@ export default function VisionPage() {
               <li className="flex items-start">
                 <ArrowRight className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-700">
-                  25 sponsored trials across 5 metro areas
+                  25 sponsored trials across 2 metro areas
                 </span>
               </li>
             </ul>
@@ -114,10 +114,9 @@ export default function VisionPage() {
                 1
               </div>
               <div>
-                <p className="text-gray-900 font-medium">Phase 1 — Wedge Validation</p>
+                <p className="text-gray-900 font-medium">Phase 1</p>
                 <p className="text-gray-600">
-                  Free pilots with cancer centers → Case studies proving match
-                  precision and referral conversion
+                  Pilot with cancer centers to validate match precision and referral conversion — tracking eligibility alignment, physician acceptance, and downstream enrollment.
                 </p>
               </div>
             </div>
@@ -126,10 +125,15 @@ export default function VisionPage() {
                 2
               </div>
               <div>
-                <p className="text-gray-900 font-medium">Phase 2 — Monetization</p>
+                <p className="text-gray-900 font-medium">Phase 2</p>
                 <p className="text-gray-600">
-                  Pharma sponsors pay per structured trial plus per confirmed
-                  enrollment
+                  Sponsors pay per structured trial plus per confirmed enrollment.
+                </p>
+                <p className="text-gray-600 mt-2">
+                  All indexed trials remain visible and ranked neutrally across the platform. For participating sponsors, we enable referral routing — connecting qualified patients directly to participating sites and tracking conversion.
+                </p>
+                <p className="text-gray-600 mt-2">
+                  Sponsors pay for infrastructure and confirmed enrollment, not for ranking or placement.
                 </p>
               </div>
             </div>
@@ -138,10 +142,9 @@ export default function VisionPage() {
                 3
               </div>
               <div>
-                <p className="text-gray-900 font-medium">Phase 3 — Scale</p>
+                <p className="text-gray-900 font-medium">Phase 3</p>
                 <p className="text-gray-600">
-                  25 sponsored trials across 5 metro areas with referral
-                  infrastructure live
+                  Scale to 25 sponsored trials across 2 metro areas, with referral routing and conversion tracking integrated end-to-end.
                 </p>
               </div>
             </div>
@@ -171,7 +174,7 @@ export default function VisionPage() {
             </div>
             <div className="border-t border-gray-300 pt-4 mt-4">
               <p className="text-gray-600">
-                Order-of-magnitude cheaper than CRO recruitment models
+                Designed to align incentives around confirmed enrollment rather than impressions or outreach volume.
               </p>
             </div>
           </div>
@@ -199,8 +202,7 @@ export default function VisionPage() {
             <div>
               <p className="font-semibold text-gray-900 mb-1">Our Advantage</p>
               <p className="text-gray-700">
-                AI-structured patient-to-protocol matching at scale. Faster and
-                dramatically cheaper than manual CRO recruitment.
+                AI-structured patient-to-protocol matching. Reduces manual screening burden and improves referral precision.
               </p>
             </div>
             <div>
