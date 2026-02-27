@@ -24,14 +24,11 @@ export default function IntroPage() {
               The Enrollment Bottleneck
             </h2>
             <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-              When standard treatment stops working, clinical trials are often
-              the last option. But eligibility criteria live in unstructured
-              clinical notes, fragmented systems, and dense trial protocols.
+              When standard treatment stops working, clinical trials are often the last option. But eligibility criteria live in unstructured clinical notes, fragmented systems, and dense trial protocols — making it hard for patients to understand which trials might actually fit them.
             </p>
             <ul className="space-y-3 text-lg text-gray-700">
               <li>
-                • ClinicalTrials.gov returns 5,000+ unranked trials in medical
-                jargon
+                • ClinicalTrials.gov returns 100+ unranked trials written in dense medical language, with no filtering by real eligibility
               </li>
               <li>
                 • 80% of oncology trials fail to meet enrollment targets
@@ -53,11 +50,10 @@ export default function IntroPage() {
               Our Goal
             </h2>
             <p className="text-lg text-gray-700 leading-relaxed mb-3">
-              Turn unstructured clinical records into ranked, doctor-ready trial
-              matches.
+              Turn the clinical documents patients already have into ranked, plain-language, doctor-ready trial matches.
             </p>
             <p className="text-base text-gray-600">
-              Sponsor-neutral. Ranked across all indexed trials.
+              Sponsor-neutral. Ranked across all indexed trials. No paid placement.
             </p>
           </div>
 
@@ -81,12 +77,11 @@ export default function IntroPage() {
                   Meet Sarah
                 </h3>
                 <ul className="space-y-2 text-base text-gray-700 mb-6">
-                  <li>• 52 years old</li>
+                  <li>• 61 years old</li>
                   <li>
-                    • Metastatic ER+ / HER2- breast cancer (common late-line
-                    subtype)
+                    • Metastatic ER+ / HER2- breast cancer
                   </li>
-                  <li>• Failed two prior lines of therapy</li>
+                  <li>• Progressed after two prior lines of therapy</li>
                   <li>• Lives in Newark, NJ</li>
                   <li>
                     • Oncologist mentioned trials but provided no clear guidance
