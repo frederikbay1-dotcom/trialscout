@@ -24,7 +24,7 @@ export default function IntroPage() {
               The Enrollment Bottleneck
             </h2>
             <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-              When standard treatment stops working, clinical trials are often the last option. But eligibility criteria live in unstructured clinical notes, fragmented systems, and dense trial protocols — making it hard for patients to understand which trials might actually fit them.
+              When treatment fails trials are often the last options, but patients and caregivers struggle to find trials that might fit them.
             </p>
             <ul className="space-y-3 text-lg text-gray-700">
               <li>

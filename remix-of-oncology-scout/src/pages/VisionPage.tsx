@@ -127,10 +127,7 @@ export default function VisionPage() {
               <div>
                 <p className="text-gray-900 font-medium">Phase 2</p>
                 <p className="text-gray-600">
-                  Sponsors pay per structured trial plus per confirmed enrollment.
-                </p>
-                <p className="text-gray-600 mt-2">
-                  All indexed trials remain visible and ranked neutrally across the platform. For participating sponsors, we enable referral routing — connecting qualified patients directly to participating sites and tracking conversion.
+                  Monetize by allowing sponsors to pay to enable referral routing - connecting qualified patients directly to participating sites and tracking conversion.
                 </p>
                 <p className="text-gray-600 mt-2">
                   Sponsors pay for infrastructure and confirmed enrollment, not for ranking or placement.
