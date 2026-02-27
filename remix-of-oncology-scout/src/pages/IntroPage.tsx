@@ -86,7 +86,6 @@ export default function IntroPage() {
                   <li>
                     • Oncologist mentioned trials but provided no clear guidance
                   </li>
-                  <li>• Searching at 11 pm after her kids are asleep</li>
                 </ul>
                 <div className="text-center">
                   <button
